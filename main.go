@@ -23,13 +23,35 @@ var hotels = []hotel{
 	{"Hotel D", "Las Vegas", 400},
 }
 
+var destinations = []destination{
+	{"New York"},
+	{"Los Angeles"},
+	{"Chicago"},
+	{"Las Vegas"},
+}
+
+func getDestinations(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"destinations": destinations,
+	})
+}
+
+func getHotels(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"hotels": hotels,
+	})
+}
+
 func main() {
 	r := gin.Default()
-	r.GET("/hotels", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"hotels": hotels,
-		})
-	})
+
+	// GET FUNCTIONS
+	r.GET("/hotels", getHotels)
+	r.GET("/destinations", getDestinations)
+
+	// POST FUNCTIONS
+
+	// RUN SERVER
 	r.Run(":3000")
 
 }
