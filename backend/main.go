@@ -31,9 +31,11 @@ type Destination struct {
 	state string `json:"state"`
 }
 
+var Destinations []*Destination
+
 func main() {
-	r := gin.Default()
-	r.RedirectTrailingSlash = true
+	router := gin.Default()
+	router.RedirectTrailingSlash = true
 
 	// Reads destination.json and stores it into array
 	content, err := ioutil.ReadFile("./destination.json")
@@ -52,13 +54,13 @@ func main() {
 	// r.GET("/destinations", getDestinations)
 
 	// Handles No Route
-	r.NoRoute(func(c *gin.Context) {
+	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{})
 	})
 
 	// POST FUNCTIONS
 
 	// RUN SERVER
-	r.Run(":3000")
+	router.Run(":3000")
 
 }
