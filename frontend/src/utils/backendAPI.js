@@ -1,9 +1,9 @@
 // const getDestinationsByFuzzyString = (fuzzyDestinationName)
-let exhaust = 200;
+let exhaust = 20;
 
-export const getHotelBatch = (hotelId, destinationId, before) => {
-    exhaust -= 5;
-    if (exhaust == 0) return [];
+export const getHotelBatch = async (hotelId, destinationId, before) => {
+    exhaust -= 1;
+    if (exhaust <= 0) return [];
     const res = [];
     for (let i = 0; i < 5; i++) {
         const name = randomStringForTesting(10, hotelId.charCodeAt(0) - 64);
@@ -12,11 +12,12 @@ export const getHotelBatch = (hotelId, destinationId, before) => {
             name: name,//randomStringForTesting(10, hotelId.charCodeAt(0)),
         });
     }
-    //await delay();
+    await delay();
     return res;
 };
 
-export const attemptLogin = (email, passwordHash) => {
+export const attemptLogin = async (email, passwordHash) => {
+    await delay();
     return {
         token: "change this later",
     };

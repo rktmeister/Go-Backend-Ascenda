@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/home" element={<AuthWrapper privateComponent={
+          <Route path="/" element={<AuthWrapper privateComponent={
             <div><DestinationSearch filterArray={[
               ({ id }) => 97 <= id.charCodeAt(0) && id.charCodeAt(0) <= 122,
               ({ name }) => name.length > 4,

@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { attemptLogin } from "../../utils/backendAPI";
+import AuthWrapper from "../authentication/AuthWrapper";
 
 const Login = (props) => {
+    const nav = useNavigate();
+
     const [email, setEmail] = useState("");
     const [passwordHash, setPasswordHash] = useState("");
 
@@ -9,9 +13,11 @@ const Login = (props) => {
         return password; // TODO: implement hash function
     };
 
-    const handleLogin = (event) => {
+    const handleLogin = async (event) => {
         event.preventDefault();
-        const result = attemptLogin(email, hashPassword(passwordHash));
+        const user = await attemptLogin(email, hashPassword(passwordHash));
+        localStorage.setItem("user", JSON.stringify(user));
+        nav("/", { replace: true });
     };
 
     return (

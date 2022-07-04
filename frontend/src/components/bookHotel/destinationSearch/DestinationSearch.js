@@ -15,7 +15,7 @@ const DestinationSearch = (props) => {
 
     const [scrollPosition, setScrollPosition] = useState(0);
     const [minScrollPosition, setMinScrollPosition] = useState(0);
-    const [maxScrollPosition, setMaxScrollPosition] = useState(8);
+    const [maxScrollPosition, setMaxScrollPosition] = useState(2);
     const handleScroll = (position) => {
         // credit for emInPixels: https://stackoverflow.com/questions/23174067/jquery-scrolltop-with-em
         const emInPixels = Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]);
@@ -55,29 +55,33 @@ const DestinationSearch = (props) => {
     };
 
     useEffect(() => {
-        const firstHotel = hotels[0];
-        if (topRemainingToLoad > 0) {
-            if (noMoreResults) {
-                setTopRemainingToLoad(0);
-                return;
+        (async () => {
+            const firstHotel = hotels[0];
+            if (topRemainingToLoad > 0) {
+                if (noMoreResults) {
+                    setTopRemainingToLoad(0);
+                    return;
+                }
+                const getResults = await getHotelBatchAndSetNoMoreResults(firstHotel.id, 2, 2);
+                setTopRemainingToLoad(Math.max(topRemainingToLoad - getResults.length, 0));
             }
-            const getResults = getHotelBatchAndSetNoMoreResults(firstHotel.id, 2, 2);
-            setTopRemainingToLoad(Math.max(topRemainingToLoad - getResults.length, 0));
-        }
+        })();
     }, [topRemainingToLoad]);
 
     useEffect(() => {
-        console.log("BOTTOM: ", bottomRemainingToLoad);
-        const lastHotel = hotels[hotels.length - 1];
-        if (bottomRemainingToLoad > 0) {
-            if (noMoreResults) {
-                setBottomRemainingToLoad(0);
-                return;
+        (async () => {
+            console.log("BOTTOM: ", bottomRemainingToLoad);
+            const lastHotel = hotels[hotels.length - 1];
+            if (bottomRemainingToLoad > 0) {
+                if (noMoreResults) {
+                    setBottomRemainingToLoad(0);
+                    return;
+                }
+                const getResults = await getHotelBatchAndSetNoMoreResults(lastHotel.id, 2, 2);
+                console.log("X", bottomRemainingToLoad, getResults, getResults.length, bottomRemainingToLoad - getResults.length, displayHotels.length);
+                setBottomRemainingToLoad(Math.max(bottomRemainingToLoad - getResults.length, 0));
             }
-            const getResults = getHotelBatchAndSetNoMoreResults(lastHotel.id, 2, 2);
-            console.log("X", bottomRemainingToLoad, getResults.length, bottomRemainingToLoad - getResults.length, displayHotels.length);
-            setBottomRemainingToLoad(Math.max(bottomRemainingToLoad - getResults.length, 0));
-        }
+        })();
     }, [bottomRemainingToLoad]);
 
     const getFilteredHotels = () => hotels.filter((hotel) => filterArray.every((filterFunc) => filterFunc(hotel)));
@@ -132,8 +136,8 @@ const DestinationSearch = (props) => {
         // console.log("EXIT ADDHOTELS");
     };
 
-    const getHotelBatchAndSetNoMoreResults = (hotelId, destinationId, before) => {
-        const getResults = getHotelBatch("A", 2, 2);
+    const getHotelBatchAndSetNoMoreResults = async (hotelId, destinationId, before) => {
+        const getResults = await getHotelBatch("A", 2, 2);
         if (getResults.length == 0) {
             setNoMoreResults(true);
             console.log("_________________EXHAUSTED_______________");
@@ -148,13 +152,17 @@ const DestinationSearch = (props) => {
 
     }
 
-    const initialLoadRoutine = () => {
+    const initialLoadRoutine = async () => {
         if (displayHotels.length < 10 && !noMoreResults) {
-            getHotelBatchAndSetNoMoreResults(2, 2, 2);
+            await getHotelBatchAndSetNoMoreResults(2, 2, 2);
         }
     };
 
-    useEffect(initialLoadRoutine, [displayHotels]);
+    useEffect(() => {
+        (async () => {
+            await initialLoadRoutine();
+        })();
+    }, [displayHotels]);
 
     useEffect(() => {
         setDisplayHotels(getFilteredHotels());
