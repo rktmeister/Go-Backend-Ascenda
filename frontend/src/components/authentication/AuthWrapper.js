@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import NotAuthorizedWarning from "./NotAuthorizedWarning";
 
 const AuthWrapper = (props) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(true); // TODO: implement actual authentication
+    const [authToken, setAuthToken] = useState(null);
+
+    useEffect(() => {
+        const maybeUser = localStorage.getItem("user");
+        if (maybeUser) {
+            setAuthToken(JSON.parse(maybeUser).token);
+        }
+    }, []);
+
+    // TODO: make loading animation while checking if use token exists
 
     return (
-        { isAuthenticated? props.privateComponent : < NotAuthorizedWarning />}
+        <div>{authToken !== null ? props.privateComponent : <NotAuthorizedWarning test={authToken} />}</div>
     );
 };
 
