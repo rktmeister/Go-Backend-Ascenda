@@ -50,3 +50,9 @@ const randomStringForTesting = (length, min) => {
     }
     return result;
 };
+
+const getDestinationsByFuzzyString = (fuzzyDestinationName) => {
+    return [
+        
+    ];
+}
