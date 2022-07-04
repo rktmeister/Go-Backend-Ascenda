@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import Login from './components/profile/Login';
 import AuthWrapper from './components/authentication/AuthWrapper';
-import DestinationSearch from './components/bookHotel/destinationSearch/DestinationSearch';
+import HotelSearchResults from './components/bookHotel/hotelSearchResults/HotelSearchResults';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<AuthWrapper privateComponent={
-            <div><DestinationSearch filterArray={[
+            <div><HotelSearchResults filterArray={[
               ({ id }) => 97 <= id.charCodeAt(0) && id.charCodeAt(0) <= 122,
               ({ name }) => name.length > 4,
             ]} /></div>
