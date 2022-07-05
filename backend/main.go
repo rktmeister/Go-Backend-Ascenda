@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
+
+	"github.com/go-redis/redis"
 
 	"github.com/gin-gonic/gin"
-
-	"io/ioutil"
 )
 
 type User struct {
@@ -24,30 +26,73 @@ type Hotel struct {
 }
 
 type Destination struct {
-	dest  string `json:"name"`
-	uid   string `json:"uid"`
-	lat   string `json:"lat"`
-	lng   string `json:"lng"`
-	state string `json:"state"`
+	Dest string `json:"term"`
 }
 
-var Destinations []*Destination
+type myJson struct {
+	Array []string
+}
+
+type Uid struct {
+	Uid string `json:"uid"`
+}
 
 func main() {
 	router := gin.Default()
 	router.RedirectTrailingSlash = true
 
-	// Reads destination.json and stores it into array
-	content, err := ioutil.ReadFile("./destination.json")
+	content, err := os.Open("./destinations.json")
 	if err != nil {
-		log.Fatal("Error opening file: ", err)
+		fmt.Println(err)
 	}
 
-	var payload Destination
-	err = json.Unmarshal(content, &payload)
+	fmt.Println("Successfully read file")
+	defer content.Close()
+	var destinations []Destination
+	var uids []Uid
+
+	bytevalue, _ := ioutil.ReadAll(content)
+	json.Unmarshal(bytevalue, &destinations)
+	json.Unmarshal(bytevalue, &uids)
+
+	fmt.Println(destinations)
+
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:5000",
+		Password: "",
+		DB:       0,
+	})
+
+	pong, err := client.Ping().Result()
 	if err != nil {
-		log.Fatal("Error unmarshalling: ", err)
+		fmt.Println(err)
 	}
+	fmt.Println(pong, "connected to redis")
+
+	destinationJsondata, _ := json.Marshal(destinations)
+
+	client.Set("destinations", destinationJsondata, 0).Err()
+
+	uidJsondata, _ := json.Marshal(uids)
+
+	client.Set("uids", uidJsondata, 0)
+
+	val, err := client.Get("destinations").Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("destinations:", val)
+
+	// err = client.Set("destinations", destinations, 0).Err()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+
+	// val, err := client.Get("destinations").Result()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// fmt.Println("destinations:", val)
 
 	// GET FUNCTIONS
 	// r.GET("/hotels", getHotels)
