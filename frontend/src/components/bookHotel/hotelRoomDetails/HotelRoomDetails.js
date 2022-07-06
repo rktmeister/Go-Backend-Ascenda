@@ -3,11 +3,13 @@ import React, { useState, useEffect } from "react";
 
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
+import markerIcon from "leaflet/dist/images/marker-icon.png"
+import {Icon} from 'leaflet';
 
-import { Wrapper, Status } from "@googlemaps/react-wrapper";
+// import { Wrapper, Status } from "@googlemaps/react-wrapper";
 
 
-//import { getAllRooms, createRoom } from './services/HotelRoomsListServices'
+// import { getAllRooms, createRoom } from './services/HotelRoomsListServices'
 
 
 var maxPrice = 0, minPrice = 0;
@@ -107,8 +109,18 @@ function App(props) {
         {/* Install Leaflet to use Openstreetmap: https://www.youtube.com/watch?v=i9oX1upSKjI */}
         {/* Openstreetmap Tutorial: https://www.youtube.com/watch?v=290VgjkLong */}
         {/* MUST ADD STYLE ATTRIBUTE TO MapContainer: https://stackoverflow.com/questions/40365440/react-leaflet-map-not-correctly-displayed */}
+        {/* Adding Markers: https://stackoverflow.com/questions/71229824/displaying-array-of-data-with-lat-long-as-markers-react-leaflet 
+            Making Markers Display: https://stackoverflow.com/questions/60174040/marker-icon-isnt-showing-in-leaflet */}
+        
 
         <MapContainer center={[props.latitude, props.longitude]} zoom = {20} style={{ height: '100vh', width: '100vh' }}>
+          <Marker 
+            position={[props.latitude, props.longitude]}
+            icon={new Icon({iconUrl: markerIcon, iconSize: [25, 41], iconAnchor: [12, 41]})}>
+              <Popup>
+                {props.hotel}
+              </Popup>
+          </Marker>
           <TileLayer
             url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap </a>contributors'
