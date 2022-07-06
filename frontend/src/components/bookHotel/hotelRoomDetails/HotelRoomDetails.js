@@ -1,7 +1,8 @@
 import './App.css';
 import React, { useState, useEffect } from "react";
 
-import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import 'leaflet/dist/leaflet.css';
 
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 
@@ -101,13 +102,18 @@ function App(props) {
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7977.621799709583!2d103.84450638469951!3d1.287584079927871!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da19090f9c176f%3A0x41c12c50babf70d0!2sThe%20Fullerton%20Hotel%20Singapore!5e0!3m2!1sen!2ssg!4v1657073781801!5m2!1sen!2ssg" width="600" height="450" style= {{border:0}} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         https://www.geeksforgeeks.org/how-to-add-google-map-inside-html-page-without-using-api-key/ */}
         
+        
 
-        <Map center={[props.latitude, props.longitude]} zoom = {20}>
+        {/* Install Leaflet to use Openstreetmap: https://www.youtube.com/watch?v=i9oX1upSKjI */}
+        {/* Openstreetmap Tutorial: https://www.youtube.com/watch?v=290VgjkLong */}
+        {/* MUST ADD STYLE ATTRIBUTE TO MapContainer: https://stackoverflow.com/questions/40365440/react-leaflet-map-not-correctly-displayed */}
+
+        <MapContainer center={[props.latitude, props.longitude]} zoom = {20} style={{ height: '100vh', width: '100vh' }}>
           <TileLayer
             url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>contributors'
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap </a>contributors'
           />
-        </Map>
+        </MapContainer>
 
         <br></br>
         <br></br>
