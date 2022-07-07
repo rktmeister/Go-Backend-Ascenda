@@ -84,7 +84,7 @@ func main() {
 	}
 	c.CreateIndex(sc)
 
-	a := redisearch.NewAutocompleter("localhost:6379", "autocomplete")
+	a := redisearch.NewAutocompleter("localhost:6379", "redisearch")
 	// destinationSuggest := redisearch.NewAutocompleter(RedisAddr, "destinations")
 
 	// destinationSuggest.SuggestOpts("ro", redisearch.SuggestOptions{Num: 5, Fuzzy: true})
@@ -107,7 +107,7 @@ func main() {
 		if destinations[i].Dest == "" || destinations[i].Uid == "" {
 			continue
 		}
-		a.AddTerms(redisearch.Suggestion{Term: destinations[i].Dest})
+		a.AddTerms(redisearch.Suggestion{Term: destinations[i].Dest, Score: 1})
 		doc := redisearch.NewDocument("destination:"+strconv.Itoa(i), 1.0)
 		doc.Set("destination", destinations[i].Dest)
 		doc.Set("uid", destinations[i].Uid)
@@ -123,7 +123,8 @@ func main() {
 	}
 
 	// return autcomplete results
-	fmt.Println(a.SuggestOpts("Rome, Italy", redisearch.SuggestOptions{Num: 5, Fuzzy: true}))
+	fmt.Println(a.SuggestOpts("Bal", redisearch.SuggestOptions{Num: 5, Fuzzy: false}))
+	fmt.Println(a.Length())
 
 	// fmt.Println(destinationSuggest.SuggestOpts("Ro", redisearch.SuggestOptions{Num: 5, Fuzzy: true}))
 
