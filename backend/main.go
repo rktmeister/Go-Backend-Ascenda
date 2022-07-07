@@ -84,7 +84,7 @@ func main() {
 	}
 	c.CreateIndex(sc)
 
-	a := redisearch.NewAutocompleter("localhost:6379", "redisearch")
+	a := redisearch.NewAutocompleter("localhost:6379", "autocomplete")
 	// destinationSuggest := redisearch.NewAutocompleter(RedisAddr, "destinations")
 
 	// destinationSuggest.SuggestOpts("ro", redisearch.SuggestOptions{Num: 5, Fuzzy: true})
