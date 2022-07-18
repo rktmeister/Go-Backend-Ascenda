@@ -29,7 +29,7 @@ func main() {
 	c := redisdb.InitDestRedis()
 	a := redisdb.InitAutoCompleterRedis()
 
-	fmt.Println("Autocomplete", redisdb.AutoCompleteDestination(a, "Sing"))
+	fmt.Println("Autocomplete", redisdb.AutoCompleteDestination(a, "Sin"))
 	fmt.Println(redisdb.GetDestinationUid(c, "Singapore"))
 	output, err := c.Get(redisdb.GetDestinationUid(c, "Singapore"))
 	if err != nil {
