@@ -1,3 +1,7 @@
+// Example format of usage : <HotelRoomDetails hotel = "Hotel ABC" latitude = "1.2864" longitude = "103.8531" />
+
+
+
 import './HotelRoomDetails.css';
 import React, { useState, useEffect } from "react";
 
