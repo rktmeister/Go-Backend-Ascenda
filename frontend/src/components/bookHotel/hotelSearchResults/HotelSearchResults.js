@@ -190,6 +190,7 @@ const HotelSearchResults = (props) => {
             />
             <button onClick={initialLoadRoutine} />
             <button onClick={() => console.log(displayHotels)} />
+            <button onClick={props.finishStage}>hi</button>
         </div>
     );
 };

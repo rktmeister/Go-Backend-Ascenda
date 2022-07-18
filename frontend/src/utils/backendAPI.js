@@ -23,6 +23,11 @@ export const getHotelBatch = async (hotelId, destinationId, before) => {
     return res;
 };
 
+export const getHotelRoomBatch = async (hotelId) => {
+    return await fetch("https://ascendahotels.mocklab.io/api/hotels/diH7/prices/ean")
+        .then(res => res.json());
+}
+
 export const attemptLogin = async (email, passwordHash) => {
     await delay();
     return {
