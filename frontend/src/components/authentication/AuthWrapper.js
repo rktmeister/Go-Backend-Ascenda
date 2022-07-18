@@ -8,6 +8,7 @@ const AuthWrapper = (props) => {
         const maybeUser = localStorage.getItem("user");
         if (maybeUser) {
             setAuthToken(JSON.parse(maybeUser).token);
+            console.log(JSON.parse(maybeUser).token);
         }
     }, []);
 
