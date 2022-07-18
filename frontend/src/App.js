@@ -18,20 +18,14 @@ function App() {
             <div>
               <StageHandler
                 stages={[
+                  <DestinationSearch />,
                   <HotelSearchResults
                     filterArray={[
                       ({ id }) => 97 <= id.charCodeAt(0) && id.charCodeAt(0) <= 122,
                       ({ name }) => name.length > 4,
                     ]}
-                  />,
-                  <div>
-                    hello
-                    {/* <button onClick={props.finishStage}>hoyo</button> */}
-                  </div>,
-                  <div>
-                    hoyo
-                    {/* <button onClick={props.finishStage}>hihi</button> */}
-                  </div>
+                  />
+
                 ]}
               />
             </div>

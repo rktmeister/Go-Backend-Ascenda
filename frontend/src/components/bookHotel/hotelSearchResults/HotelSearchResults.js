@@ -166,11 +166,7 @@ const HotelSearchResults = (props) => {
 
     useEffect(() => {
         setDisplayHotels(getFilteredHotels());
-<<<<<<< HEAD
-    }, []);
-=======
     }, [hotels, filterArray]);
->>>>>>> master
 
     const handleFilterChange = (formResults) => {
         const newFilterArray = [
@@ -194,7 +190,7 @@ const HotelSearchResults = (props) => {
             />
             <button onClick={initialLoadRoutine} />
             <button onClick={() => console.log(displayHotels)} />
-            <button onClick={props.finishStage}>hi</button>
+            <button onClick={props.finishStage}>Next Stage</button>
         </div>
     );
 };

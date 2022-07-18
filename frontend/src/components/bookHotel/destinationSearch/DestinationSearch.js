@@ -1,6 +1,6 @@
 // const DestinationSearch = (props) => {
 //     return (
-        
+
 //     );
 // };
 
@@ -13,10 +13,10 @@ import { getDestinationsByFuzzyString } from "../../../utils/backendAPI";
 // import CloseIcon from "@material-ui/icons/Close";
 //onClick ={this.getDestinationsByFuzzyString}
 //DestinationSearchAPI
-function DestinationSearch({ placeholder }) {
+function DestinationSearch(props) {
   const [filteredData, setFilteredData] = useState([]);
   const [wordEntered, setWordEntered] = useState("");
-  
+
   const handleFilter = (event) => {
     console.log(event);
     const searchWord = event.target.value;
@@ -46,7 +46,7 @@ function DestinationSearch({ placeholder }) {
       <div className="searchInputs">
         <input
           type="text"
-          placeholder={placeholder}
+          placeholder="Search!"
           value={wordEntered}
           onChange={handleFilter}
         />
@@ -72,6 +72,7 @@ function DestinationSearch({ placeholder }) {
           )}
         </div>
       )}
+      <button onClick={props.finishStage}>Next Stage</button>
     </div>
   );
 }
