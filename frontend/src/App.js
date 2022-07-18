@@ -4,6 +4,7 @@ import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import Login from './components/profile/Login';
 import AuthWrapper from './components/authentication/AuthWrapper';
 import HotelSearchResults from './components/bookHotel/hotelSearchResults/HotelSearchResults';
+import BookingData from './components/bookHotel/bookingData/BookingData';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
               ({ name }) => name.length > 4,
             ]} /></div>
           } />} />
+          <Route path="/buy" element={<BookingData />} />
         </Routes>
       </BrowserRouter>
     </div>
