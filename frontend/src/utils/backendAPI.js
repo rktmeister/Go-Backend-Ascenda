@@ -1,6 +1,11 @@
 // const getDestinationsByFuzzyString = (fuzzyDestinationName)
 let exhaust = 20;
 
+export const getStripePrice = async (hotelId) => {
+    await delay();
+    return "price_1LMX2uAML4yM4v0zWPOXMEa1";
+}
+
 export const getHotelBatch = async (hotelId, destinationId, before) => {
     exhaust -= 1;
     if (exhaust <= 0) return [];
@@ -10,6 +15,8 @@ export const getHotelBatch = async (hotelId, destinationId, before) => {
         res.push({
             id: randomStringForTesting(5, 0),
             name: name,//randomStringForTesting(10, hotelId.charCodeAt(0)),
+            number_of_rooms: Math.floor(Math.random() * 10),
+            price: Math.random() * 10,
         });
     }
     await delay();
@@ -20,6 +27,14 @@ export const attemptLogin = async (email, passwordHash) => {
     await delay();
     return {
         token: "change this later",
+        email: "testemail@gmail.com",
+    };
+};
+
+export const sendSuccessfulPayment = async (successfulPayment) => {
+    await delay();
+    return {
+        acknowledged: true,
     };
 };
 

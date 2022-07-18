@@ -166,7 +166,11 @@ const HotelSearchResults = (props) => {
 
     useEffect(() => {
         setDisplayHotels(getFilteredHotels());
+<<<<<<< HEAD
     }, []);
+=======
+    }, [hotels, filterArray]);
+>>>>>>> master
 
     const handleFilterChange = (formResults) => {
         const newFilterArray = [
@@ -181,9 +185,9 @@ const HotelSearchResults = (props) => {
             <FilterBar onSubmit={handleFilterChange} />
             <ScrollMenu
                 items={displayHotels}
-                itemMapping={({ id, name }) => {
+                itemMapping={(item) => {
                     return (
-                        <HotelCard key={id} id={id} name={name} height={`${cardHeightInEms}rem`} />
+                        <HotelCard key={item.id} item={item} height={`${cardHeightInEms}rem`} />
                     );
                 }}
                 onScroll={handleScroll}
