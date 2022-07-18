@@ -7,10 +7,13 @@
 // export default DestinationSearch;
 import React, { useState } from "react";
 import "../../../App.css";
+import "../../../utils/backendAPI";
+import { getDestinationsByFuzzyString } from "../../../utils/backendAPI";
 // import SearchIcon from "@material-ui/icons/Search";
 // import CloseIcon from "@material-ui/icons/Close";
-
-function DestinationSearch({ placeholder, data }) {
+//onClick ={this.getDestinationsByFuzzyString}
+//DestinationSearchAPI
+function DestinationSearch({ placeholder }) {
   const [filteredData, setFilteredData] = useState([]);
   const [wordEntered, setWordEntered] = useState("");
   
@@ -19,10 +22,13 @@ function DestinationSearch({ placeholder, data }) {
     const searchWord = event.target.value;
     setWordEntered(searchWord);
     console.log(searchWord);
-    const newFilter = data.filter((value) => {
-      return value.title.toLowerCase().includes(searchWord.toLowerCase());
+    console.log(getDestinationsByFuzzyString().data);
+    const newFilter = getDestinationsByFuzzyString().data.filter((value) => {
+      console.log(value);
+      console.log(value.name.toLowerCase().includes(searchWord.toLowerCase()));
+      return value.name.toLowerCase().includes(searchWord.toLowerCase());
     });
-
+    console.log("hi", newFilter);
     if (searchWord === "") {
       setFilteredData([]);
     } else {
@@ -58,8 +64,8 @@ function DestinationSearch({ placeholder, data }) {
           {filteredData.slice(0, 15).map(
             (value, key) => {
               return (
-                <a className="dataItem" href={value.link} target="_blank">
-                  <p>{value.title} </p>
+                <a className="dataItem" href={value.name} target="_blank">
+                  <p>{value.name} </p>
                 </a>
               );
             }

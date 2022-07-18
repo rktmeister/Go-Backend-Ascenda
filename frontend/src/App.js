@@ -22,7 +22,7 @@ function App() {
               </div>
             }/>}
           />
-          <Route path="/dest" element={<DestinationSearch placeholder="Enter Destination" data={[{title: "azerbaijan"}, {title: "singapore"}]}/>} />
+          <Route path="/dest" element={<DestinationSearch placeholder="Enter Destination" />} />
         </Routes>
       </BrowserRouter>
     </div>

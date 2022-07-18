@@ -50,9 +50,36 @@ const randomStringForTesting = (length, min) => {
     }
     return result;
 };
+//data={[{title: "azerbaijan"}, {title: "singapore"}]}
+export const getDestinationsByFuzzyString = (fuzzyDestinationName) => {
+    return { data :[
+        {
+           id : 329,
+           name : "Singapore",
 
-const getDestinationsByFuzzyString = (fuzzyDestinationName) => {
-    return [
-        
-    ];
+
+        },
+
+        {
+            id : 52,
+            name : "India",
+ 
+ 
+         },
+
+         {
+            id : 130,
+            name : "Finland",
+ 
+ 
+         }
+       ]
+    };
 }
+
+// const getDestinationsByFuzzyString = (fuzzyDestinationName) => {
+//     return [
+//         data={[{title: "azerbaijan"}, {title: "singapore"}]}  
+        
+//     ];
+// }
