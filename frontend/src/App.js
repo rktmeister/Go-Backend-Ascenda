@@ -4,6 +4,7 @@ import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import Login from './components/profile/Login';
 import AuthWrapper from './components/authentication/AuthWrapper';
 import HotelSearchResults from './components/bookHotel/hotelSearchResults/HotelSearchResults';
+import DestinationSearch from './components/bookHotel/destinationSearch/DestinationSearch';
 import BookingData from './components/bookHotel/bookingData/BookingData';
 
 function App() {

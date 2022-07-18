@@ -166,7 +166,11 @@ const HotelSearchResults = (props) => {
 
     useEffect(() => {
         setDisplayHotels(getFilteredHotels());
+<<<<<<< HEAD
+    }, []);
+=======
     }, [hotels, filterArray]);
+>>>>>>> master
 
     const handleFilterChange = (formResults) => {
         const newFilterArray = [
