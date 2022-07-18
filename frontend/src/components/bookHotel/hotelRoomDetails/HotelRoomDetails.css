@@ -1,0 +1,87 @@
+.HotelRoomDetails {
+  text-align: left;
+  margin-left:10pt;
+}
+
+.Hotelname{
+  text-align: center;
+  margin-left: 10pt;
+}
+
+.HotelRoomBox{
+  border-width:2px;
+  border-style:solid;
+  border-color:black;
+
+}
+
+.HotelRoomBoxLeft{
+  flex: 1;
+  justify-content: flex-start;
+  margin-left: 10pt;
+}
+
+.HotelRoomBoxRight{
+  flex: 1;
+  justify-content: flex-end;
+  align-items:flex-end;
+}
+
+
+/* .SliderMax{
+  -webkit-appearance: none;
+  height: 1em;
+  background: grey;
+  border-radius: 5px;
+  background-image: linear-gradient(purple, purple);
+  background-repeat: no-repeat;
+
+  width: 200pt;
+}
+
+
+
+.SliderMax::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background-color: purple;
+  border-radius : 50%;
+  cursor: pointer;
+  border: 0.5px solid black;
+  background: contain;
+
+} */
+
+
+/* 
+
+@media (prefers-reduced-motion: no-preference) {
+  .HotelRoomDetails-logo {
+    animation: HotelRoomDetails-logo-spin infinite 20s linear;
+  }
+}
+
+.HotelRoomDetails-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.HotelRoomDetails-link {
+  color: #61dafb;
+}
+
+@keyframes HotelRoomDetails-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */
