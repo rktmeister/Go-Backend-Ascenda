@@ -70,7 +70,7 @@ const BookingData = (props) => {
 
         const res = await stripePromise.redirectToCheckout(checkoutOptions);
         console.log(res);
-    }
+    };
 
 
     return (

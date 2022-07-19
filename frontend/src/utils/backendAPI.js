@@ -1,15 +1,27 @@
 // const getDestinationsByFuzzyString = (fuzzyDestinationName)
 let exhaust = 20;
 
+export const DB_ADDRESS = "http://localhost:3000/api";
+
 export const getStripePrice = async (hotelId) => {
     await delay();
     return "price_1LMX2uAML4yM4v0zWPOXMEa1";
 }
 
-export const getHotelBatch = async (hotelId, destinationId, datesOfTravel, numberOfRooms) => {
-    const res = await fetch(
-        `http://localhost:3000/api/hotels/destination?hotelId=${hotelId}&destinationId=${destinationId}&datesOfTravel=${datesOfTravel}&numberOfRooms=${numberOfRooms}`
-    );
+export const getHotelBatch = async (hotelId, destinationId, checkInDate, checkOutDate, numberOfRooms) => {
+    const res = await fetch(formatQueryParameters(
+        DB_ADDRESS,
+        "/hotels/destination",
+        {
+            "hotelId": hotelId,
+            "destinationId": destinationId,
+            "checkInDate": checkInDate,
+            "checkOutDate": checkOutDate,
+            "numberOfRooms": numberOfRooms,
+        }
+    ));
+
+
     // exhaust -= 1;
     // if (exhaust <= 0) return [];
     // const res = [];
@@ -29,10 +41,17 @@ export const getHotelBatch = async (hotelId, destinationId, datesOfTravel, numbe
     return res;
 };
 
-export const getHotelRoomBatch = async (hotelId, datesOfTravel, numberOfRooms) => {
-    const res = await fetch(
-        `http://localhost:3000/api/room/hotel?hotelId=${hotelId}&datesOfTravel=${datesOfTravel}&numberOfRooms=${numberOfRooms}`
-    );
+export const getHotelRoomBatch = async (hotelId, checkInDate, checkOutDate, numberOfRooms) => {
+    const res = await fetch(formatQueryParameters(
+        DB_ADDRESS,
+        "/room/hotel",
+        {
+            "hotelId": hotelId,
+            "checkInDate": checkInDate,
+            "checkOutDate": checkOutDate,
+            "numberOfRooms": numberOfRooms,
+        }
+    ))
     return res;
     // return await fetch("https://ascendahotels.mocklab.io/api/hotels/diH7/prices/ean")
     //     .then(res => res.json());
@@ -47,7 +66,16 @@ export const attemptLogin = async (email, passwordHash) => {
 };
 
 export const sendSuccessfulPayment = async (name, phoneNumber, userEmail, specialRequests) => {
-    const res = fetch(`http://localhost:3000/api/booking/logSuccess?name=${name}&phoneNumber=${phoneNumber}&userEmail=${userEmail}&specialRequests=${specialRequests}`, {
+    const res = await fetch(formatQueryParameters(
+        DB_ADDRESS,
+        "/booking/logSuccess",
+        {
+            "name": name,
+            "phoneNumber": phoneNumber,
+            "userEmail": userEmail,
+            "specialRequests": specialRequests,
+        }
+    ), {
         method: "post",
     });
     return res;
@@ -85,10 +113,26 @@ const randomStringForTesting = (length, min) => {
     return result;
 };
 
-export const getDestinationsByFuzzyString = async (fuzzyDestinationName, datesOfTravel, numberOfRooms) => {
-    const res = await fetch(
-        `http://localhost:3000/api/destinations/fuzzyName?search=${fuzzyDestinationName}&datesOfTravel=${datesOfTravel}&numberOfRooms=${numberOfRooms}`
-    );
+export const formatQueryParameters = (baseAddress, endpoint, params) => {
+    let request = baseAddress + endpoint + "?";
+    Object.entries(params).forEach(([queryName, value]) => {
+        request += queryName.toString() + "=" + value.toString() + "&";
+    });
+    request = request.slice(0, -1);
+    return request;
+};
+
+export const getDestinationsByFuzzyString = async (fuzzyDestinationName, checkInDate, checkOutDate, numberOfRooms) => {
+    const res = await fetch(formatQueryParameters(
+        DB_ADDRESS,
+        "/destinations/fuzzyName",
+        {
+            "fuzzyName": fuzzyDestinationName,
+            "checkInDate": checkInDate,
+            "checkOutDate": checkOutDate,
+            "numberOfRooms": numberOfRooms,
+        }
+    ));
     return res;
     // await delay();
     // return {

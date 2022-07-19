@@ -149,7 +149,8 @@ const HotelSearchResults = (props) => {
         const getResults = await getHotelBatch(
             displayHotels[displayHotels.length - 1].id,
             gotHandMeDowns.destination.id,
-            filterBarValues.datesOfTravel,
+            filterBarValues.checkInDate,
+            filterBarValues.checkOutDate,
             filterBarValues.numberOfRooms
         );
         //console.log(getResults);

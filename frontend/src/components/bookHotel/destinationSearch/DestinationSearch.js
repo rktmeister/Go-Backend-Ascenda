@@ -15,13 +15,18 @@ function DestinationSearch(props) {
   const handleFilter = async (event) => {
     const searchWord = event.target.value;
     setWordEntered(searchWord);
-    const got = await getDestinationsByFuzzyString(searchWord, filterBarValues.datesOfTravel, filterBarValues.numberOfRooms);
-    const newFilter = got.data.filter((value) => {
-      return value.name.toLowerCase().includes(searchWord.toLowerCase());
-    });
     if (searchWord === "") {
       setFilteredData([]);
     } else {
+      const got = await getDestinationsByFuzzyString(
+        searchWord,
+        filterBarValues.checkInDate,
+        filterBarValues.checkOutDate,
+        filterBarValues.numberOfRooms
+      );
+      const newFilter = got.data.filter((value) => {
+        return value.name.toLowerCase().includes(searchWord.toLowerCase());
+      });
       setFilteredData(newFilter);
     }
   };

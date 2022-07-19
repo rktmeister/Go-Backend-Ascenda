@@ -14,8 +14,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<AuthWrapper privateComponent={
-            <div>
+          <Route path="/" element={
+            <AuthWrapper privateComponent={
               <StageHandler
                 stages={[
                   <DestinationSearch />,
@@ -24,8 +24,8 @@ function App() {
                   <BookingData />,
                 ]}
               />
-            </div>
-          } />} />
+            } />
+          } />
         </Routes>
       </BrowserRouter>
     </div>

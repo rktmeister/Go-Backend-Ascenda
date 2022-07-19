@@ -2,14 +2,16 @@ import { useState } from "react";
 
 const FilterBar = (props) => {
     const [numberOfRooms, _setNumberOfRooms] = useState(props.numberOfRooms);
-    const [datesOfTravel, _setDatesOfTravel] = useState(props.datesOfTravel);
+    const [checkInDate, _setCheckInDate] = useState(props.checkInDate);
+    const [checkOutDate, _setCheckOutDate] = useState(props.checkOutDate);
     const [minPrice, _setMinPrice] = useState(props.minPrice);
     const [maxPrice, _setMaxPrice] = useState(props.maxPrice);
     const [alertMessage, setAlertMessage] = useState("");
 
     const formDataSetterWrapper = (setter) => (event) => setter(event.target.value);
     const setNumberOfRooms = formDataSetterWrapper(_setNumberOfRooms);
-    const setDatesOfTravel = formDataSetterWrapper(_setDatesOfTravel);
+    const setCheckInDate = formDataSetterWrapper(_setCheckInDate);
+    const setCheckOutDate = formDataSetterWrapper(_setCheckOutDate);
     const setMinPrice = formDataSetterWrapper(_setMinPrice);
     const setMaxPrice = formDataSetterWrapper(_setMaxPrice);
 
@@ -21,8 +23,12 @@ const FilterBar = (props) => {
             setAlertMessage("nor");
             return;
         }
-        if (datesOfTravel === undefined) {
-            setAlertMessage("dot");
+        if (checkInDate === undefined) {
+            setAlertMessage("cid");
+            return;
+        }
+        if (checkOutDate === undefined) {
+            setAlertMessage("cod");
             return;
         }
         if (minPrice === undefined) {
@@ -36,7 +42,8 @@ const FilterBar = (props) => {
 
         const formResults = {
             numberOfRooms,
-            datesOfTravel,
+            checkInDate,
+            checkOutDate,
             minPrice,
             maxPrice,
         };
@@ -60,19 +67,28 @@ const FilterBar = (props) => {
                         className="form-control"
                         id="numberOfRooms"
                         aria-describedby="emailHelp"
-                        placeholder="Enter email"
+                        placeholder="Number of rooms/guests"
                         onChange={setNumberOfRooms}
                     />
-                    <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="datesOfTravel">Dates of Travel</label>
+                    <label htmlFor="checkInDate">Check In Date</label>
                     <input
                         type="date"
                         className="form-control"
-                        id="datesOfTravel"
-                        placeholder="Password"
-                        onChange={setDatesOfTravel}
+                        id="checkInDate"
+                        placeholder=""
+                        onChange={setCheckInDate}
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="checkOutDate">Check Out Date</label>
+                    <input
+                        type="date"
+                        className="form-control"
+                        id="checkOutDate"
+                        placeholder=""
+                        onChange={setCheckOutDate}
                     />
                 </div>
                 <div className="form-group">

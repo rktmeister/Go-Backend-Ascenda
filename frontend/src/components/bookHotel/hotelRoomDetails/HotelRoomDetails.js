@@ -133,17 +133,10 @@ function HotelRoomDetails(props) {
           !isLoaded ? < div > Loading... </div > :
 
             <div className="HotelRoomDetails">
-              {/* <header className="HotelRoomDetails-header">
-          </header> */}
-
               <h1 className="Hotelname">
                 {gotHandMeDowns.hotel.name}
               </h1>
-
-
-
               <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} />
-
               <br></br>
               <br></br>
               <p>
@@ -198,7 +191,7 @@ function HotelRoomDetails(props) {
                     (room.description.charAt(room.description.length - 1) === " " && room.description.slice(0, room.description.length - 1) === description) ||
                     description === "Choose Room Type"))
                 ).map((room) => (
-                  <HotelRoomBox key={room.key} description={room.description} price={room.price} />
+                  <HotelRoomBox key={room.key} room={room} />
                 ))
               }
 
