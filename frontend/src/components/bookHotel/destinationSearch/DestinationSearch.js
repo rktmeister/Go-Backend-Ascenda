@@ -12,13 +12,11 @@ function DestinationSearch(props) {
   const [filterBarValues, setFilterBarValues] = useState({});
   const [chosenDestination, setChosenDestination] = useState("");
 
-  const handleFilter = (event) => {
-    console.log(event);
+  const handleFilter = async (event) => {
     const searchWord = event.target.value;
     setWordEntered(searchWord);
-    console.log(searchWord);
-    console.log(getDestinationsByFuzzyString().data);
-    const newFilter = getDestinationsByFuzzyString().data.filter((value) => {
+    const got = await getDestinationsByFuzzyString();
+    const newFilter = got.data.filter((value) => {
       return value.name.toLowerCase().includes(searchWord.toLowerCase());
     });
     if (searchWord === "") {
@@ -42,7 +40,10 @@ function DestinationSearch(props) {
       ...filterBarValues,
       chosenDestination,
     };
-    props.finishStage(dataToBePassedOn);
+    const arr = [];
+    arr.push({});//this component
+    arr.push(dataToBePassedOn);
+    props.finishStage(arr);
   };
 
   return (

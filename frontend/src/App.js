@@ -1,6 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from './components/profile/Login';
 import AuthWrapper from './components/authentication/AuthWrapper';
 import HotelSearchResults from './components/bookHotel/hotelSearchResults/HotelSearchResults';

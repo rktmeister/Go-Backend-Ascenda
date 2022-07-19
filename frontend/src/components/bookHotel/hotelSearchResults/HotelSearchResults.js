@@ -6,20 +6,23 @@ import { getHotelBatch } from "../../../utils/backendAPI";
 import FilterBar from "../common/FilterBar";
 
 const HotelSearchResults = (props) => {
+    const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
     const [hotels, setHotels] = useState([]);
     const [displayHotels, setDisplayHotels] = useState([]);
     const [filterBarValues, setFilterBarValues] = useState({});
     const makeFilterArray = (filterBarData) => {
+        console.log("MFA:", gotHandMeDowns, props.handMeDowns, props.handMeDownsIndex);
         return [
             ({ number_of_rooms }) => number_of_rooms >= filterBarData.numberOfRooms,
             ({ price }) => filterBarData.minPrice <= price && price <= filterBarData.maxPrice,
         ];
     };
-    const [filterArray, setFilterArray] = useState(makeFilterArray(props.handMeDowns));
+    const [filterArray, setFilterArray] = useState(makeFilterArray(gotHandMeDowns));
     const [noMoreResults, setNoMoreResults] = useState(false);
     const [chosenHotel, setChosenHotel] = useState(null);
 
     const cardHeightInEms = 10;
+
 
     const [scrollPosition, setScrollPosition] = useState(0);
     const [minScrollPosition, setMinScrollPosition] = useState(0);
@@ -187,11 +190,12 @@ const HotelSearchResults = (props) => {
 
     const finishStage = () => {
         const dataToBePassedOn = {
-            destination: props.handMeDowns.chosenDestination,
+            destination: gotHandMeDowns.chosenDestination,
             hotel: chosenHotel,
             ...filterBarValues,
         };
-        props.finishStage(dataToBePassedOn);
+        props.handMeDowns.push(dataToBePassedOn);
+        props.finishStage(props.handMeDowns);
     }
 
     const handleChooseHotel = (item) => {
@@ -211,7 +215,7 @@ const HotelSearchResults = (props) => {
                 onScroll={handleScroll}
             />
             <button onClick={initialLoadRoutine} />
-            <button onClick={() => console.log(displayHotels, props.handMeDowns, chosenHotel)} />
+            <button onClick={() => console.log(displayHotels, gotHandMeDowns, chosenHotel)} />
             <button onClick={finishStage}>Next Stage</button>
         </div>
     );

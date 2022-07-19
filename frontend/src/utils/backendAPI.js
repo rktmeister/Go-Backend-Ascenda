@@ -20,7 +20,6 @@ export const getHotelBatch = async (hotelId, destinationId, before) => {
             latitude: 47.6000,
             longitude: 3.5333,
             description: "some description",
-            
         });
     }
     await delay();
@@ -74,30 +73,24 @@ const randomStringForTesting = (length, min) => {
     }
     return result;
 };
-//data={[{title: "azerbaijan"}, {title: "singapore"}]}
-export const getDestinationsByFuzzyString = (fuzzyDestinationName) => {
-    return { data :[
-        {
-           id : 329,
-           name : "Singapore",
 
-
-        },
-
-        {
-            id : 52,
-            name : "India",
- 
- 
-         },
-
-         {
-            id : 130,
-            name : "Finland",
- 
- 
-         }
-       ]
+export const getDestinationsByFuzzyString = async (fuzzyDestinationName) => {
+    await delay();
+    return {
+        data: [
+            {
+                id : 329,
+                name : "Singapore",
+            },
+            {
+                id : 52,
+                name : "India",
+            },
+            {
+                id : 130,
+                name : "Finland",
+            },
+        ],
     };
 }
 
