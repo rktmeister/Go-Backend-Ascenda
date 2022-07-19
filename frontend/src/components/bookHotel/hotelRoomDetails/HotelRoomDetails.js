@@ -7,6 +7,7 @@ import DoubleSlider from "./parts/DoubleSlider.js";
 
 import MapGenerator from './parts/MapGenerator';
 import HotelRoomBox from './parts/HotelRoomBox';
+import { getHotelRoomBatch } from '../../../utils/backendAPI';
 
 
 
@@ -63,14 +64,19 @@ function HotelRoomDetails(props) {
 
 
   useEffect(() => {
-   
-    HotelRoomAPICall()
-    .then(
-      (result) => {
-        setIsLoaded(true);
-        setRooms(result.rooms);
+    getHotelRoomBatch(gotHandMeDowns.hotel.id, gotHandMeDowns.datesOfTravel, gotHandMeDowns.numberOfRooms)
+      .then(
+        (result) => {
+          setIsLoaded(true);
+          setRooms(result.rooms);
+        },
 
-      },
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
+  }, [gotHandMeDowns.hotel]);
 
       (error) => {
         setIsLoaded(true);

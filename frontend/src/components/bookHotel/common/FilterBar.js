@@ -2,14 +2,14 @@ import { useState } from "react";
 
 const FilterBar = (props) => {
     const [numberOfRooms, _setNumberOfRooms] = useState(props.numberOfRooms);
-    // const [datesOfTravel, _setDatesOfTravel] = useState(props.datesOfTravel);
+    const [datesOfTravel, _setDatesOfTravel] = useState(props.datesOfTravel);
     const [minPrice, _setMinPrice] = useState(props.minPrice);
     const [maxPrice, _setMaxPrice] = useState(props.maxPrice);
     const [alertMessage, setAlertMessage] = useState("");
 
     const formDataSetterWrapper = (setter) => (event) => setter(event.target.value);
     const setNumberOfRooms = formDataSetterWrapper(_setNumberOfRooms);
-    // const setDatesOfTravel = formDataSetterWrapper(_setDatesOfTravel);
+    const setDatesOfTravel = formDataSetterWrapper(_setDatesOfTravel);
     const setMinPrice = formDataSetterWrapper(_setMinPrice);
     const setMaxPrice = formDataSetterWrapper(_setMaxPrice);
 
@@ -21,10 +21,10 @@ const FilterBar = (props) => {
             setAlertMessage("nor");
             return;
         }
-        // if (datesOfTravel === undefined) {
-        //     setAlertMessage("dot");
-        //     return;
-        // }
+        if (datesOfTravel === undefined) {
+            setAlertMessage("dot");
+            return;
+        }
         if (minPrice === undefined) {
             setAlertMessage("min");
             return;
@@ -36,7 +36,7 @@ const FilterBar = (props) => {
 
         const formResults = {
             numberOfRooms,
-            //datesOfTravel,
+            datesOfTravel,
             minPrice,
             maxPrice,
         };
@@ -65,7 +65,7 @@ const FilterBar = (props) => {
                     />
                     <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
-                {/* <div className="form-group">
+                <div className="form-group">
                     <label htmlFor="datesOfTravel">Dates of Travel</label>
                     <input
                         type="date"
@@ -74,7 +74,7 @@ const FilterBar = (props) => {
                         placeholder="Password"
                         onChange={setDatesOfTravel}
                     />
-                </div> */}
+                </div>
                 <div className="form-group">
                     <label htmlFor="minPrice">Min</label>
                     <input
