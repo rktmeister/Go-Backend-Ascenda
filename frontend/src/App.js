@@ -7,6 +7,7 @@ import HotelSearchResults from './components/bookHotel/hotelSearchResults/HotelS
 import DestinationSearch from './components/bookHotel/destinationSearch/DestinationSearch';
 import BookingData from './components/bookHotel/bookingData/BookingData';
 import StageHandler from './components/bookHotel/stageHandler/StageHandler';
+import HotelRoomDetails from './components/bookHotel/hotelRoomDetails/HotelRoomDetails';
 
 function App() {
   return (
@@ -19,18 +20,14 @@ function App() {
               <StageHandler
                 stages={[
                   <DestinationSearch />,
-                  <HotelSearchResults
-                    filterArray={[
-                      ({ id }) => 97 <= id.charCodeAt(0) && id.charCodeAt(0) <= 122,
-                      ({ name }) => name.length > 4,
-                    ]}
-                  />
-
+                  <HotelSearchResults />,
+                  <HotelRoomDetails />,
+                  <BookingData />,
                 ]}
               />
             </div>
           } />} />
-          <Route path="/buy" element={<BookingData />} />
+          {/* <Route path="/buy" element={<BookingData />} /> */}
         </Routes>
       </BrowserRouter>
     </div>

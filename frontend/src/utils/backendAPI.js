@@ -17,6 +17,10 @@ export const getHotelBatch = async (hotelId, destinationId, before) => {
             name: name,//randomStringForTesting(10, hotelId.charCodeAt(0)),
             number_of_rooms: Math.floor(Math.random() * 10),
             price: Math.random() * 10,
+            latitude: 47.6000,
+            longitude: 3.5333,
+            description: "some description",
+            
         });
     }
     await delay();

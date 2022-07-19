@@ -8,6 +8,7 @@ const HotelCard = (props) => {
                 <blockquote className="blockquote mb-0">
                     <p>Name: {props.item.name}</p>
                     <footer className="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+                    <button onClick={() => props.onClick(props.item)}>CHOOSE</button>
                 </blockquote>
             </div>
         </div>

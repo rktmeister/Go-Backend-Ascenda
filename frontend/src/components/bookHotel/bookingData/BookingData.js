@@ -24,7 +24,8 @@ const BookingData = (props) => {
         }
     }, []);
 
-    const handleCheckout = async () => {
+    const handleCheckout = async (event) => {
+        event.preventDefault();
         /**
          * By right, of course, sending the successful payment should happen AFTER
          * the stripe checkout, with confirmation of successful payment through some
