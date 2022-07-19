@@ -18,13 +18,6 @@ var (
 	RedisearchDest = "localhost:6379"
 )
 
-type Search struct {
-	Uid      string
-	Checkin  string
-	Checkout string
-	Guests   string
-}
-
 type Price struct {
 	Id          string  `json:"id"`
 	Price       float32 `json:"price"`
