@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import lowerCaseChange from "./lowerCaseChange";
-
+import LowerCaseChange from "./parts/LowerCaseChange";
+import RemoveDescriptionDuplicate from "./parts/RemoveDescriptionDuplicate";
 
 // test('renders learn react link', () => {
 //   render(<HotelRoomDetails />);
@@ -9,9 +9,18 @@ import lowerCaseChange from "./lowerCaseChange";
 // });
 
 test('Transform lowercase', () =>{
-  expect(lowerCaseChange("AbCDEfG")).toBe("Abcdefg");
+  expect(LowerCaseChange("AbCDEfG")).toBe("Abcdefg");
 });
 
+test('Remove duplicates 1', () => {
+  const testArray = ["Element 1", "Element 1", "Element 2"];
+  expect(RemoveDescriptionDuplicate(testArray)).toEqual(["Element 1", "Element 2"]);
+});
+
+test('Remove duplicates 2', () => {
+  const testArray = ["Element 1", "element 1", "Element 2"];
+  expect(RemoveDescriptionDuplicate(testArray)).toEqual(["Element 1", "element 1", "Element 2"]);
+});
 
 
 
