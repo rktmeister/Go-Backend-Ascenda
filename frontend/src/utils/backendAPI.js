@@ -6,22 +6,37 @@ export const getStripePrice = async (hotelId) => {
     return "price_1LMX2uAML4yM4v0zWPOXMEa1";
 }
 
-export const getHotelBatch = async (hotelId, destinationId, before) => {
-    exhaust -= 1;
-    if (exhaust <= 0) return [];
-    const res = [];
-    for (let i = 0; i < 5; i++) {
-        const name = randomStringForTesting(10, hotelId.charCodeAt(0) - 64);
-        res.push({
-            id: randomStringForTesting(5, 0),
-            name: name,//randomStringForTesting(10, hotelId.charCodeAt(0)),
-            number_of_rooms: Math.floor(Math.random() * 10),
-            price: Math.random() * 10,
-        });
-    }
-    await delay();
+export const getHotelBatch = async (hotelId, destinationId, datesOfTravel, numberOfRooms) => {
+    const res = await fetch(
+        `http://localhost:3000/api/hotels/destination?hotelId=${hotelId}&destinationId=${destinationId}&datesOfTravel=${datesOfTravel}&numberOfRooms=${numberOfRooms}`
+    );
+    // exhaust -= 1;
+    // if (exhaust <= 0) return [];
+    // const res = [];
+    // for (let i = 0; i < 5; i++) {
+    //     const name = randomStringForTesting(10, hotelId.charCodeAt(0) - 64);
+    //     res.push({
+    //         id: randomStringForTesting(5, 0),
+    //         name: name,//randomStringForTesting(10, hotelId.charCodeAt(0)),
+    //         number_of_rooms: Math.floor(Math.random() * 10),
+    //         price: Math.random() * 10,
+    //         latitude: 47.6000,
+    //         longitude: 3.5333,
+    //         description: "some description",
+    //     });
+    // }
+    // await delay();
     return res;
 };
+
+export const getHotelRoomBatch = async (hotelId, datesOfTravel, numberOfRooms) => {
+    const res = await fetch(
+        `http://localhost:3000/api/room/hotel?hotelId=${hotelId}&datesOfTravel=${datesOfTravel}&numberOfRooms=${numberOfRooms}`
+    );
+    return res;
+    // return await fetch("https://ascendahotels.mocklab.io/api/hotels/diH7/prices/ean")
+    //     .then(res => res.json());
+}
 
 export const attemptLogin = async (email, passwordHash) => {
     await delay();
@@ -31,11 +46,15 @@ export const attemptLogin = async (email, passwordHash) => {
     };
 };
 
-export const sendSuccessfulPayment = async (successfulPayment) => {
-    await delay();
-    return {
-        acknowledged: true,
-    };
+export const sendSuccessfulPayment = async (name, phoneNumber, userEmail, specialRequests) => {
+    const res = fetch(`http://localhost:3000/api/booking/logSuccess?name=${name}&phoneNumber=${phoneNumber}&userEmail=${userEmail}&specialRequests=${specialRequests}`, {
+        method: "post",
+    });
+    return res;
+    // await delay();
+    // return {
+    //     acknowledged: true,
+    // };
 };
 
 // credit to https://stackoverflow.com/questions/20334486/simulate-a-timed-async-call
@@ -65,31 +84,29 @@ const randomStringForTesting = (length, min) => {
     }
     return result;
 };
-//data={[{title: "azerbaijan"}, {title: "singapore"}]}
-export const getDestinationsByFuzzyString = (fuzzyDestinationName) => {
-    return { data :[
-        {
-           id : 329,
-           name : "Singapore",
 
-
-        },
-
-        {
-            id : 52,
-            name : "India",
- 
- 
-         },
-
-         {
-            id : 130,
-            name : "Finland",
- 
- 
-         }
-       ]
-    };
+export const getDestinationsByFuzzyString = async (fuzzyDestinationName, datesOfTravel, numberOfRooms) => {
+    const res = await fetch(
+        `http://localhost:3000/api/destinations/fuzzyName?search=${fuzzyDestinationName}&datesOfTravel=${datesOfTravel}&numberOfRooms=${numberOfRooms}`
+    );
+    return res;
+    // await delay();
+    // return {
+    //     data: [
+    //         {
+    //             id : 329,
+    //             name : "Singapore",
+    //         },
+    //         {
+    //             id : 52,
+    //             name : "India",
+    //         },
+    //         {
+    //             id : 130,
+    //             name : "Finland",
+    //         },
+    //     ],
+    // };
 }
 
 // const getDestinationsByFuzzyString = (fuzzyDestinationName) => {

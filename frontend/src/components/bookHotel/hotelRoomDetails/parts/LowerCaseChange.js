@@ -1,5 +1,5 @@
 
-function lowerCaseChange(description){
+function LowerCaseChange(description){
     try{
       let nextWord = false;
       let tempDescription = description.charAt(0);
@@ -27,4 +27,4 @@ function lowerCaseChange(description){
     }
     
   }
-  export default lowerCaseChange;
+  export default LowerCaseChange;

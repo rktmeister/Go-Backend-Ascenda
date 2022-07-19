@@ -10,6 +10,8 @@ let stripePromise;
 })();
 
 const BookingData = (props) => {
+    const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
+
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -24,7 +26,8 @@ const BookingData = (props) => {
         }
     }, []);
 
-    const handleCheckout = async () => {
+    const handleCheckout = async (event) => {
+        event.preventDefault();
         /**
          * By right, of course, sending the successful payment should happen AFTER
          * the stripe checkout, with confirmation of successful payment through some
@@ -35,9 +38,13 @@ const BookingData = (props) => {
          * the payment details / billing address are entered, and redirect to the relevant
          * pages after a transaction.
          */
-        await sendSuccessfulPayment({
-
-        });
+        const fullName = firstName + " " + lastName;
+        await sendSuccessfulPayment(
+            fullName,
+            phoneNumber,
+            userEmail,
+            specialRequests
+        );
 
         await mockStripeCheckout();
     };

@@ -47,7 +47,7 @@ const FilterBar = (props) => {
     }
 
     const testButton = () => {
-        console.log(numberOfRooms, datesOfTravel, minPrice, maxPrice);
+        console.log(numberOfRooms, minPrice, maxPrice);
     };
 
     return (
