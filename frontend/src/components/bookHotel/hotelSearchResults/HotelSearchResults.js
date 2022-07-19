@@ -96,9 +96,13 @@ const HotelSearchResults = (props) => {
         })();
     }, [bottomRemainingToLoad]);
 
-    const getFilteredHotels = () => hotels.filter((hotel) => filterArray.every((filterFunc) => filterFunc(hotel)));
+    const getFilteredHotels = () => {
+        console.log("HOTELS:", hotels);
+        return hotels.filter((hotel) => filterArray.every((filterFunc) => filterFunc(hotel)));
+    }
 
     const addHotels = (newHotels) => {
+        console.log("NEWHOTELS:", newHotels);
         newHotels.sort((hotel1, hotel2) => hotel1.name.localeCompare(hotel2.name));
 
         // mergesort-style merge for linear efficiency
@@ -146,14 +150,15 @@ const HotelSearchResults = (props) => {
     };
 
     const getHotelBatchAndSetNoMoreResults = async (hotelId, destinationId, before) => {
-        const getResults = await getHotelBatch(
-            displayHotels[displayHotels.length - 1].id,
+        console.log("LONG", displayHotels, displayHotels.length, gotHandMeDowns.destination);
+        const getResults = await props.backendPackage.getHotelBatch(
+            displayHotels.length > 0 ? displayHotels[displayHotels.length - 1].id : 0,
             gotHandMeDowns.destination.id,
             filterBarValues.checkInDate,
             filterBarValues.checkOutDate,
             filterBarValues.numberOfRooms
         );
-        //console.log(getResults);
+        console.log("UH", getResults);
         if (getResults.length === 0) {
             setNoMoreResults(true);
             console.log("_________________EXHAUSTED_______________");

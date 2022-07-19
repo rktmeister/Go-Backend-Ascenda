@@ -43,12 +43,10 @@ function DestinationSearch(props) {
   const finishStage = () => {
     const dataToBePassedOn = {
       ...filterBarValues,
-      chosenDestination,
+      destination: chosenDestination,
     };
-    const arr = [];
-    arr.push({});//this component
-    arr.push(dataToBePassedOn);
-    props.finishStage(arr);
+    props.handMeDowns.push(dataToBePassedOn);
+    props.finishStage(props.handMeDowns);
   };
 
   return (

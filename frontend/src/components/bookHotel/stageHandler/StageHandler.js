@@ -3,10 +3,10 @@ import { useState, useEffect, cloneElement } from "react";
 const StageHandler = (props) => {
     const [stage, setStage] = useState(0);
     const [activeComponent, setActiveComponent] = useState(props.stages[0]);
-    const [sharedData, setSharedData] = useState([]);
+    const [sharedData, setSharedData] = useState([{}]);
 
     useEffect(() => {
-        setActiveComponent(props.stages[stage])
+        setActiveComponent(props.stages[stage]);
     }, [stage]);
 
     const handleChangeStage = (dataToBePassedOn) => {
@@ -18,7 +18,16 @@ const StageHandler = (props) => {
     return (
         <div>
             {/* <ActiveComponent finishStage={handleChangeStage} /> */}
-            {cloneElement(activeComponent, { finishStage: handleChangeStage, handMeDowns: sharedData, handMeDownsIndex: stage })}
+            {
+                cloneElement(
+                    activeComponent,
+                    {
+                        finishStage: handleChangeStage,
+                        handMeDowns: sharedData,
+                        handMeDownsIndex: stage,
+                    }
+                )
+            }
             <button onClick={() => console.log(sharedData)}>testfromshared</button>
         </div>
     );

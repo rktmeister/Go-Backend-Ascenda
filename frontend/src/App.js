@@ -7,6 +7,7 @@ import DestinationSearch from './components/bookHotel/destinationSearch/Destinat
 import BookingData from './components/bookHotel/bookingData/BookingData';
 import StageHandler from './components/bookHotel/stageHandler/StageHandler';
 import HotelRoomDetails from './components/bookHotel/hotelRoomDetails/HotelRoomDetails';
+import * as backend from "./utils/backendAPI";
 
 function App() {
   return (
@@ -19,7 +20,9 @@ function App() {
               <StageHandler
                 stages={[
                   <DestinationSearch />,
-                  <HotelSearchResults />,
+                  <HotelSearchResults backendPackage={{
+                    getHotelBatch: backend.getHotelBatch,
+                  }} />,
                   <HotelRoomDetails />,
                   <BookingData />,
                 ]}

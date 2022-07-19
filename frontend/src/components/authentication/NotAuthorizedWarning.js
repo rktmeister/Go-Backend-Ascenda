@@ -1,6 +1,6 @@
 const NotAuthorizedWarning = (props) => {
     return (
-        <div>
+        <div data-testid="accessDenied">
             <div className="card" style={{ backgroundColor: "red" }}>
                 <div className="card-header">
                     You aren't authorized!
