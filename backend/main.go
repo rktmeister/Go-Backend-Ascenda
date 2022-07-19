@@ -48,7 +48,7 @@ type Hotel struct {
 }
 
 type Categories struct {
-	Overall Overall `json:"name"`
+	Overall Overall `json:"overall"`
 }
 
 type Overall struct {
@@ -200,7 +200,6 @@ func main() {
 			}
 
 			c.JSON(http.StatusOK, gin.H{
-				"api_url_room":  api_url_room,
 				"api_url_price": api_url_price,
 				"room":          rooms,
 			})
