@@ -9,13 +9,9 @@ import (
 	"strconv"
 
 	"github.com/RediSearch/redisearch-go/redisearch"
-	"github.com/nitishm/go-rejson/v4"
 )
 
 var destinations []Destination
-
-// var client *redis.Client
-// var hotel_api string
 
 type User struct {
 	Username string
@@ -25,14 +21,24 @@ type User struct {
 type Destination struct {
 	Dest string `json:"term"`
 	Uid  string `json:"uid"`
+	Lat  string `json:"lat"`
+	Lng  string `json:"lng"`
 }
 
-func InitDestRedis() *redisearch.Client {
+func InitDestAndAutoCompleterRedis() (*redisearch.Client, *redisearch.Autocompleter) {
 	destination_sc := redisearch.NewSchema(redisearch.DefaultOptions)
 	destination_sc.AddField(redisearch.NewTextFieldOptions("destination", redisearch.TextFieldOptions{Sortable: true}))
 	destination_sc.AddField(redisearch.NewTextFieldOptions("uid", redisearch.TextFieldOptions{Sortable: true}))
+	// destination_sc.AddField((redisearch.NewNumericFieldOptions("lat", redisearch.NumericFieldOptions{Sortable: true})))
+	// destination_sc.AddField((redisearch.NewNumericFieldOptions("lng", redisearch.NumericFieldOptions{Sortable: true})))
 
 	c := redisearch.NewClient("localhost:6379", "destinations")
+	a := redisearch.NewAutocompleter("localhost:6379", "autocomplete")
+	// info, err := c.List()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// if len(info) == 0 {
 	err := c.Drop()
 
 	// Create the index with the given schema
@@ -56,15 +62,23 @@ func InitDestRedis() *redisearch.Client {
 		if destinations[i].Dest == "" || destinations[i].Uid == "" {
 			continue
 		}
+		// Autocompleter AddTerms
+		a.AddTerms(redisearch.Suggestion{Term: destinations[i].Dest, Score: 1.0})
+		// Destination Documents
 		doc := redisearch.NewDocument("destinations:"+strconv.Itoa(i), 1.0)
 		doc.Set("destination", destinations[i].Dest)
 		doc.Set("uid", destinations[i].Uid)
+		doc.Set("lat", destinations[i].Lat)
+		doc.Set("lng", destinations[i].Lng)
 		if err := c.Index([]redisearch.Document{doc}...); err != nil {
-			fmt.Println(destinations[i].Uid, destinations[i].Dest)
+			// fmt.Println(destinations[i].Uid, destinations[i].Dest)
 			log.Fatal(err)
 		}
 	}
-	return c
+	// } else {
+	// fmt.Println("Destination Index already exists")
+	// }
+	return c, a
 }
 
 func InitUserRedis() *redisearch.Client {
@@ -73,20 +87,29 @@ func InitUserRedis() *redisearch.Client {
 	user_sc.AddField(redisearch.NewTextFieldOptions("password", redisearch.TextFieldOptions{Sortable: true}))
 
 	u := redisearch.NewClient("localhost:6379", "users")
+	// info, err := u.List()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// if len(info) == 0 {
 	err := u.Drop()
 	if err != nil {
 		fmt.Println(err)
 	}
 	u.CreateIndex(user_sc)
+	// } else {
+	// fmt.Println("User Index already exists")
+	// }
 	return u
-}
-
-func JsonSet(rh *rejson.Handler) {
-
 }
 
 func InitAutoCompleterRedis() *redisearch.Autocompleter {
 	a := redisearch.NewAutocompleter("localhost:6379", "autocomplete")
+	// a_length, err := a.Length()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// if a_length == 0 {
 	// CHANGE TO len(destinations) on final version
 	for i := 0; i < len(destinations); i++ {
 		if destinations[i].Dest == "" || destinations[i].Uid == "" {
@@ -94,6 +117,9 @@ func InitAutoCompleterRedis() *redisearch.Autocompleter {
 		}
 		a.AddTerms(redisearch.Suggestion{Term: destinations[i].Dest, Score: 1.0})
 	}
+	// } else {
+	// fmt.Println("Autocomplete already exists")
+	// }
 	return a
 }
 
@@ -120,32 +146,41 @@ func checkExistingUser(u *redisearch.Client, username string) bool {
 	}
 }
 
-func AutoCompleteDestination(a *redisearch.Autocompleter, prefix string) []string {
+func AutoCompleteDestination(a *redisearch.Autocompleter, c *redisearch.Client, prefix string) []Destination {
 	result, err := a.SuggestOpts(prefix, redisearch.SuggestOptions{Num: 5, Fuzzy: false})
 	if err != nil {
 		fmt.Println(err)
 	}
-	var suggestions []string
+	var suggestions []Destination
+	var temp Destination
 	for i := 0; i < len(result); i++ {
-		suggestions = append(suggestions, result[i].Term)
+		temp.Dest = result[i].Term
+		temp.Uid = GetDestinationUid(c, result[i].Term)
+		suggestions = append(suggestions, temp)
 	}
 	return suggestions
 }
 
 func GetDestinationUid(c *redisearch.Client, destination string) string {
-	doc, total, err := c.Search(redisearch.NewQuery(destination).SetReturnFields("destination").Limit(0, 1))
+	doc, total, err := c.Search(redisearch.NewQuery(destination).SetReturnFields("uid").Limit(0, 1))
 	fmt.Println(total, err)
 	if len(doc) == 0 {
 		fmt.Println("No destination data")
 		return "NO_DESTINATION"
 	} else {
-		fmt.Println(doc[0].Properties["destination"])
-		return doc[0].Id
+		output := fmt.Sprintf("%v", doc[0].Properties["uid"])
+		return output
 	}
 }
 
-func GetHotelData(uid string) {
-	hotel_api := "https://hotelapi.loyalty.dev/api/hotels/" + uid
-	fmt.Println(hotel_api)
-
+func CreateBooking(b *redisearch.Client, username string, uid string, dest string, date string, time string) {
+	doc := redisearch.NewDocument("booking:"+username+time, 1.0)
+	doc.Set("username", username)
+	doc.Set("uid", uid)
+	doc.Set("destination", dest)
+	doc.Set("date", date)
+	doc.Set("time", time)
+	if err := b.Index([]redisearch.Document{doc}...); err != nil {
+		log.Fatal(err)
+	}
 }
