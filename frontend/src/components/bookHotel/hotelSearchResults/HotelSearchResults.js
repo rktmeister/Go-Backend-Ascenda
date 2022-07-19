@@ -7,6 +7,7 @@ import FilterBar from "../common/FilterBar";
 
 const HotelSearchResults = (props) => {
     const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
+
     const [hotels, setHotels] = useState([]);
     const [displayHotels, setDisplayHotels] = useState([]);
     const [filterBarValues, setFilterBarValues] = useState({});
@@ -39,7 +40,7 @@ const HotelSearchResults = (props) => {
 
     const [topRemainingToLoad, setTopRemainingToLoad] = useState(0);
     const [bottomRemainingToLoad, setBottomRemainingToLoad] = useState(0);
-    const [loadingWait, setLoadingWait] = useState(false);
+    // const [loadingWait, setLoadingWait] = useState(false);
     useEffect(() => {
         console.log(minScrollPosition, scrollPosition, maxScrollPosition);
         if (minScrollPosition > scrollPosition) {
@@ -98,10 +99,7 @@ const HotelSearchResults = (props) => {
     const getFilteredHotels = () => hotels.filter((hotel) => filterArray.every((filterFunc) => filterFunc(hotel)));
 
     const addHotels = (newHotels) => {
-        // console.log("ENTER ADDHOTELS");
         newHotels.sort((hotel1, hotel2) => hotel1.name.localeCompare(hotel2.name));
-        // console.log("NEWHOTELS: ", [...newHotels]);
-        // console.log("HOTELS: ", [...hotels]);
 
         // mergesort-style merge for linear efficiency
         let mergedHotels = [];
@@ -148,9 +146,14 @@ const HotelSearchResults = (props) => {
     };
 
     const getHotelBatchAndSetNoMoreResults = async (hotelId, destinationId, before) => {
-        const getResults = await getHotelBatch("A", 2, 2);
+        const getResults = await getHotelBatch(
+            displayHotels[displayHotels.length - 1].id,
+            gotHandMeDowns.destination.id,
+            filterBarValues.datesOfTravel,
+            filterBarValues.numberOfRooms
+        );
         //console.log(getResults);
-        if (getResults.length == 0) {
+        if (getResults.length === 0) {
             setNoMoreResults(true);
             console.log("_________________EXHAUSTED_______________");
         } else {
@@ -196,7 +199,7 @@ const HotelSearchResults = (props) => {
         };
         props.handMeDowns.push(dataToBePassedOn);
         props.finishStage(props.handMeDowns);
-    }
+    };
 
     const handleChooseHotel = (item) => {
         setChosenHotel(item);

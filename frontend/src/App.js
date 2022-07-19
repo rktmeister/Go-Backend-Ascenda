@@ -26,7 +26,6 @@ function App() {
               />
             </div>
           } />} />
-          {/* <Route path="/buy" element={<BookingData />} /> */}
         </Routes>
       </BrowserRouter>
     </div>

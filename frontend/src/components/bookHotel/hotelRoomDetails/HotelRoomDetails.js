@@ -3,6 +3,7 @@ import './HotelRoomDetails.css';
 import React, { useState, useEffect } from "react";
 import MapGenerator from './parts/MapGenerator';
 import HotelRoomBox from './parts/HotelRoomBox';
+import { getHotelRoomBatch } from '../../../utils/backendAPI';
 
 function lowerCaseChange(description) {
   try {
@@ -93,12 +94,11 @@ function HotelRoomDetails(props) {
   });
 
   useEffect(() => {
-    HotelRoomAPICall()
+    getHotelRoomBatch(gotHandMeDowns.hotel.id, gotHandMeDowns.datesOfTravel, gotHandMeDowns.numberOfRooms)
       .then(
         (result) => {
           setIsLoaded(true);
           setRooms(result.rooms);
-
         },
 
         (error) => {
