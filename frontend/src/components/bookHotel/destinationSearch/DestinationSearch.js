@@ -1,22 +1,17 @@
-// const DestinationSearch = (props) => {
-//     return (
-        
-//     );
-// };
-
-// export default DestinationSearch;
 import React, { useState } from "react";
 import "../../../App.css";
 import "../../../utils/backendAPI";
 import { getDestinationsByFuzzyString } from "../../../utils/backendAPI";
-// import SearchIcon from "@material-ui/icons/Search";
-// import CloseIcon from "@material-ui/icons/Close";
-//onClick ={this.getDestinationsByFuzzyString}
-//DestinationSearchAPI
-function DestinationSearch({ placeholder }) {
+import FilterBar from "../common/FilterBar";
+import DestinationCard from "./parts/DestinationCard";
+
+function DestinationSearch(props) {
   const [filteredData, setFilteredData] = useState([]);
   const [wordEntered, setWordEntered] = useState("");
-  
+
+  const [filterBarValues, setFilterBarValues] = useState({});
+  const [chosenDestination, setChosenDestination] = useState("");
+
   const handleFilter = (event) => {
     console.log(event);
     const searchWord = event.target.value;
@@ -24,11 +19,8 @@ function DestinationSearch({ placeholder }) {
     console.log(searchWord);
     console.log(getDestinationsByFuzzyString().data);
     const newFilter = getDestinationsByFuzzyString().data.filter((value) => {
-      console.log(value);
-      console.log(value.name.toLowerCase().includes(searchWord.toLowerCase()));
       return value.name.toLowerCase().includes(searchWord.toLowerCase());
     });
-    console.log("hi", newFilter);
     if (searchWord === "") {
       setFilteredData([]);
     } else {
@@ -41,37 +33,52 @@ function DestinationSearch({ placeholder }) {
     setWordEntered("");
   };
 
+  const handleFilterBarSubmit = (formData) => {
+    setFilterBarValues(formData);
+  };
+
+  const finishStage = () => {
+    const dataToBePassedOn = {
+      ...filterBarValues,
+      chosenDestination,
+    };
+    props.finishStage(dataToBePassedOn);
+  };
+
   return (
-    <div className="search">
-      <div className="searchInputs">
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={wordEntered}
-          onChange={handleFilter}
-        />
-        <div className="searchIcon">
-          {filteredData.length === 0 ? (
-            <div>Search</div>
-          ) : (
-            <button id="clearBtn" onClick={clearInput}>Clear</button>
-            // <CloseIcon id="clearBtn" onClick={clearInput} />
-          )}
+    <div>
+      <FilterBar onSubmit={handleFilterBarSubmit} />
+      <div className="search">
+        <div className="searchInputs">
+          <input
+            type="text"
+            placeholder="Search!"
+            value={wordEntered}
+            onChange={handleFilter}
+          />
+          <div className="searchIcon">
+            {filteredData.length === 0 ? (
+              <div>Search</div>
+            ) : (
+              <button id="clearBtn" onClick={clearInput}>Clear</button>
+            )}
+          </div>
         </div>
+        <div style={{ display: "grid" }}>
+          {
+            filteredData.length !== 0 && (
+              filteredData.slice(0, 15).map(
+                (value, key) => {
+                  return (
+                    <DestinationCard key={key} value={value} onClick={setChosenDestination} />
+                  );
+                }
+              )
+            )
+          }
+        </div>
+        <button onClick={finishStage}>Next Stage</button>
       </div>
-      {filteredData.length != 0 && (
-        <div className="dataResult">
-          {filteredData.slice(0, 15).map(
-            (value, key) => {
-              return (
-                <a className="dataItem" href={value.name} target="_blank">
-                  <p>{value.name} </p>
-                </a>
-              );
-            }
-          )}
-        </div>
-      )}
     </div>
   );
 }
