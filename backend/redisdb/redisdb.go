@@ -29,8 +29,6 @@ func InitDestAndAutoCompleterRedis() (*redisearch.Client, *redisearch.Autocomple
 	destination_sc := redisearch.NewSchema(redisearch.DefaultOptions)
 	destination_sc.AddField(redisearch.NewTextFieldOptions("destination", redisearch.TextFieldOptions{Sortable: true}))
 	destination_sc.AddField(redisearch.NewTextFieldOptions("uid", redisearch.TextFieldOptions{Sortable: true}))
-	// destination_sc.AddField((redisearch.NewNumericFieldOptions("lat", redisearch.NumericFieldOptions{Sortable: true})))
-	// destination_sc.AddField((redisearch.NewNumericFieldOptions("lng", redisearch.NumericFieldOptions{Sortable: true})))
 
 	c := redisearch.NewClient("localhost:6379", "destinations")
 	a := redisearch.NewAutocompleter("localhost:6379", "autocomplete")
