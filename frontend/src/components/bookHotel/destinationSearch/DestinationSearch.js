@@ -20,13 +20,14 @@ function DestinationSearch(props) {
     } else {
       const got = await getDestinationsByFuzzyString(
         searchWord,
-        filterBarValues.checkInDate,
-        filterBarValues.checkOutDate,
-        filterBarValues.numberOfRooms
+        // filterBarValues.checkInDate,
+        // filterBarValues.checkOutDate,
+        // filterBarValues.numberOfRooms
       );
-      const newFilter = got.data.filter((value) => {
-        return value.name.toLowerCase().includes(searchWord.toLowerCase());
+      const newFilter = got.filter((value) => {
+        return value.term.toLowerCase().includes(searchWord.toLowerCase());
       });
+      console.log("NF", newFilter);
       setFilteredData(newFilter);
     }
   };
@@ -73,6 +74,7 @@ function DestinationSearch(props) {
             filteredData.length !== 0 && (
               filteredData.slice(0, 15).map(
                 (value, key) => {
+                  console.log("V", value);
                   return (
                     <DestinationCard key={key} value={value} onClick={setChosenDestination} />
                   );

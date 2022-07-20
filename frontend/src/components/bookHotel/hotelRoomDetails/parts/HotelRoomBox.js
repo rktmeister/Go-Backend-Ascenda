@@ -4,17 +4,19 @@ import './../HotelRoomDetails.css';
 
 function HotelRoomBox(props) {
 
-    const [description, setDescription] = useState(props.description);
-    const price = props.price;
+    const handleClick = () => {
+        props.onClick(props.room);
+    }
 
     return (
 
         <div className="HotelRoomBox">
             <br></br>
 
-            <span className="HotelRoomBoxLeft">{LowerCaseChange(description)}</span>
+            <span className="HotelRoomBoxLeft">{LowerCaseChange(props.room.description)}</span>
             {<span>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</span>}
-            <span className="HotelRoomBoxRight">${price}</span>
+            <span className="HotelRoomBoxRight">${props.room.price}</span>
+            <button onClick={handleClick}>CHOOSE</button>
             <br></br>
             <br></br>
             <br></br>

@@ -1,6 +1,8 @@
 // const getDestinationsByFuzzyString = (fuzzyDestinationName)
 let exhaust = 20;
 
+const MOCK = true;
+
 export const DB_ADDRESS = "http://localhost:3000/api";
 
 export const getStripePrice = async (hotelId) => {
@@ -9,52 +11,66 @@ export const getStripePrice = async (hotelId) => {
 }
 
 export const getHotelBatch = async (hotelId, destinationId, checkInDate, checkOutDate, numberOfRooms) => {
-    // const res = await fetch(formatQueryParameters(
-    //     DB_ADDRESS,
-    //     "/hotels/destination",
-    //     {
-    //         "hotelId": hotelId,
-    //         "destinationId": destinationId,
-    //         "checkInDate": checkInDate,
-    //         "checkOutDate": checkOutDate,
-    //         "numberOfRooms": numberOfRooms,
-    //     }
-    // ));
-
-
-    exhaust -= 1;
-    if (exhaust <= 0) return [];
-    const res = [];
-    for (let i = 0; i < 5; i++) {
-        const name = randomStringForTesting(10, "A".charCodeAt(0) - 64);
-        res.push({
-            id: randomStringForTesting(5, 0),
-            name: name,//randomStringForTesting(10, hotelId.charCodeAt(0)),
-            number_of_rooms: Math.floor(Math.random() * 10),
-            price: Math.random() * 10,
-            latitude: 47.6000,
-            longitude: 3.5333,
-            description: "some description",
+    if (MOCK) {
+        exhaust -= 1;
+        if (exhaust <= 0) return [];
+        const res = [];
+        for (let i = 0; i < 5; i++) {
+            const name = randomStringForTesting(10, "A".charCodeAt(0) - 64);
+            res.push({
+                uid: randomStringForTesting(5, 0),
+                term: name,
+                number_of_rooms: Math.floor(Math.random() * 10),
+                price: Math.random() * 10,
+                latitude: 47.6000,
+                longitude: 3.5333,
+                description: "some description",
+            });
+        }
+        await delay();
+        return res;
+    } else {
+        const res = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/hotels/destination",
+            {
+                "hotelId": hotelId,
+                "destinationId": destinationId,
+                "checkInDate": checkInDate,
+                "checkOutDate": checkOutDate,
+                "numberOfRooms": numberOfRooms,
+            }
+        )).then((response) => {
+            return response.json();
         });
+        return res;
     }
-    await delay();
-    return res;
 };
 
 export const getHotelRoomBatch = async (hotelId, checkInDate, checkOutDate, numberOfRooms) => {
-    // const res = await fetch(formatQueryParameters(
-    //     DB_ADDRESS,
-    //     "/room/hotel",
-    //     {
-    //         "hotelId": hotelId,
-    //         "checkInDate": checkInDate,
-    //         "checkOutDate": checkOutDate,
-    //         "numberOfRooms": numberOfRooms,
-    //     }
-    // ))
-    // return res;
-    return await fetch("https://ascendahotels.mocklab.io/api/hotels/diH7/prices/ean")
-        .then(res => res.json());
+    if (MOCK) {
+        // return await fetch("https://ascendahotels.mocklab.io/api/hotels/diH7/prices/ean")
+        //     .then(res => res.json());
+        return [
+            {
+                price: Math.floor(Math.random() * 20000),
+                description: randomStringForTesting(10, "A".charCodeAt(0) - 64),
+                uid: randomStringForTesting(5, 0),
+            }
+        ];
+    } else {
+        const res = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/room/hotel",
+            {
+                "hotelId": hotelId,
+                "checkInDate": checkInDate,
+                "checkOutDate": checkOutDate,
+                "numberOfRooms": numberOfRooms,
+            }
+        ))
+        return res;
+    }
 }
 
 export const attemptLogin = async (email, passwordHash) => {
@@ -66,23 +82,26 @@ export const attemptLogin = async (email, passwordHash) => {
 };
 
 export const sendSuccessfulPayment = async (name, phoneNumber, userEmail, specialRequests) => {
-    // const res = await fetch(formatQueryParameters(
-    //     DB_ADDRESS,
-    //     "/booking/logSuccess",
-    //     {
-    //         "name": name,
-    //         "phoneNumber": phoneNumber,
-    //         "userEmail": userEmail,
-    //         "specialRequests": specialRequests,
-    //     }
-    // ), {
-    //     method: "post",
-    // });
-    // return res;
-    await delay();
-    return {
-        acknowledged: true,
-    };
+    if (MOCK) {
+        await delay();
+        return {
+            acknowledged: true,
+        };
+    } else {
+        const res = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/booking/logSuccess",
+            {
+                "name": name,
+                "phoneNumber": phoneNumber,
+                "userEmail": userEmail,
+                "specialRequests": specialRequests,
+            }
+        ), {
+            method: "post",
+        });
+        return res;
+    }
 };
 
 // credit to https://stackoverflow.com/questions/20334486/simulate-a-timed-async-call
@@ -116,41 +135,54 @@ const randomStringForTesting = (length, min) => {
 export const formatQueryParameters = (baseAddress, endpoint, params) => {
     let request = baseAddress + endpoint + "?";
     Object.entries(params).forEach(([queryName, value]) => {
+        console.log(queryName, value);
         request += queryName.toString() + "=" + value.toString() + "&";
     });
     request = request.slice(0, -1);
     return request;
 };
 
-export const getDestinationsByFuzzyString = async (fuzzyDestinationName, checkInDate, checkOutDate, numberOfRooms) => {
-    // const res = await fetch(formatQueryParameters(
-    //     DB_ADDRESS,
-    //     "/destinations/fuzzyName",
-    //     {
-    //         "fuzzyName": fuzzyDestinationName,
-    //         "checkInDate": checkInDate,
-    //         "checkOutDate": checkOutDate,
-    //         "numberOfRooms": numberOfRooms,
-    //     }
-    // ));
-    // return res;
-    await delay();
-    return {
-        data: [
+export const getDestinationsByFuzzyString = async (fuzzyDestinationName) => {
+    if (MOCK) {
+        await delay();
+        return [
             {
-                id : 329,
-                name : "Singapore",
+                uid: 329,
+                term: "Singapore",
             },
             {
-                id : 52,
-                name : "India",
+                uid: 52,
+                term: "India",
             },
             {
-                id : 130,
-                name : "Finland",
+                uid: 130,
+                term: "Finland",
             },
-        ],
-    };
+        ];
+    } else {
+        // const res = await fetch(formatQueryParameters(
+        //     DB_ADDRESS,
+        //     "/destinations/fuzzyName",
+        //     {
+        //         "search":fuzzyDestinationName,
+        //     }
+        // ));
+        // const reader = res.body.getReader();
+
+        // console.log(res);
+        // return res;
+
+        const res = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/destinations/fuzzyName",
+            {
+                "search": fuzzyDestinationName,
+            }
+        )).then((response) => {
+            return response.json();
+        });
+        return res;
+    }
 }
 
 // const getDestinationsByFuzzyString = (fuzzyDestinationName) => {

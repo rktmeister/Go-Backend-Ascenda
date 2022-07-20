@@ -44,6 +44,7 @@ function HotelRoomDetails(props) {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [rooms, setRooms] = useState([]);
+  const [chosenRoom, setChosenRoom] = useState(null);
 
   const [description, setDescription] = useState("Choose Room Type");
 
@@ -64,19 +65,21 @@ function HotelRoomDetails(props) {
 
 
   useEffect(() => {
-    //getHotelRoomBatch(gotHandMeDowns.hotel.id, gotHandMeDowns.datesOfTravel, gotHandMeDowns.numberOfRooms)
-    HotelRoomAPICall()
-      .then(
-        (result) => {
-          setIsLoaded(true);
-          setRooms(result.rooms);
-        },
+    (async () => {
+      await getHotelRoomBatch(gotHandMeDowns.hotel.uid, gotHandMeDowns.checkInDate, gotHandMeDowns.checkOutDate, gotHandMeDowns.numberOfRooms)
+        //HotelRoomAPICall()
+        .then(
+          (result) => {
+            setIsLoaded(true);
+            setRooms(result);
+          },
 
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      );
+          (error) => {
+            setIsLoaded(true);
+            setError(error);
+          }
+        );
+    })();
   }, [gotHandMeDowns.hotel]);
 
   //     (error) => {
@@ -86,7 +89,10 @@ function HotelRoomDetails(props) {
   //   )
   // }, [])//gotHandMeDowns.hotel])
 
-
+  const handleChooseRoom = (room) => {
+    console.log("ROOM CHOSEN:", room);
+    setChosenRoom(room);
+  };
 
 
   if (error) {
@@ -102,21 +108,22 @@ function HotelRoomDetails(props) {
 
   else {
 
-    // const finishStage = () => {
-    //   const selfData = {
-    //     ...gotHandMeDowns,
-    //   };
-    //   props.handMeDowns.push(selfData);
-    //   props.finishStage(props.handMeDowns);
-    // };
+    const finishStage = () => {
+      const dataToBePassedOn = {
+        ...gotHandMeDowns,
+        room: chosenRoom,
+      };
+      props.handMeDowns.push(dataToBePassedOn);
+      props.finishStage(props.handMeDowns);
+    };
 
 
     return (
       <div className="HotelRoomDetails">
 
         <h1 className="Hotelname">
-          {gotHandMeDowns.hotel.name}
-          {/* {gotHandMeDowns.hotel.name} */}
+          {gotHandMeDowns.hotel.term}
+          {/* {gotHandMeDowns.hotel.term} */}
         </h1>
 
 
@@ -167,6 +174,7 @@ function HotelRoomDetails(props) {
 
         {/* CREATING ROOM TYPES OPTIONS */}
         {
+          console.log("ROOMS", rooms) &&
           rooms.filter((room) => (room.price > minPrice && room.price < maxPrice) || filterSettingForPrice === "-1")
             .map((room) => {
               (
@@ -209,7 +217,7 @@ function HotelRoomDetails(props) {
           ).map((room) => (
 
 
-            <HotelRoomBox key={room.key} description={room.description} price={room.price} />
+            <HotelRoomBox room={room} key={room.uid} onClick={handleChooseRoom} />
 
           ))
         }
@@ -257,6 +265,7 @@ function HotelRoomDetails(props) {
 
         <br></br>
         {/* <DoubleSlider /> */}
+        <button onClick={finishStage}>Next</button>
 
       </div>
     );
