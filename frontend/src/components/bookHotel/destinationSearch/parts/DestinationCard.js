@@ -1,6 +1,6 @@
 const DestinationCard = (props) => {
     return (
-        <button onClick={() => props.onClick(props.value.name)}>{props.value.name}</button>
+        <button onClick={() => props.onClick(props.value)}>{props.value.term}</button>
     );
 };
 

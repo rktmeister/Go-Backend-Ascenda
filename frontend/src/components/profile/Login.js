@@ -45,7 +45,7 @@ const Login = (props) => {
                         onChange={(event) => setPasswordHash(event.target.value)}
                     />
                 </div>
-                <button type="submit" className="btn btn-primary" >Submit</button>
+                <button type="submit" id="submitButton" className="btn btn-primary" >Submit</button>
             </form>
         </div>
     );

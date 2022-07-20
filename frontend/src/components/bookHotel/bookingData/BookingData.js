@@ -2,8 +2,6 @@ import { loadStripe } from "@stripe/stripe-js";
 import { getStripePrice, sendSuccessfulPayment } from "../../../utils/backendAPI";
 import { useState, useEffect } from "react";
 
-console.log("hihi", process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
-
 let stripePromise;
 (async () => {
     stripePromise = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
@@ -70,7 +68,7 @@ const BookingData = (props) => {
 
         const res = await stripePromise.redirectToCheckout(checkoutOptions);
         console.log(res);
-    }
+    };
 
 
     return (

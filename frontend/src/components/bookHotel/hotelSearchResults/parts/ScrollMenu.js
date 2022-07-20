@@ -16,11 +16,17 @@ const ScrollMenu = (props) => {
 
     const scrollRef = useRef(null);
 
-    return (
-        <div className="scrollMenu" onScroll={handleScroll} ref={scrollRef}>
-            {props.items.map(props.itemMapping)}
-        </div >
-    );
+    if (props.items) {
+        return (
+            <div data-testid="hi" className="scrollMenu" onScroll={handleScroll} ref={scrollRef}>
+                {props.items.map(props.itemMapping)}
+            </div >
+        );
+    } else {
+        return (
+            <div></div>
+        )
+    }
 };
 
 export default ScrollMenu;

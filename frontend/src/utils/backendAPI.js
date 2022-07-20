@@ -1,41 +1,76 @@
 // const getDestinationsByFuzzyString = (fuzzyDestinationName)
 let exhaust = 20;
 
+const MOCK = true;
+
+export const DB_ADDRESS = "http://localhost:3000/api";
+
 export const getStripePrice = async (hotelId) => {
     await delay();
     return "price_1LMX2uAML4yM4v0zWPOXMEa1";
 }
 
-export const getHotelBatch = async (hotelId, destinationId, datesOfTravel, numberOfRooms) => {
-    const res = await fetch(
-        `http://localhost:3000/api/hotels/destination?hotelId=${hotelId}&destinationId=${destinationId}&datesOfTravel=${datesOfTravel}&numberOfRooms=${numberOfRooms}`
-    );
-    // exhaust -= 1;
-    // if (exhaust <= 0) return [];
-    // const res = [];
-    // for (let i = 0; i < 5; i++) {
-    //     const name = randomStringForTesting(10, hotelId.charCodeAt(0) - 64);
-    //     res.push({
-    //         id: randomStringForTesting(5, 0),
-    //         name: name,//randomStringForTesting(10, hotelId.charCodeAt(0)),
-    //         number_of_rooms: Math.floor(Math.random() * 10),
-    //         price: Math.random() * 10,
-    //         latitude: 47.6000,
-    //         longitude: 3.5333,
-    //         description: "some description",
-    //     });
-    // }
-    // await delay();
-    return res;
+export const getHotelBatch = async (hotelId, destinationId, checkInDate, checkOutDate, numberOfRooms) => {
+    if (MOCK) {
+        exhaust -= 1;
+        if (exhaust <= 0) return [];
+        const res = [];
+        for (let i = 0; i < 5; i++) {
+            const name = randomStringForTesting(10, "A".charCodeAt(0) - 64);
+            res.push({
+                uid: randomStringForTesting(5, 0),
+                term: name,
+                number_of_rooms: Math.floor(Math.random() * 10),
+                price: Math.random() * 10,
+                latitude: 47.6000,
+                longitude: 3.5333,
+                description: "some description",
+            });
+        }
+        await delay();
+        return res;
+    } else {
+        const res = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/hotels/destination",
+            {
+                "hotelId": hotelId,
+                "destinationId": destinationId,
+                "checkInDate": checkInDate,
+                "checkOutDate": checkOutDate,
+                "numberOfRooms": numberOfRooms,
+            }
+        )).then((response) => {
+            return response.json();
+        });
+        return res;
+    }
 };
 
-export const getHotelRoomBatch = async (hotelId, datesOfTravel, numberOfRooms) => {
-    const res = await fetch(
-        `http://localhost:3000/api/room/hotel?hotelId=${hotelId}&datesOfTravel=${datesOfTravel}&numberOfRooms=${numberOfRooms}`
-    );
-    return res;
-    // return await fetch("https://ascendahotels.mocklab.io/api/hotels/diH7/prices/ean")
-    //     .then(res => res.json());
+export const getHotelRoomBatch = async (hotelId, checkInDate, checkOutDate, numberOfRooms) => {
+    if (MOCK) {
+        // return await fetch("https://ascendahotels.mocklab.io/api/hotels/diH7/prices/ean")
+        //     .then(res => res.json());
+        return [
+            {
+                price: Math.floor(Math.random() * 20000),
+                description: randomStringForTesting(10, "A".charCodeAt(0) - 64),
+                uid: randomStringForTesting(5, 0),
+            }
+        ];
+    } else {
+        const res = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/room/hotel",
+            {
+                "hotelId": hotelId,
+                "checkInDate": checkInDate,
+                "checkOutDate": checkOutDate,
+                "numberOfRooms": numberOfRooms,
+            }
+        ))
+        return res;
+    }
 }
 
 export const attemptLogin = async (email, passwordHash) => {
@@ -47,18 +82,30 @@ export const attemptLogin = async (email, passwordHash) => {
 };
 
 export const sendSuccessfulPayment = async (name, phoneNumber, userEmail, specialRequests) => {
-    const res = fetch(`http://localhost:3000/api/booking/logSuccess?name=${name}&phoneNumber=${phoneNumber}&userEmail=${userEmail}&specialRequests=${specialRequests}`, {
-        method: "post",
-    });
-    return res;
-    // await delay();
-    // return {
-    //     acknowledged: true,
-    // };
+    if (MOCK) {
+        await delay();
+        return {
+            acknowledged: true,
+        };
+    } else {
+        const res = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/booking/logSuccess",
+            {
+                "name": name,
+                "phoneNumber": phoneNumber,
+                "userEmail": userEmail,
+                "specialRequests": specialRequests,
+            }
+        ), {
+            method: "post",
+        });
+        return res;
+    }
 };
 
 // credit to https://stackoverflow.com/questions/20334486/simulate-a-timed-async-call
-const delay = async (delay = 1000, callback = () => { }) => {
+export const delay = async (delay = 1000, callback = () => { }) => {
 
     const delayPromise = ms => new Promise(res => setTimeout(res, ms));
     await delayPromise(delay);
@@ -85,28 +132,57 @@ const randomStringForTesting = (length, min) => {
     return result;
 };
 
-export const getDestinationsByFuzzyString = async (fuzzyDestinationName, datesOfTravel, numberOfRooms) => {
-    const res = await fetch(
-        `http://localhost:3000/api/destinations/fuzzyName?search=${fuzzyDestinationName}&datesOfTravel=${datesOfTravel}&numberOfRooms=${numberOfRooms}`
-    );
-    return res;
-    // await delay();
-    // return {
-    //     data: [
-    //         {
-    //             id : 329,
-    //             name : "Singapore",
-    //         },
-    //         {
-    //             id : 52,
-    //             name : "India",
-    //         },
-    //         {
-    //             id : 130,
-    //             name : "Finland",
-    //         },
-    //     ],
-    // };
+export const formatQueryParameters = (baseAddress, endpoint, params) => {
+    let request = baseAddress + endpoint + "?";
+    Object.entries(params).forEach(([queryName, value]) => {
+        console.log(queryName, value);
+        request += queryName.toString() + "=" + value.toString() + "&";
+    });
+    request = request.slice(0, -1);
+    return request;
+};
+
+export const getDestinationsByFuzzyString = async (fuzzyDestinationName) => {
+    if (MOCK) {
+        await delay();
+        return [
+            {
+                uid: 329,
+                term: "Singapore",
+            },
+            {
+                uid: 52,
+                term: "India",
+            },
+            {
+                uid: 130,
+                term: "Finland",
+            },
+        ];
+    } else {
+        // const res = await fetch(formatQueryParameters(
+        //     DB_ADDRESS,
+        //     "/destinations/fuzzyName",
+        //     {
+        //         "search":fuzzyDestinationName,
+        //     }
+        // ));
+        // const reader = res.body.getReader();
+
+        // console.log(res);
+        // return res;
+
+        const res = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/destinations/fuzzyName",
+            {
+                "search": fuzzyDestinationName,
+            }
+        )).then((response) => {
+            return response.json();
+        });
+        return res;
+    }
 }
 
 // const getDestinationsByFuzzyString = (fuzzyDestinationName) => {

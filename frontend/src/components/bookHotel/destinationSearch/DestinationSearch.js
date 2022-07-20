@@ -15,13 +15,19 @@ function DestinationSearch(props) {
   const handleFilter = async (event) => {
     const searchWord = event.target.value;
     setWordEntered(searchWord);
-    const got = await getDestinationsByFuzzyString(searchWord, filterBarValues.datesOfTravel, filterBarValues.numberOfRooms);
-    const newFilter = got.data.filter((value) => {
-      return value.name.toLowerCase().includes(searchWord.toLowerCase());
-    });
     if (searchWord === "") {
       setFilteredData([]);
     } else {
+      const got = await getDestinationsByFuzzyString(
+        searchWord,
+        // filterBarValues.checkInDate,
+        // filterBarValues.checkOutDate,
+        // filterBarValues.numberOfRooms
+      );
+      const newFilter = got.filter((value) => {
+        return value.term.toLowerCase().includes(searchWord.toLowerCase());
+      });
+      console.log("NF", newFilter);
       setFilteredData(newFilter);
     }
   };
@@ -38,12 +44,10 @@ function DestinationSearch(props) {
   const finishStage = () => {
     const dataToBePassedOn = {
       ...filterBarValues,
-      chosenDestination,
+      destination: chosenDestination,
     };
-    const arr = [];
-    arr.push({});//this component
-    arr.push(dataToBePassedOn);
-    props.finishStage(arr);
+    props.handMeDowns.push(dataToBePassedOn);
+    props.finishStage(props.handMeDowns);
   };
 
   return (
@@ -70,6 +74,7 @@ function DestinationSearch(props) {
             filteredData.length !== 0 && (
               filteredData.slice(0, 15).map(
                 (value, key) => {
+                  console.log("V", value);
                   return (
                     <DestinationCard key={key} value={value} onClick={setChosenDestination} />
                   );
