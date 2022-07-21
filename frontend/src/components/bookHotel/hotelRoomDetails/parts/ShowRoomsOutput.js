@@ -1,10 +1,6 @@
 import HotelRoomBox from './HotelRoomBox';
-import handleChooseRoom from './../HotelRoomDetails.js'
 
-function ShowRoomsOutput(rooms, minPrice, maxPrice, description){
-
-    
-
+function ShowRoomsOutput(rooms, minPrice, maxPrice, filterSettingForPrice, description){
     console.log(rooms);
 
     
