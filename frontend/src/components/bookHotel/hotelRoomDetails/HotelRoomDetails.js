@@ -5,6 +5,7 @@ import LowerCaseChange from "./parts/LowerCaseChange.js";
 import RemoveDescriptionDuplicate from "./parts/RemoveDescriptionDuplicate.js";
 
 import MapGenerator from './parts/MapGenerator';
+
 import ShowRoomsOutput from './parts/ShowRoomsOutput';
 
 
@@ -34,19 +35,23 @@ function HotelRoomDetails(props) {
   
   useEffect(() => {
     (async () => {
-      await getHotelRoomBatch(gotHandMeDowns.hotel.uid, gotHandMeDowns.checkInDate, gotHandMeDowns.checkOutDate, gotHandMeDowns.numberOfRooms)
-        //HotelRoomAPICall()
-        .then(
-          (result) => {
-            setIsLoaded(true);
-            setRooms(result);
-          },
+      await props.backendPackage.getHotelRoomBatch(
+        gotHandMeDowns.hotel.uid,
+        gotHandMeDowns.destination.uid,
+        gotHandMeDowns.checkInDate,
+        gotHandMeDowns.checkOutDate,
+        gotHandMeDowns.numberOfRooms
+      ).then(
+        (result) => {
+          setIsLoaded(true);
+          setRooms(result);
+        },
 
-          (error) => {
-            setIsLoaded(true);
-            setError(error);
-          }
-        );
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
     })();
   }, [gotHandMeDowns.hotel]);
 
