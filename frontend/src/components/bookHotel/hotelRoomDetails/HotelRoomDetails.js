@@ -7,6 +7,8 @@ import RemoveDescriptionDuplicate from "./parts/RemoveDescriptionDuplicate.js";
 import MapGenerator from './parts/MapGenerator';
 import ShowRoomsOutput from './parts/ShowRoomsOutput';
 
+import { getHotelRoomBatch } from './../../../utils/backendAPI.js';
+
 
 
 
@@ -18,18 +20,23 @@ function HotelRoomDetails(props) {
 
   var roomDescriptionArray = Array();
 
+  const maxSlider = 20000;
+  const minSlider = 0;
+
   
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(2000);
+  const [maxPrice, setMaxPrice] = useState(20000);
 
   const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(true); //false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const [chosenRoom, setChosenRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
 
   const [description, setDescription] = useState("Choose Room Type");
 
-  const [sliderValueMax, setSliderValueMax] = useState(maxPrice);
-  const [sliderValueMin, setSliderValueMin] = useState(minPrice);
+  const [sliderValueMax, setSliderValueMax] = useState(maxSlider);
+  const [sliderValueMin, setSliderValueMin] = useState(minSlider);
 
   
   useEffect(() => {
@@ -50,8 +57,12 @@ function HotelRoomDetails(props) {
     })();
   }, [gotHandMeDowns.hotel]);
 
+  const handleChooseRoom = (room) => {
+    console.log("ROOM CHOSEN:", room);
+    setChosenRoom(room);
+  };
 
-  
+
 
 
   if (error) {
@@ -81,7 +92,7 @@ function HotelRoomDetails(props) {
           
     {/* CREATING ROOM TYPES OPTIONS */}
     rooms.filter(
-      (room) => (room.price >= minPrice && room.price <= maxPrice) || filterSettingForPrice === "-1")
+      (room) => (room.price >= minPrice && room.price <= maxPrice))
       .map(
         (room) => {(room.description[room.description.length-1] !== " ") ? 
           roomDescriptionArray.push(room.description) : 
@@ -123,8 +134,8 @@ function HotelRoomDetails(props) {
             type="range" 
             
             className = "SliderMax"
-            min= {0} 
-            max={2000} 
+            min= {minSlider} 
+            max={maxSlider} 
             value={sliderValueMax} 
             onChange={(e) => {
               if (e.target.valueAsNumber >= sliderValueMin){
@@ -144,8 +155,8 @@ function HotelRoomDetails(props) {
             type="range" 
  
             className = "SliderMax"
-            min= {0} 
-            max={2000} 
+            min= {minSlider} 
+            max= {maxSlider} 
             value={sliderValueMin} 
             onChange={(e) => {
               if (e.target.valueAsNumber <= sliderValueMax){
@@ -178,7 +189,7 @@ function HotelRoomDetails(props) {
 
         
         {console.log("Rooms: ", rooms)}
-        {ShowRoomsOutput(rooms, minPrice, maxPrice, filterSettingForPrice, description)}
+        {ShowRoomsOutput(rooms, minPrice, maxPrice, description)}
          
         <button onClick={finishStage}>Next</button>
  
