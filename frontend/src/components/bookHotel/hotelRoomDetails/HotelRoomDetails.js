@@ -7,7 +7,6 @@ import RemoveDescriptionDuplicate from "./parts/RemoveDescriptionDuplicate.js";
 
 import MapGenerator from './parts/MapGenerator';
 import HotelRoomBox from './parts/HotelRoomBox';
-import { getHotelRoomBatch } from '../../../utils/backendAPI';
 
 
 
@@ -66,19 +65,23 @@ function HotelRoomDetails(props) {
 
   useEffect(() => {
     (async () => {
-      await getHotelRoomBatch(gotHandMeDowns.hotel.uid, gotHandMeDowns.checkInDate, gotHandMeDowns.checkOutDate, gotHandMeDowns.numberOfRooms)
-        //HotelRoomAPICall()
-        .then(
-          (result) => {
-            setIsLoaded(true);
-            setRooms(result);
-          },
+      await props.backendPackage.getHotelRoomBatch(
+        gotHandMeDowns.hotel.uid,
+        gotHandMeDowns.destination.uid,
+        gotHandMeDowns.checkInDate,
+        gotHandMeDowns.checkOutDate,
+        gotHandMeDowns.numberOfRooms
+      ).then(
+        (result) => {
+          setIsLoaded(true);
+          setRooms(result);
+        },
 
-          (error) => {
-            setIsLoaded(true);
-            setError(error);
-          }
-        );
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
     })();
   }, [gotHandMeDowns.hotel]);
 
@@ -200,7 +203,7 @@ function HotelRoomDetails(props) {
         {/* Varying options of dropdown menu: https://www.geeksforgeeks.org/how-to-change-a-selects-options-based-on-another-dropdown-using-react/ */}
         <select value={description} onChange={(e) => { setDescription(e.target.value); }}>
           <option value="Choose Room Type">Choose Room Type</option>
-          {roomDescriptionArray.map((room) => <option key={room} value={room}> {LowerCaseChange(room)} </option>)}
+          {roomDescriptionArray.map((room) => <option key={room} value={room}> {LowerCaseChange(room.description)} </option>)}
         </select>
 
 
@@ -209,7 +212,7 @@ function HotelRoomDetails(props) {
         {/*https://reactjs.org/docs/faq-ajax.html  search "useEffect"*/}
         {/* Filter Reference: https://www.youtube.com/watch?v=MY6ZZIn93V8   5: 57 */}
         {/*<ul>*/}
-        {
+        {console.log("RARA", rooms) &&
           rooms.filter((room) => (((room.price > minPrice && room.price < maxPrice) || filterSettingForPrice === "-1") &&
             ((room.description.charAt(room.description.length - 1) !== " " && room.description === description) ||
               (room.description.charAt(room.description.length - 1) === " " && room.description.slice(0, room.description.length - 1) === description) ||

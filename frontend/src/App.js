@@ -19,12 +19,19 @@ function App() {
             <AuthWrapper privateComponent={
               <StageHandler
                 stages={[
-                  <DestinationSearch />,
+                  <DestinationSearch backendPackage={{
+                    getDestinationsByFuzzyString: backend.getDestinationsByFuzzyString,
+                  }} />,
                   <HotelSearchResults backendPackage={{
                     getHotelBatch: backend.getHotelBatch,
                   }} />,
-                  <HotelRoomDetails />,
-                  <BookingData />,
+                  <HotelRoomDetails backendPackage={{
+                    getHotelRoomBatch: backend.getHotelRoomBatch,
+                  }} />,
+                  <BookingData backendPackage={{
+                    sendSuccessfulPayment: backend.sendSuccessfulPayment,
+                    getStripePrice: backend.getStripePrice,
+                  }} />,
                 ]}
               />
             } />

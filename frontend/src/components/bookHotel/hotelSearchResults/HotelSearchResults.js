@@ -158,7 +158,7 @@ const HotelSearchResults = (props) => {
     const getHotelBatchAndSetNoMoreResults = async (hotelId, destinationId, before) => {
         //console.log("LONG", displayHotels, displayHotels.length, gotHandMeDowns.destination);
         const getResults = await props.backendPackage.getHotelBatch(
-            displayHotels.length > 0 ? displayHotels[displayHotels.length - 1].uid : 0,
+            //displayHotels.length > 0 ? displayHotels[displayHotels.length - 1].uid : 0,
             gotHandMeDowns.destination.uid,
             filterBarValues.checkInDate,
             filterBarValues.checkOutDate,
@@ -192,7 +192,7 @@ const HotelSearchResults = (props) => {
     }, [displayHotels]);
 
     useEffect(() => {
-        console.log("FILTERED", getFilteredHotels(), filterArray);
+        //console.log("FILTERED", getFilteredHotels(), filterArray);
         setDisplayHotels(getFilteredHotels());
     }, [hotels, filterArray]);
 

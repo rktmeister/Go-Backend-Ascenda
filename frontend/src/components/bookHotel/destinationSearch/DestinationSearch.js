@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "../../../App.css";
 import "../../../utils/backendAPI";
-import { getDestinationsByFuzzyString } from "../../../utils/backendAPI";
 import FilterBar from "../common/FilterBar";
 import DestinationCard from "./parts/DestinationCard";
 
@@ -18,13 +17,14 @@ function DestinationSearch(props) {
     if (searchWord === "") {
       setFilteredData([]);
     } else {
-      const got = await getDestinationsByFuzzyString(
-        searchWord,
+      const got = await props.backendPackage.getDestinationsByFuzzyString(
+        searchWord
         // filterBarValues.checkInDate,
         // filterBarValues.checkOutDate,
         // filterBarValues.numberOfRooms
       );
       const newFilter = got.filter((value) => {
+        console.log(value.term, searchWord);
         return value.term.toLowerCase().includes(searchWord.toLowerCase());
       });
       console.log("NF", newFilter);
@@ -56,6 +56,7 @@ function DestinationSearch(props) {
       <div className="search">
         <div className="searchInputs">
           <input
+            data-testid="fuzzyInput"
             type="text"
             placeholder="Search!"
             value={wordEntered}

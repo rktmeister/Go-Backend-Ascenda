@@ -1,7 +1,7 @@
 // const getDestinationsByFuzzyString = (fuzzyDestinationName)
 let exhaust = 20;
 
-const MOCK = true;
+const MOCK = false;
 
 export const DB_ADDRESS = "http://localhost:3000/api";
 
@@ -10,7 +10,7 @@ export const getStripePrice = async (hotelId) => {
     return "price_1LMX2uAML4yM4v0zWPOXMEa1";
 }
 
-export const getHotelBatch = async (hotelId, destinationId, checkInDate, checkOutDate, numberOfRooms) => {
+export const getHotelBatch = async (destinationId, checkInDate, checkOutDate, numberOfRooms) => {
     if (MOCK) {
         exhaust -= 1;
         if (exhaust <= 0) return [];
@@ -34,20 +34,33 @@ export const getHotelBatch = async (hotelId, destinationId, checkInDate, checkOu
             DB_ADDRESS,
             "/hotels/destination",
             {
-                "hotelId": hotelId,
-                "destinationId": destinationId,
-                "checkInDate": checkInDate,
-                "checkOutDate": checkOutDate,
-                "numberOfRooms": numberOfRooms,
+                //"hotelId": hotelId,
+                "destination": destinationId,
+                "checkin": checkInDate,
+                "checkout": checkOutDate,
+                "guests": numberOfRooms,
             }
         )).then((response) => {
             return response.json();
         });
-        return res;
+        console.log("GOT HOTELS:", res, res.hotel_price);
+        const res2 = res.hotel_price.map(({ Hotel, Id, Price }) => {
+            return {
+                uid: Id,
+                latitude: Hotel.latitude,
+                longitude: Hotel.longitude,
+                term: Hotel.name,
+                price: Price,
+                description: Hotel.address,
+                number_of_rooms:999999999,
+            };
+        })
+        console.log(res2);
+        return res2;
     }
 };
 
-export const getHotelRoomBatch = async (hotelId, checkInDate, checkOutDate, numberOfRooms) => {
+export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, checkOutDate, numberOfRooms) => {
     if (MOCK) {
         // return await fetch("https://ascendahotels.mocklab.io/api/hotels/diH7/prices/ean")
         //     .then(res => res.json());
@@ -64,12 +77,20 @@ export const getHotelRoomBatch = async (hotelId, checkInDate, checkOutDate, numb
             "/room/hotel",
             {
                 "hotelId": hotelId,
-                "checkInDate": checkInDate,
-                "checkOutDate": checkOutDate,
-                "numberOfRooms": numberOfRooms,
+                "destination_uid": destinationUid,
+                "checkin": checkInDate,
+                "checkout": checkOutDate,
+                "guests": numberOfRooms,
             }
-        ))
-        return res;
+        )).then((response) => {
+            return response.json();
+        });
+        const res2 = {
+            description: res.room.description,
+            uid: res.room.id,
+            price: 999
+        };
+        return res2;
     }
 }
 

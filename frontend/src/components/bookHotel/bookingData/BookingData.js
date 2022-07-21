@@ -1,5 +1,4 @@
 import { loadStripe } from "@stripe/stripe-js";
-import { getStripePrice, sendSuccessfulPayment } from "../../../utils/backendAPI";
 import { useState, useEffect } from "react";
 
 let stripePromise;
@@ -37,7 +36,7 @@ const BookingData = (props) => {
          * pages after a transaction.
          */
         const fullName = firstName + " " + lastName;
-        await sendSuccessfulPayment(
+        await props.backendPackage.sendSuccessfulPayment(
             fullName,
             phoneNumber,
             userEmail,
@@ -53,7 +52,7 @@ const BookingData = (props) => {
     // it is only meant to show where payment details / billing address are entered.
     const mockStripeCheckout = async () => {
         const item = {
-            price: await getStripePrice(),
+            price: await props.backendPackage.getStripePrice(),
             quantity: 2,
         };
 
@@ -61,7 +60,7 @@ const BookingData = (props) => {
             lineItems: [item],
             mode: "payment",
             successUrl: `${window.location.origin}/paymentSuccess`,
-            cancelUrl: `${window.location.origin}/paymentCancel`,
+            cancelUrl: `${window.location.origin}/`,
             customerEmail: userEmail,
             billingAddressCollection: "required",
         };
