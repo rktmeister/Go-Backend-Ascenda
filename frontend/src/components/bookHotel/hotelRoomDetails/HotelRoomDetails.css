@@ -5,13 +5,17 @@
 
 .Hotelname{
   text-align: center;
-  margin-left: 10pt;
+  color: cyan;
+  border: 0.5px solid cyan;
+  margin: 10pt;
 }
 
 .HotelRoomBox{
   border-width:2px;
   border-style:solid;
-  border-color:black;
+  border-color:purple;
+  margin-top: 1pt;
+  margin-bottom: 1pt;
 
 }
 
@@ -25,17 +29,34 @@
   flex: 1;
   justify-content: flex-end;
   align-items:flex-end;
+  float: right;
+  margin-right: 10pt;
 }
 
 
-/* .SliderMax{
-  -webkit-appearance: none;
-  height: 1em;
-  background: grey;
-  border-radius: 5px;
-  background-image: linear-gradient(purple, purple);
-  background-repeat: no-repeat;
+.FilterBox{
+  border: 0.5px solid cyan;
+  margin-right:10pt;
+}
 
+.DescriptionDropdown{
+  float: right;
+  margin-right:10pt;
+  margin-bottom: 20pt;
+  border: 0.5px solid cyan;
+}
+
+
+.SliderMax{
+  -webkit-appearance: none;
+ 
+  background-color: transparent; /*grey;*/
+  border-radius: 5px;
+  /*background-image: transparent,*/
+  border: 0.5px solid cyan;
+  border-color: linear-gradient(cyan, cyan);
+  background-repeat: no-repeat;
+  height: 3pt;
   width: 200pt;
 }
 
@@ -45,12 +66,11 @@
   -webkit-appearance: none;
   width: 20px;
   height: 20px;
-  background-color: purple;
+  background-color: cyan;
   border-radius : 50%;
+  border-color: white;
   cursor: pointer;
-  border: 0.5px solid black;
+  border: 0.5px solid cyan;
   background: contain;
 
-} */
-
-
+} 
