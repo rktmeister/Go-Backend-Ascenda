@@ -19,21 +19,7 @@ function ShowRoomsOutput(rooms, minPrice, maxPrice, filterSettingForPrice, descr
                 : -1)
             .map((room) => (
                 
-                //<HotelRoomBox room={room} key={room.uid} onClick={handleChooseRoom} />
-                <HotelRoomBox key = {room.key} description = {room.description} price = {room.price} />
-                
-                
-                
-                
-                /*<li key = {room.key}> 
-                {room.description} 
-                {<span>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</span>} 
-                ${room.price}
-
-                </li>*/
-
-
-
+                <HotelRoomBox room={room} key={room.uid} onClick={handleChooseRoom} />
                 
                 
                 )));
