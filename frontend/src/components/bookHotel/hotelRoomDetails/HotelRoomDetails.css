@@ -37,6 +37,7 @@
 .FilterBox{
   border: 0.5px solid cyan;
   margin-right:10pt;
+  margin-top: 200pt;
 }
 
 .DescriptionDropdown{
@@ -46,6 +47,49 @@
   border: 0.5px solid cyan;
 }
 
+.HotelPicsLeftHandleNoHover{
+  float:left; 
+  font-size:30pt;  
+  margin-top: -200px;
+  color: white;
+  opacity: 50%;
+  position:relative;
+  background-color: transparent;
+  border: transparent
+}
+
+.HotelPicsLeftHandleHover{
+  float:left; 
+  font-size:30pt;  
+  margin-top: -200px;
+  color: white;
+  opacity: 100%;
+  position:relative;
+  background-color: transparent;
+  border: transparent
+}
+
+.HotelPicsRightHandleNoHover{
+  float:right; 
+  font-size:30pt;  
+  margin-top: -200px;
+  color: white;
+  opacity: 50%;
+  position:relative;
+  background-color: transparent;
+  border: transparent
+}
+
+.HotelPicsRightHandleHover{
+  float:right; 
+  font-size:30pt;  
+  margin-top: -200px;
+  color: white;
+  opacity: 100%;
+  position:relative;
+  background-color: transparent;
+  border: transparent
+}
 
 .SliderMax{
   -webkit-appearance: none;
