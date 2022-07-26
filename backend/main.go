@@ -56,7 +56,14 @@ type Rooms struct {
 	Lng         float64    `json:"longitude"`
 	Categories  Categories `json:"categories"`
 	Description string     `json:"description"`
-	Image       string     `json:"imgix_url"`
+	Image_Details Image_Details `json:"image_details"`
+	Image       string     `json:"cloudflare_image_url"`
+	Number_Of_Images float64	`json:"number_of_images"`
+	Default_Image_Index float64 `json:"default_image_index"`
+}
+
+type Image_Details struct {
+	Suffix		string 		`json:"suffix"`
 }
 
 type ID struct {
@@ -68,6 +75,11 @@ type Hotel_Price struct {
 	Hotel Hotel
 	Price float32
 }
+
+
+
+
+
 
 // https://stackoverflow.com/questions/29418478/go-gin-framework-cors
 func CORSMiddleware() gin.HandlerFunc {
@@ -182,12 +194,12 @@ func main() {
 
 		api.GET("/room/hotel", func(c *gin.Context) {
 			hotelId := c.Query("hotelId")
-			destination_uid := c.Query("destination_uid")
+			destination_uid := c.Query("destination_id")
 			checkin := c.Query("checkin")
 			checkout := c.Query("checkout")
 			guests := c.Query("guests")
 			api_url_room := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels/%s", hotelId)
-			api_url_price := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels/%s/price?destination_id=%s&checkin=%s&checkout=%s&lang=en_US&currency=SGD&guests=%s&partner_id=1", hotelId, destination_uid, checkin, checkout, guests)
+			api_url_room_price := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels/%s/price?destination_id=%s&checkin=%s&checkout=%s&lang=en_US&currency=SGD&guests=%s&partner_id=1", hotelId, destination_uid, checkin, checkout, guests)
 
 			var rooms Rooms
 			req, err := http.NewRequest(http.MethodGet, api_url_room, nil)
@@ -210,8 +222,10 @@ func main() {
 				log.Fatal(err)
 			}
 
+			
+
 			c.JSON(http.StatusOK, gin.H{
-				"api_url_price": api_url_price,
+				"api_url_price": api_url_room_price,
 				"room":          rooms,
 			})
 		})

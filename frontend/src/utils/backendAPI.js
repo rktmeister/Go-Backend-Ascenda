@@ -72,6 +72,17 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
             }
         ];
     } else {
+        const res1 = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/room/hotel",
+            {
+                "hotelId": hotelId,
+                "destination_uid": destinationUid,
+                "checkin": checkInDate,
+                "checkout": checkOutDate,
+                "guests": numberOfRooms,
+            }
+        ));
         const res = await fetch(formatQueryParameters(
             DB_ADDRESS,
             "/room/hotel",
@@ -85,12 +96,22 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
         )).then((response) => {
             return response.json();
         });
+
+        console.log(res);
+
         const res2 = {
             description: res.room.description,
             uid: res.room.id,
+            cloudflareImageURL: res.room.cloudflare_image_url,
+            suffix: res.room.image_details.suffix,
+	        numberOfImages : res.room.number_of_images,
+	        defaultImageIndex : res.room.default_image_index,
+            score: res.room.categories.overall.score,
+            popularity: res.room.categories.overall.popularity,
             price: 999
         };
         return res2;
+        // return res;
     }
 }
 
