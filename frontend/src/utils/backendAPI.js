@@ -97,18 +97,19 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
             return response.json();
         });
 
-        console.log(res);
+        console.log("res is: ", res);
 
         const res2 = {
-            description: res.room.description,
-            uid: res.room.id,
-            cloudflareImageURL: res.room.cloudflare_image_url,
-            suffix: res.room.image_details.suffix,
-	        numberOfImages : res.room.number_of_images,
-	        defaultImageIndex : res.room.default_image_index,
-            score: res.room.categories.overall.score,
-            popularity: res.room.categories.overall.popularity,
-            price: 999
+            description: res.hotelDesc.description,
+            uid: res.hotelDesc.id,
+            cloudflareImageURL: res.hotelDesc.cloudflare_image_url,
+            suffix: res.hotelDesc.image_details.suffix,
+	        numberOfImages : res.hotelDesc.number_of_images,
+	        defaultImageIndex : res.hotelDesc.default_image_index,
+            score: res.hotelDesc.categories.overall.score,
+            popularity: res.hotelDesc.categories.overall.popularity,
+            address: res.hotelDesc.address,
+            rooms: res
         };
         return res2;
         // return res;
