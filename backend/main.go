@@ -68,6 +68,7 @@ type HotelBriefDescription struct {
 	Image               string        `json:"cloudflare_image_url"`
 	Number_Of_Images    int           `json:"number_of_images"`
 	Default_Image_Index int           `json:"default_image_index"`
+	Address 			string        `json:"address"
 }
 
 type Image_Details struct {
