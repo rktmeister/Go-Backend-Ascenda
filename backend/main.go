@@ -56,7 +56,6 @@ type Overall struct {
 	Popularity float32 `json:"popularity"`
 }
 
-
 type HotelBriefDescription struct {
 	Id                  string        `json:"id"`
 	Name                string        `json:"name"`
@@ -68,6 +67,7 @@ type HotelBriefDescription struct {
 	Image               string        `json:"cloudflare_image_url"`
 	Number_Of_Images    int           `json:"number_of_images"`
 	Default_Image_Index int           `json:"default_image_index"`
+	Address             string        `json:"address"`
 }
 
 type Image_Details struct {
@@ -91,11 +91,6 @@ type ImageUrl struct {
 	Url string `json:"url"`
 }
 
-
-
-
-
-
 // https://stackoverflow.com/questions/29418478/go-gin-framework-cors
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -112,11 +107,6 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-// func getListOfHotelPrices(url string) {
-// 	defer wg.Done()
-// 	res, err := http.Get(url)
-// }
 
 func main() {
 	router := gin.Default()
@@ -249,7 +239,6 @@ func main() {
 		api.GET("/room/hotel", func(c *gin.Context) {
 			hotelId := c.Query("hotelId")
 
-
 			destination_id := c.Query("destination_id")
 
 			checkin := c.Query("checkin")
@@ -258,7 +247,6 @@ func main() {
 			api_url_room := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels/%s", hotelId)
 
 			api_url_price := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels/%s/price?destination_id=%s&checkin=%s&checkout=%s&lang=en_US&currency=SGD&guests=%s&partner_id=1", hotelId, destination_id, checkin, checkout, guests)
-
 
 			var hotelBriefDescription HotelBriefDescription
 			req, err := http.NewRequest(http.MethodGet, api_url_room, nil)
@@ -280,7 +268,6 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-
 
 			// localhost:3000/api/room/hotel?hotelId=diH7&destination_id=WD0M&checkin=2022-08-26&checkout=2022-08-29&lang=en_US&currency=SGD&partner_id=1&guests=2
 			var roomPrices SpecificHotelRoomPrice
@@ -337,7 +324,6 @@ func main() {
 			c.JSON(http.StatusOK, gin.H{
 				"roomPrice": roomPrices,
 				"hotelDesc": hotelBriefDescription,
-
 			})
 		})
 
