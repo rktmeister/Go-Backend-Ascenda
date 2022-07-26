@@ -21,8 +21,6 @@ type User struct {
 type Destination struct {
 	Dest string `json:"term"`
 	Uid  string `json:"uid"`
-	Lat  string `json:"lat"`
-	Lng  string `json:"lng"`
 }
 
 func InitDestAndAutoCompleterRedis() (*redisearch.Client, *redisearch.Autocompleter) {
@@ -66,8 +64,6 @@ func InitDestAndAutoCompleterRedis() (*redisearch.Client, *redisearch.Autocomple
 		doc := redisearch.NewDocument("destinations:"+strconv.Itoa(i), 1.0)
 		doc.Set("destination", destinations[i].Dest)
 		doc.Set("uid", destinations[i].Uid)
-		doc.Set("lat", destinations[i].Lat)
-		doc.Set("lng", destinations[i].Lng)
 		if err := c.Index([]redisearch.Document{doc}...); err != nil {
 			// fmt.Println(destinations[i].Uid, destinations[i].Dest)
 			log.Fatal(err)
@@ -121,6 +117,20 @@ func InitAutoCompleterRedis() *redisearch.Autocompleter {
 	return a
 }
 
+func InitBookingDataRedis() *redisearch.Client {
+	b := redisearch.NewClient("localhost:6379", "bookings")
+	b_schema := redisearch.NewSchema(redisearch.DefaultOptions)
+	b_schema.AddField(redisearch.NewTextFieldOptions("username", redisearch.TextFieldOptions{Sortable: true}))
+	b_schema.AddField(redisearch.NewTextFieldOptions("bookingUid", redisearch.TextFieldOptions{Sortable: true}))
+	b_schema.AddField(redisearch.NewTextFieldOptions("destination", redisearch.TextFieldOptions{Sortable: true}))
+	b_schema.AddField(redisearch.NewTextFieldOptions("checkin", redisearch.TextFieldOptions{Sortable: true}))
+	b_schema.AddField(redisearch.NewTextFieldOptions("checkout", redisearch.TextFieldOptions{Sortable: true}))
+	b_schema.AddField(redisearch.NewTextFieldOptions("time", redisearch.TextFieldOptions{Sortable: true}))
+	b.CreateIndex(b_schema)
+
+	return b
+}
+
 func AddNewUser(u *redisearch.Client, username string, password string) {
 	if checkExistingUser(u, username) {
 		fmt.Println("User already exists")
@@ -163,7 +173,7 @@ func GetDestinationUid(c *redisearch.Client, destination string) string {
 	doc, total, err := c.Search(redisearch.NewQuery(destination).SetReturnFields("uid").Limit(0, 1))
 	fmt.Println(total, err)
 	if len(doc) == 0 {
-		fmt.Println("No destination data")
+		log.Fatal("Destination not found")
 		return "NO_DESTINATION"
 	} else {
 		output := fmt.Sprintf("%v", doc[0].Properties["uid"])
@@ -171,13 +181,14 @@ func GetDestinationUid(c *redisearch.Client, destination string) string {
 	}
 }
 
-func CreateBooking(b *redisearch.Client, username string, uid string, dest string, date string, time string) {
+func CreateBooking(b *redisearch.Client, username string, bookingUid string, dest string, checkin string, checkout string, time string) {
 	doc := redisearch.NewDocument("booking:"+username+time, 1.0)
 	doc.Set("username", username)
-	doc.Set("uid", uid)
+	doc.Set("uid", bookingUid)
 	doc.Set("destination", dest)
-	doc.Set("date", date)
-	doc.Set("time", time)
+	doc.Set("checkin", checkin)
+	doc.Set("checkout", checkout)
+	doc.Set("bookingTime", time)
 	if err := b.Index([]redisearch.Document{doc}...); err != nil {
 		log.Fatal(err)
 	}
