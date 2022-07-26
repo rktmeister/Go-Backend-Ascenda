@@ -200,7 +200,7 @@ func main() {
 				log.Fatal(err)
 			}
 
-			time.Sleep(time.Millisecond * 100)
+			time.Sleep(time.Millisecond * 200)
 
 			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
 			if err != nil {
@@ -298,7 +298,7 @@ func main() {
 
 			// fmt.Println(roomPrices)
 
-			time.Sleep(time.Millisecond * 100)
+			time.Sleep(time.Millisecond * 200)
 			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
 			if err != nil {
 				log.Fatal(err)
