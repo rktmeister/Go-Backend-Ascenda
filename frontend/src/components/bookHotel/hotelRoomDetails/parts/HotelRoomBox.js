@@ -8,11 +8,18 @@ function HotelRoomBox(props) {
         props.onClick(props.room);
     }
 
+    const [roomImageURL, setRoomImageURL] = useState("https://cdn-s3.kaligo.com/assets/images/hotels_missing_images/hotel-room.jpg");
+
+    if (props.roomImageURL !== undefined){
+        setRoomImageURL(props.roomImageURL);
+    }
+
     return (
 
         <div className="HotelRoomBox">
             <br></br>
-
+            <img src = {roomImageURL} style = {{ marginLeft: "10px", width: "200px", height:"180px"}} />
+            <br></br>
             <span className="HotelRoomBoxLeft">{LowerCaseChange(props.room.description)}</span>
             {<span>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</span>}
             <span className="HotelRoomBoxRight">${props.room.price}</span>
