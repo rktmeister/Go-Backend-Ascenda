@@ -109,6 +109,7 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
             score: res.hotelDesc.categories.overall.score,
             popularity: res.hotelDesc.categories.overall.popularity,
             address: res.hotelDesc.address,
+            rating: res.hotelDesc.rating,
             rooms: res
         };
         return res2;

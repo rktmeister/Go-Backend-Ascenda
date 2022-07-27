@@ -16,6 +16,19 @@
   white-space: nowrap;
 }
 
+.HotelAddress{
+  float:left; 
+  font-size:10pt;  
+  font-weight: lighter;
+  margin-top: -290px;
+  margin-left: 550px;
+  color: black;
+  opacity: 100%;
+  position:relative;
+  overflow:hidden;
+  white-space: nowrap;
+}
+
 .HotelRoomBox{
   border-width:2px;
   border-style:solid;
