@@ -91,6 +91,11 @@ type ImageUrl struct {
 	Url string `json:"url"`
 }
 
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 // https://stackoverflow.com/questions/29418478/go-gin-framework-cors
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -103,7 +108,6 @@ func CORSMiddleware() gin.HandlerFunc {
 			c.AbortWithStatus(204)
 			return
 		}
-
 		c.Next()
 	}
 }
@@ -123,8 +127,6 @@ func main() {
 		Transport: t,
 	}
 
-	// var wg sync.WaitGroup
-
 	userClient := redisdb.InitUserRedis()
 	destClient, a := redisdb.InitDestAndAutoCompleterRedis()
 	bookingClient := redisdb.InitBookingDataRedis()
@@ -133,6 +135,21 @@ func main() {
 
 	api := router.Group("/api")
 	{
+		api.POST("/login", func(c *gin.Context) {
+			var user User
+			c.BindJSON(&user)
+			fmt.Println(user)
+			if redisdb.CheckLogin(userClient, user.Username, user.Password) {
+				c.JSON(200, gin.H{
+					"message": "login success",
+				})
+			} else {
+				c.JSON(401, gin.H{
+					"message": "login failed",
+				})
+			}
+		})
+
 		api.GET("/destinations/fuzzyName", func(c *gin.Context) {
 			search := c.Query("search")
 			// fmt.Println(search)
@@ -197,7 +214,7 @@ func main() {
 				log.Fatal(err)
 			}
 
-			time.Sleep(time.Millisecond * 200)
+			time.Sleep(time.Millisecond * 500)
 
 			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
 			if err != nil {
@@ -298,7 +315,8 @@ func main() {
 
 			// fmt.Println(roomPrices)
 
-			time.Sleep(time.Millisecond * 200)
+			time.Sleep(time.Millisecond * 500)
+
 			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
 			if err != nil {
 				log.Fatal(err)
