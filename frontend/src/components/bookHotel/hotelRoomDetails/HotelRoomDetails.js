@@ -7,7 +7,6 @@ import RemoveDescriptionDuplicate from "./parts/RemoveDescriptionDuplicate.js";
 import MapGenerator from './parts/MapGenerator';
 
 import ShowRoomsOutput from './parts/ShowRoomsOutput';
-import HotelRoomImages from './parts/HotelRoomImages';
 
 import { getHotelRoomBatch } from './../../../utils/backendAPI.js';
 
@@ -52,7 +51,7 @@ function HotelRoomDetails(props) {
   const [suffix, setSuffix] = useState("");
   const [numberOfImages, setNumberOfImages] = useState(0);
 
-  const [defaultImageIndex, setDefaultImageIndex] = useState(0);
+  const [defaultImageIndex, setDefaultImageIndex] = useState(1);
 
   var hotelDescHeadingNContent = [];
 
@@ -97,11 +96,13 @@ function HotelRoomDetails(props) {
         gotHandMeDowns.numberOfRooms
       ).then(
         (result) => {
-          console.log(result);
+          console.log("Result is : ", result);
+          console.log("Result.rooms is : ", result.rooms);
           setIsLoaded(true);
           setRooms(result);
           setHotelCloudflareImageURL(result.cloudflareImageURL);
           setHotelDescription(result.description);
+          console.log(result.description);
           setHotelScore(result.score);
           setHotelPopularity(result.popularity);
           setSuffix(result.suffix);
@@ -177,14 +178,21 @@ function HotelRoomDetails(props) {
 
     try{
       hotelDescHeadingNContent = hotelDescription.split(/<|>/);
-      hotelDescHeadingNContent.map((text, index) => {
-        if(text === "br/"){
-          hotelDescHeadingNContent.splice(index, 1);
-        }});
+      // hotelDescHeadingNContent.map((text, index) => {
+      //   if(text === "br/" || text == "b" || text == "p" || text === "h" || text === "br /" || text === "/b" || text === "/p" || text === " " || text === "b " || text === "p " ){
+      //     hotelDescHeadingNContent.splice(index, 1);
+      //   }});
+
+      // hotelDescHeadingNContent.map((text, index) => {
+      //   if(text == "" || text == " " || text == null){
+      //     hotelDescHeadingNContent.splice(index, 1);
+      //   }});
     }
     catch(e){
       hotelDescHeadingNContent = ["Description Unavailable"];
     }
+
+    console.log("hotelDescHeadingNContent : ",  hotelDescHeadingNContent);
 
     {/* Resetting Array to Empty Array : https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript */}
     roomDescriptionArray.length = null
@@ -208,112 +216,10 @@ function HotelRoomDetails(props) {
 
  
     return (
+
+      
+
       <div className="HotelRoomDetails">
- 
-
-        <h1 className = "Hotelname">
-
-          {gotHandMeDowns.hotel.term} 
-        </h1>
-
-        {/* <img src = "https://d2ey9sqrvkqdfs.cloudfront.net/S8UJ/1.jpg" alt = "" />  */}
-        {/* {//hotelImage} alt = "" /> */}
-
-        {/* <HotelRoomImages 
-          hotelCloudflareImageURL = {hotelCloudflareImageURL} 
-          uid = {gotHandMeDowns.hotel.uid} 
-          defaultImageIndex = {defaultImageIndex} 
-          suffix = {suffix} 
-          numberOfImages = {numberOfImages}
-        />   */}
-        <div style={{width: "400px", height: "200px", marginBottom: "100pt"}} >
-          
-          <div style={{width: "400px", height: "350px", overflow:"hidden"}}>
-            <img key = {"" + hotelCloudflareImageURL + "/"+ gotHandMeDowns.hotel.uid + "/i" + currentIndex + suffix} 
-                src = {"" + hotelCloudflareImageURL + "/"+ gotHandMeDowns.hotel.uid + "/i" + currentIndex + suffix} 
-                alt = ""
-                /*Reference: https://stackoverflow.com/questions/34660385/how-to-position-a-react-component-relative-to-its-parent */
-                style={{width: "150%", height:"150%", top:"-20%", left:"-20%", position:"relative"}} />
-          </div>
-
-          <button 
-            key = "decreasePicIndx" 
-            // style={{
-            //   float:"left", 
-            //   fontSize : "30pt",  
-            //   marginTop: "-200px", 
-            //   color: "grey",
-            //   position:"relative",
-            //   backgroundColor: "transparent",
-            //   border:"transparent"
-            //   }} 
-            className = {hotelPicLeftHandle}
-            onClick = {() => {decreaseCurrentIndex()}}
-            // Reference: https://stackoverflow.com/questions/29981236/how-do-you-hover-in-reactjs-onmouseleave-not-registered-during-fast-hover-ove
-            onMouseOver = {() => {setHotelPicLeftHandle("HotelPicsLeftHandleHover")}}
-            onMouseOut = {() => {setHotelPicLeftHandle("HotelPicsLeftHandleNoHover")}}
-            >
-              ◀{/*&lt;*/}
-            </button> 
-
-          <button 
-            key = "increasePicIndx" 
-            // style={{
-            //   float:"right", 
-            //   fontSize : "30pt", 
-            //   marginTop: "-200px", 
-            //   color: "grey",
-            //   position:"relative",
-            //   backgroundColor: "transparent",
-            //   border:"transparent"
-            // }} 
-            className = {hotelPicRightHandle}
-            onClick = {() => {increaseCurrentIndex()}}
-            onMouseOver = {() => {setHotelPicRightHandle("HotelPicsRightHandleHover")}}
-            onMouseOut = {() => {setHotelPicRightHandle("HotelPicsRightHandleNoHover")}}
-            >
-              ▶{/*&gt;*/}
-            </button>
-
-          
-        </div>
-        <br></br>
-
-        <div>
-          <span style = {{float: "right", marginRight: "50px", marginBottom: "-150px"}}> <MapGenerator latitude = {gotHandMeDowns.hotel.latitude} longitude = {gotHandMeDowns.hotel.longitude}/>  </span>
-
-
-          <span style = {{float: "left" , marginRight: "500px", marginTop:"-100px", fontSize: "10pt"}}> 
-            {hotelDescHeadingNContent.map( (text, index) => { 
-              console.log(text, " ", index)
-              if(index % 2 === 0){
-                return(
-                  <>
-                  <h1 style={{float: "left", fontSize:"15pt"}}>{text}</h1>
-                  <br></br>
-                  </>)
-              }
-              else{
-                return(
-                  <>
-                    <p style={{float: "left"}}>{text}</p>
-                    <br></br>
-                  </>)
-              }
-            })} 
-          
-          </span>
-
-        </div>
-
-        
-        
-        <br></br>
-        <br></br>
-        <br></br>
-
-
-
         <div className = "FilterBox">
           <span style={{fontSize: "10px", background:"linear-gradient(white, white, white, cyan)"}}>
             Filters
@@ -379,10 +285,148 @@ function HotelRoomDetails(props) {
 
         <br></br>
         <br></br>
+        
+
+        
+
+        
+
+        {/* <img src = "https://d2ey9sqrvkqdfs.cloudfront.net/S8UJ/1.jpg" alt = "" />  */}
+        {/* {//hotelImage} alt = "" /> */}
+
+        {/* <HotelRoomImages 
+          hotelCloudflareImageURL = {hotelCloudflareImageURL} 
+          uid = {gotHandMeDowns.hotel.uid} 
+          defaultImageIndex = {defaultImageIndex} 
+          suffix = {suffix} 
+          numberOfImages = {numberOfImages}
+        />   */}
+
+
+
+
+
+        <div style={{margin: "10%"}}>
+
+          
+          
+
+          <div style={{width: "400px", height: "200px", marginBottom: "100pt", marginLeft: "100pt"}} >
+            
+            
+            <div style={{width: "400px", height: "300px", overflow:"hidden"}}>
+              <img key = {"" + hotelCloudflareImageURL + "/"+ gotHandMeDowns.hotel.uid + "/i" + currentIndex + suffix} 
+                  src = {"" + hotelCloudflareImageURL + "/"+ gotHandMeDowns.hotel.uid + "/i" + currentIndex + suffix} 
+                  alt = ""
+                  /*Reference: https://stackoverflow.com/questions/34660385/how-to-position-a-react-component-relative-to-its-parent */
+                  style={{width: "150%", height:"150%", top:"-20%", left:"-20%", position:"relative"}} />
+
+            </div>
+
+            <div className = "HotelPicsNumbering">{currentIndex} / {numberOfImages}</div>
+            
+
+            
+
+            <button 
+              key = "decreasePicIndx" 
+              // style={{
+              //   float:"left", 
+              //   fontSize : "30pt",  
+              //   marginTop: "-200px", 
+              //   color: "grey",
+              //   position:"relative",
+              //   backgroundColor: "transparent",
+              //   border:"transparent"
+              //   }} 
+              className = {hotelPicLeftHandle}
+              onClick = {() => {decreaseCurrentIndex()}}
+              // Reference: https://stackoverflow.com/questions/29981236/how-do-you-hover-in-reactjs-onmouseleave-not-registered-during-fast-hover-ove
+              onMouseOver = {() => {setHotelPicLeftHandle("HotelPicsLeftHandleHover")}}
+              onMouseOut = {() => {setHotelPicLeftHandle("HotelPicsLeftHandleNoHover")}}
+              >
+                ◀{/*&lt;*/}
+              </button> 
+
+            <button 
+              key = "increasePicIndx" 
+              // style={{
+              //   float:"right", 
+              //   fontSize : "30pt", 
+              //   marginTop: "-200px", 
+              //   color: "grey",
+              //   position:"relative",
+              //   backgroundColor: "transparent",
+              //   border:"transparent"
+              // }} 
+              className = {hotelPicRightHandle}
+              onClick = {() => {increaseCurrentIndex()}}
+              onMouseOver = {() => {setHotelPicRightHandle("HotelPicsRightHandleHover")}}
+              onMouseOut = {() => {setHotelPicRightHandle("HotelPicsRightHandleNoHover")}}
+              >
+                ▶{/*&gt;*/}
+              </button>
+
+              
+
+          </div>
+
+          <h1 className = "HotelName">
+                {gotHandMeDowns.hotel.term} 
+              </h1>
+  
+
+          
+        </div>
+        
+
+        <br></br>
+
+        <div>
+          
+
+
+          <span style = {{float: "left" , marginRight: "500px", marginBottom:"200px", fontSize: "10pt"}}> 
+            {hotelDescHeadingNContent.filter((text) => (text !== "" && text !== "br/" && text !== "b" && text !== "p" && text !== "h" && text !== "br /" && text !== "/b" && text !== "/p" && text !== " ")).map( (text, index) => { 
+              console.log(text, " ", index)
+              if(index % 2 === 0){
+                return(
+                  <>
+                    <br></br>
+                    <span style={{float: "left", fontSize:"15pt"}}>{text}</span>
+                    <br></br>
+                  </>)
+              }
+              else{
+                return(
+                  <>
+                    <br></br>
+                    <span style={{float: "left"}}>{text}</span>
+                    <br></br>
+                    <br></br>
+                  </>)
+              }
+            })} 
+          
+          </span>
+
+        </div>
+
+        
+        
+        <br></br>
+        <br></br>
+        <br></br>
+
+
+
+        
 
         
         {console.log("Rooms: ", rooms)}
         {ShowRoomsOutput(rooms, minPrice, maxPrice, description)}
+
+        <span style = {{float: "right", marginRight: "50px", marginBottom: "-150px"}}> <MapGenerator latitude = {gotHandMeDowns.hotel.latitude} longitude = {gotHandMeDowns.hotel.longitude}/>  </span>
          
         <button onClick={finishStage}>Next</button>
  

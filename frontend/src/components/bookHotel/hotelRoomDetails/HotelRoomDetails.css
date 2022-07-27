@@ -3,11 +3,17 @@
   margin-left:10pt;
 }
 
-.Hotelname{
-  text-align: center;
-  color: cyan;
-  border: 0.5px solid cyan;
-  margin: 10pt;
+.HotelName{
+  float:left; 
+  font-size:13pt;  
+  font-weight:700;
+  margin-top: -325px;
+  margin-left: 550px;
+  color: black;
+  opacity: 100%;
+  position:relative;
+  overflow:hidden;
+  white-space: nowrap;
 }
 
 .HotelRoomBox{
@@ -16,6 +22,7 @@
   border-color:purple;
   margin-top: 1pt;
   margin-bottom: 1pt;
+  
 
 }
 
@@ -50,7 +57,7 @@
 .HotelPicsLeftHandleNoHover{
   float:left; 
   font-size:30pt;  
-  margin-top: -200px;
+  margin-top: -185px;
   color: white;
   opacity: 50%;
   position:relative;
@@ -61,7 +68,7 @@
 .HotelPicsLeftHandleHover{
   float:left; 
   font-size:30pt;  
-  margin-top: -200px;
+  margin-top: -185px;
   color: white;
   opacity: 100%;
   position:relative;
@@ -72,7 +79,7 @@
 .HotelPicsRightHandleNoHover{
   float:right; 
   font-size:30pt;  
-  margin-top: -200px;
+  margin-top: -185px;
   color: white;
   opacity: 50%;
   position:relative;
@@ -83,12 +90,24 @@
 .HotelPicsRightHandleHover{
   float:right; 
   font-size:30pt;  
-  margin-top: -200px;
+  margin-top: -185px;
   color: white;
   opacity: 100%;
   position:relative;
   background-color: transparent;
   border: transparent
+}
+
+.HotelPicsNumbering{
+  float:left; 
+  font-size:15pt;  
+  margin-top: -30px;
+  margin-left:10px;
+  color: white;
+  opacity: 100%;
+  position:relative;
+  background-color: grey 50%;
+
 }
 
 .SliderMax{
