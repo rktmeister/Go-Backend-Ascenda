@@ -8,6 +8,8 @@ import MapGenerator from './parts/MapGenerator';
 
 import ShowRoomsOutput from './parts/ShowRoomsOutput';
 
+import { FaStar } from 'react-icons/fa';
+
 import { getHotelRoomBatch } from './../../../utils/backendAPI.js';
 
 
@@ -55,8 +57,12 @@ function HotelRoomDetails(props) {
 
   var hotelDescHeadingNContent = [];
 
-  const[hotelPicLeftHandle, setHotelPicLeftHandle] = useState("HotelPicsLeftHandleNoHover");
-  const[hotelPicRightHandle, setHotelPicRightHandle] = useState("HotelPicsRightHandleNoHover");
+  const [hotelPicLeftHandle, setHotelPicLeftHandle] = useState("HotelPicsLeftHandleNoHover");
+  const [hotelPicRightHandle, setHotelPicRightHandle] = useState("HotelPicsRightHandleNoHover");
+
+  const [hotelAddress, setHotelAddress] = useState("");
+
+  const [hotelRating, setHotelRating] = useState(0);
 
   const [currentIndex, setCurrentIndex] = useState(defaultImageIndex);
 
@@ -99,7 +105,7 @@ function HotelRoomDetails(props) {
           console.log("Result is : ", result);
           console.log("Result.rooms is : ", result.rooms);
           setIsLoaded(true);
-          setRooms(result);
+          setRooms(result.description);
           setHotelCloudflareImageURL(result.cloudflareImageURL);
           setHotelDescription(result.description);
           console.log(result.description);
@@ -108,6 +114,7 @@ function HotelRoomDetails(props) {
           setSuffix(result.suffix);
           setNumberOfImages(result.numberOfImages);
           setDefaultImageIndex(result.defaultImageIndex);
+          setHotelAddress(result.address);
         },
 
         (error) => {
@@ -373,7 +380,36 @@ function HotelRoomDetails(props) {
 
           <h1 className = "HotelName">
                 {gotHandMeDowns.hotel.term} 
-              </h1>
+          </h1>
+
+
+          <p className = "HotelAddress">
+                {hotelAddress} 
+          </p>
+
+          <span>
+            {/* Reference: https://www.youtube.com/watch?v=eDw46GYAIDQ */}
+            {/* {[ ... Array(hotelRating)].map(star => {
+              return(
+                <label>
+                  <FaStar size = {100} color = "yellow" />
+                </label>
+              )
+            })} */}
+
+            {[ ... Array(hotelRating)].map(star => {
+              return(
+                <span style={{color: "yellow", fontSize: "10pt"}}>★ </span> 
+              )
+            })}
+
+            {[ ... Array(5-hotelRating)].map(star => {
+              return(
+                <span style={{color: "black" , fontSize: "10pt"}}>★ </span> 
+              )
+            })}
+
+          </span>
   
 
           

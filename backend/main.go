@@ -68,6 +68,7 @@ type HotelBriefDescription struct {
 	Number_Of_Images    int           `json:"number_of_images"`
 	Default_Image_Index int           `json:"default_image_index"`
 	Address             string        `json:"address"`
+	Rating				float64	      `json:"rating"`
 }
 
 type Image_Details struct {
