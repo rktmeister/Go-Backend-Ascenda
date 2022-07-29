@@ -137,6 +137,7 @@ func main() {
 	bookingClient := redisdb.InitBookingDataRedis()
 
 	redisdb.AddNewUser(userClient, "rktmeister1", "1234")
+	redisdb.CheckLogin(userClient, "rktmeister1", "1234")
 
 	api := router.Group("/api")
 	{

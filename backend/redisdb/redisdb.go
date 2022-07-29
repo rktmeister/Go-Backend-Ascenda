@@ -69,7 +69,7 @@ func InitDestAndAutoCompleterRedis() (*redisearch.Client, *redisearch.Autocomple
 
 func InitUserRedis() *redisearch.Client {
 	user_sc := redisearch.NewSchema(redisearch.DefaultOptions)
-	user_sc.AddField(redisearch.NewTagFieldOptions("username", redisearch.TagFieldOptions{Sortable: true}))
+	user_sc.AddField(redisearch.NewTextFieldOptions("username", redisearch.TextFieldOptions{Sortable: true}))
 	user_sc.AddField(redisearch.NewTextFieldOptions("password", redisearch.TextFieldOptions{Sortable: true}))
 
 	u := redisearch.NewClient("localhost:6379", "users")
@@ -122,8 +122,8 @@ func AddNewUser(u *redisearch.Client, username string, password string) {
 }
 
 func checkExistingUser(u *redisearch.Client, username string) bool {
-	doc, total, err := u.Search(redisearch.NewQuery(username).SetReturnFields("username").Limit(0, 1))
-	fmt.Println("Total Users with username:", username, "is", total, "Error:", err)
+	doc, total, _ := u.Search(redisearch.NewQuery(fmt.Sprintf("%s%s%s", `"`, username, `"`)).SetReturnFields("username").Limit(0, 1))
+	fmt.Println("Total Users with username:", username, "is", total)
 	if len(doc) == 0 {
 		return false
 	} else {
@@ -132,14 +132,16 @@ func checkExistingUser(u *redisearch.Client, username string) bool {
 }
 
 func CheckLogin(u *redisearch.Client, username string, password string) bool {
-	doc, total, _ := u.Search(redisearch.NewQuery(username).SetReturnFields("password").Limit(0, 1))
-	fmt.Println("Total Users with username:", username, "is", total)
-	fmt.Println(doc)
-	if fmt.Sprintf("%v", doc[0].Properties["uid"]) == password {
-		return true
-	} else {
-		return false
+	existingUser := checkExistingUser(u, username)
+	if existingUser {
+		doc, _, _ := u.Search(redisearch.NewQuery(username).SetReturnFields("password").Limit(0, 1))
+		fmt.Println("User exists! Now checking password")
+		if fmt.Sprintf("%v", doc[0].Properties["password"]) == password {
+			fmt.Println("Password is correct")
+			return true
+		}
 	}
+	return false
 }
 
 func AutoCompleteDestination(a *redisearch.Autocompleter, c *redisearch.Client, prefix string) []Destination {
