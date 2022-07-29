@@ -1,44 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const FilterBar = (props) => {
-    const [numberOfRooms, _setNumberOfRooms] = useState(props.numberOfRooms);
-    const [checkInDate, _setCheckInDate] = useState(props.checkInDate);
-    const [checkOutDate, _setCheckOutDate] = useState(props.checkOutDate);
-    const [minPrice, _setMinPrice] = useState(props.minPrice);
-    const [maxPrice, _setMaxPrice] = useState(props.maxPrice);
+    const [numberOfRooms, setNumberOfRooms] = useState(props.numberOfRooms);
+    const [checkInDate, setCheckInDate] = useState(props.checkInDate);
+    const [checkOutDate, setCheckOutDate] = useState(props.checkOutDate);
+    const [minPrice, setMinPrice] = useState(props.minPrice);
+    const [maxPrice, setMaxPrice] = useState(props.maxPrice);
     const [alertMessage, setAlertMessage] = useState("");
 
-    const formDataSetterWrapper = (setter) => (event) => setter(event.target.value);
-    const setNumberOfRooms = formDataSetterWrapper(_setNumberOfRooms);
-    const setCheckInDate = formDataSetterWrapper(_setCheckInDate);
-    const setCheckOutDate = formDataSetterWrapper(_setCheckOutDate);
-    const setMinPrice = formDataSetterWrapper(_setMinPrice);
-    const setMaxPrice = formDataSetterWrapper(_setMaxPrice);
+    const makeGuardFunction = (guardArray) => (newValue) => {
+        for (let [func, msg] of guardArray) {
+            if (!func(newValue)) {
+                setAlertMessage(msg);
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const verifyNumberOfRooms = makeGuardFunction([
+        [(numberOfRooms) => typeof numberOfRooms === "number", "Number of rooms must be number!"],
+        [(numberOfRooms) => numberOfRooms > 0, "Number of rooms cannot be zero or less!"],
+    ]);
+
+    const verifyCheckInAndOutDate = makeGuardFunction([
+        [({ checkInDate }) => typeof checkInDate === "string", "Check in date must be date!"],
+        [({ checkInDate }) => !isNaN(new Date(checkInDate)), "Check in date must be date!"],
+        [({ checkOutDate }) => typeof checkOutDate === "string", "Check out date must be date!"],
+        [({ checkOutDate }) => !isNaN(new Date(checkOutDate)), "Check in date must be date!"],
+        [({ checkInDate, checkOutDate }) => new Date(checkInDate) < new Date(checkOutDate), "Check in date must be before check out date"],
+    ]);
+
+    const verifyMinAndMaxPrice = makeGuardFunction([
+        [({ minPrice }) => typeof minPrice === "number", "Min price must be number!"],
+        [({ minPrice }) => minPrice >= 0, "Min price cannot be below zero!"],
+        [({ maxPrice }) => typeof maxPrice === "number", "Max price must be number!"],
+        [({ minPrice, maxPrice }) => minPrice <= maxPrice, "Min price must be equal to or lower than max price"]
+    ]);
 
     const guardSubmit = (event) => {
         event.preventDefault();
 
         setAlertMessage("");
-        if (numberOfRooms === undefined) {
-            setAlertMessage("nor");
-            return;
-        }
-        if (checkInDate === undefined) {
-            setAlertMessage("cid");
-            return;
-        }
-        if (checkOutDate === undefined) {
-            setAlertMessage("cod");
-            return;
-        }
-        if (minPrice === undefined) {
-            setAlertMessage("min");
-            return;
-        }
-        if (maxPrice === undefined) {
-            setAlertMessage("max");
-            return;
-        }
+        if (!verifyNumberOfRooms(numberOfRooms)) return;
+        if (!verifyCheckInAndOutDate({ checkInDate, checkOutDate })) return;
+        if (!verifyMinAndMaxPrice({ minPrice, maxPrice })) return;
 
         const formResults = {
             numberOfRooms,
@@ -47,14 +53,32 @@ const FilterBar = (props) => {
             minPrice,
             maxPrice,
         };
+        setAlertMessage("Submission successful!");
         props.onSubmit(formResults);
         console.log("hi");
         console.log(formResults);
 
     }
 
+    const typeGuard = (setter, tryFunc) => {
+        try {
+            const transformedValue = tryFunc();
+            setter(transformedValue);
+        } catch (e) {
+            // Do nothing
+        }
+    }
+
+    useEffect(() => {
+        setNumberOfRooms(props.prior.numberOfRooms);
+        setCheckInDate(props.prior.checkInDate);
+        setCheckOutDate(props.prior.checkOutDate);
+        setMinPrice(props.prior.minPrice);
+        setMaxPrice(props.prior.maxPrice);
+    }, []);
+
     const testButton = () => {
-        console.log(numberOfRooms, minPrice, maxPrice);
+        console.log(numberOfRooms, minPrice, maxPrice, typeof minPrice);
     };
 
     return (
@@ -68,7 +92,11 @@ const FilterBar = (props) => {
                         id="numberOfRooms"
                         aria-describedby="emailHelp"
                         placeholder="Number of rooms/guests"
-                        onChange={setNumberOfRooms}
+                        onChange={(event) => {
+                            if (!isNaN(event.target.value))
+                                setNumberOfRooms(parseInt(event.target.value));
+                        }}
+                        value={numberOfRooms}
                     />
                 </div>
                 <div className="form-group">
@@ -78,7 +106,8 @@ const FilterBar = (props) => {
                         className="form-control"
                         id="checkInDate"
                         placeholder=""
-                        onChange={setCheckInDate}
+                        onChange={(event) => setCheckInDate(event.target.value)}
+                        value={checkInDate}
                     />
                 </div>
                 <div className="form-group">
@@ -88,7 +117,8 @@ const FilterBar = (props) => {
                         className="form-control"
                         id="checkOutDate"
                         placeholder=""
-                        onChange={setCheckOutDate}
+                        onChange={(event) => setCheckOutDate(event.target.value)}
+                        value={checkOutDate}
                     />
                 </div>
                 <div className="form-group">
@@ -98,7 +128,11 @@ const FilterBar = (props) => {
                         className="form-control"
                         id="minPrice"
                         placeholder=""
-                        onChange={setMinPrice}
+                        onChange={(event) => {
+                            if (!isNaN(event.target.value))
+                                setMinPrice(parseInt(event.target.value));
+                        }}
+                        value={minPrice}
                     />
                 </div>
                 <div className="form-group">
@@ -108,7 +142,11 @@ const FilterBar = (props) => {
                         className="form-control"
                         id="maxPrice"
                         placeholder=""
-                        onChange={setMaxPrice}
+                        onChange={(event) => {
+                            if (!isNaN(event.target.value))
+                                setMaxPrice(parseInt(event.target.value));
+                        }}
+                        value={maxPrice}
                     />
                 </div>
                 <button type="submit" className="btn btn-primary" >Submit</button>
@@ -116,7 +154,7 @@ const FilterBar = (props) => {
             <div className="alert alert-primary" role="alert">
                 {alertMessage}
             </div>
-            <button onClick={testButton}></button>
+            <button onClick={testButton}>Test FilterBar</button>
         </div>
     );
 };

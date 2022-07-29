@@ -29,9 +29,9 @@ type HotelsPrice struct {
 	Prices []ListOfHotelPrice `json:"hotels"`
 }
 type Hotel_Price struct {
-	Id    string
-	Hotel Hotel
-	Price float32
+	Id                    string
+	HotelBriefDescription HotelBriefDescription
+	Price                 float32
 }
 type Hotel struct {
 	Id      string  `json:"id"`
@@ -68,7 +68,7 @@ type HotelBriefDescription struct {
 	Number_Of_Images    int           `json:"number_of_images"`
 	Default_Image_Index int           `json:"default_image_index"`
 	Address             string        `json:"address"`
-	Rating				float64	      `json:"rating"`
+	Rating              float64       `json:"rating"`
 }
 
 type Image_Details struct {
@@ -159,7 +159,7 @@ func main() {
 
 		// "localhost:3000/api/hotels/destination?destination=Singapore, Singapore&checkin=2022-08-29&checkout=2022-08-31&guests=2"
 		api.GET("/hotels/destination", func(c *gin.Context) {
-			var hotels []Hotel
+			var hotels []HotelBriefDescription
 			var prices HotelsPrice
 			destination := c.Query("destination")
 			checkin := c.Query("checkin")
@@ -244,7 +244,7 @@ func main() {
 			for i := 0; i < len(hotels); i++ {
 				for j := 0; j < len(prices.Prices); j++ {
 					if hotels[i].Id == prices.Prices[j].Id {
-						hotel_price = append(hotel_price, Hotel_Price{Id: hotels[i].Id, Hotel: hotels[i], Price: prices.Prices[j].Price})
+						hotel_price = append(hotel_price, Hotel_Price{Id: hotels[i].Id, HotelBriefDescription: hotels[i], Price: prices.Prices[j].Price})
 					}
 				}
 
