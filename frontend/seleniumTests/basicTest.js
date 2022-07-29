@@ -15,6 +15,7 @@ const test1 = async () => {
     await driver.findElement(By.id("checkOutDate")).sendKeys("01-30-2015");
     await driver.findElement(By.id("minPrice")).sendKeys("1");
     await driver.findElement(By.id("maxPrice")).sendKeys("3");
+    await driver.findElement(By.id("maxPrice")).sendKeys("3");
 
 
 };
