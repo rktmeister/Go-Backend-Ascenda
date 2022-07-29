@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import HotelCard from "./HotelCard";
 
-test("hotel card renders correctly", () => {
+test("hotel card callback passes the correct object", () => {
     expect.assertions(1);
     const someItem = { id: 12, price: 24, number_of_rooms: 36, name: "room1" };
     let obj = null;

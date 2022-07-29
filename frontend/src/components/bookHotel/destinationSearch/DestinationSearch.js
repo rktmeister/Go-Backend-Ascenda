@@ -2,13 +2,23 @@ import React, { useState } from "react";
 import "../../../App.css";
 import "../../../utils/backendAPI";
 import FilterBar from "../common/FilterBar";
+import FilterShow from "../common/FilterShow";
 import DestinationCard from "./parts/DestinationCard";
 
 function DestinationSearch(props) {
   const [filteredData, setFilteredData] = useState([]);
   const [wordEntered, setWordEntered] = useState("");
+  const [readyToProceed, setReadyToProceed] = useState(false);
 
-  const [filterBarValues, setFilterBarValues] = useState({});
+  const defaultStartingFilterValues = {
+    numberOfRooms: 1,
+    checkInDate: "2022-08-29",
+    checkOutDate: "2022-08-31",
+    minPrice: 0,
+    maxPrice: 9999999,
+  };
+
+  const [filterBarValues, setFilterBarValues] = useState(defaultStartingFilterValues);
   const [chosenDestination, setChosenDestination] = useState("");
 
   const handleFilter = async (event) => {
@@ -19,9 +29,6 @@ function DestinationSearch(props) {
     } else {
       const got = await props.backendPackage.getDestinationsByFuzzyString(
         searchWord
-        // filterBarValues.checkInDate,
-        // filterBarValues.checkOutDate,
-        // filterBarValues.numberOfRooms
       );
       const newFilter = got.filter((value) => {
         console.log(value.term, searchWord);
@@ -42,17 +49,30 @@ function DestinationSearch(props) {
   };
 
   const finishStage = () => {
-    const dataToBePassedOn = {
-      ...filterBarValues,
-      destination: chosenDestination,
-    };
-    props.handMeDowns.push(dataToBePassedOn);
-    props.finishStage(props.handMeDowns);
+    if (readyToProceed) {
+      const dataToBePassedOn = {
+        filterData: filterBarValues,
+        destination: chosenDestination,
+      };
+      props.handMeDowns.push(dataToBePassedOn);
+      props.finishStage(props.handMeDowns);
+    } else {
+      alert("Select a location!");
+    }
+  };
+
+  const handleChoice = (d) => {
+    setReadyToProceed(true);
+    console.log("DDD", d);
+    setChosenDestination(d);
   };
 
   return (
     <div>
-      <FilterBar onSubmit={handleFilterBarSubmit} />
+      <FilterBar
+        onSubmit={handleFilterBarSubmit}
+        prior={defaultStartingFilterValues}
+      />
       <div className="search">
         <div className="searchInputs">
           <input
@@ -77,13 +97,17 @@ function DestinationSearch(props) {
                 (value, key) => {
                   console.log("V", value);
                   return (
-                    <DestinationCard key={key} value={value} onClick={setChosenDestination} />
+                    <DestinationCard key={key} value={value} onClick={handleChoice} />
                   );
                 }
               )
             )
           }
         </div>
+        <FilterShow
+          currentFilterData={filterBarValues}
+          choice={chosenDestination.term}
+        />
         <button onClick={finishStage}>Next Stage</button>
       </div>
     </div>

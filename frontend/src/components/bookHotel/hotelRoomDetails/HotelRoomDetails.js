@@ -8,6 +8,8 @@ import MapGenerator from './parts/MapGenerator';
 
 import ShowRoomsOutput from './parts/ShowRoomsOutput';
 
+import { FaStar } from 'react-icons/fa';
+
 import { getHotelRoomBatch } from './../../../utils/backendAPI.js';
 
 
@@ -22,12 +24,12 @@ function HotelRoomDetails(props) {
 
   var roomDescriptionArray = Array();
 
-  const maxSlider = 20000;
-  const minSlider = 0;
+  const maxSlider = 20000; // gotHandMeDowns.filterData.maxPrice * 1000);
+  const minSlider = 60;
 
   
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(20000);
+  const [minPrice, setMinPrice] = useState(0); //gotHandMeDowns.filterData.minPrice);
+  const [maxPrice, setMaxPrice] = useState(20000); // gotHandMeDowns.filterData.maxPrice * 10);
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -39,7 +41,7 @@ function HotelRoomDetails(props) {
 
   
 
-  const [sliderValueMax, setSliderValueMax] = useState(maxSlider);
+  const [sliderValueMax, setSliderValueMax] = useState(maxSlider); 
   const [sliderValueMin, setSliderValueMin] = useState(minSlider);
 
   const [hotelCloudflareImageURL, setHotelCloudflareImageURL] = useState("");
@@ -55,10 +57,15 @@ function HotelRoomDetails(props) {
 
   var hotelDescHeadingNContent = [];
 
-  const[hotelPicLeftHandle, setHotelPicLeftHandle] = useState("HotelPicsLeftHandleNoHover");
-  const[hotelPicRightHandle, setHotelPicRightHandle] = useState("HotelPicsRightHandleNoHover");
+  const [hotelPicLeftHandle, setHotelPicLeftHandle] = useState("HotelPicsLeftHandleNoHover");
+  const [hotelPicRightHandle, setHotelPicRightHandle] = useState("HotelPicsRightHandleNoHover");
 
-  const [currentIndex, setCurrentIndex] = useState(defaultImageIndex);
+  const [hotelAddress, setHotelAddress] = useState("");
+
+  const [hotelRating, setHotelRating] = useState(1);
+
+
+  const [currentIndex, setCurrentIndex] = useState(defaultImageIndex); // This is for overall hotel imagaes
 
   const decreaseCurrentIndex = () => {
       console.log("Decrease " + currentIndex);
@@ -99,7 +106,7 @@ function HotelRoomDetails(props) {
           console.log("Result is : ", result);
           console.log("Result.rooms is : ", result.rooms);
           setIsLoaded(true);
-          setRooms(result);
+          setRooms(result.rooms);
           setHotelCloudflareImageURL(result.cloudflareImageURL);
           setHotelDescription(result.description);
           console.log(result.description);
@@ -108,6 +115,9 @@ function HotelRoomDetails(props) {
           setSuffix(result.suffix);
           setNumberOfImages(result.numberOfImages);
           setDefaultImageIndex(result.defaultImageIndex);
+          setHotelAddress(result.address);
+          setHotelRating(result.rating);
+
         },
 
         (error) => {
@@ -176,23 +186,72 @@ function HotelRoomDetails(props) {
       props.finishStage(props.handMeDowns);
     };
 
+   // ======================== Setting up hotel description ========================== //
     try{
       hotelDescHeadingNContent = hotelDescription.split(/<|>/);
-      // hotelDescHeadingNContent.map((text, index) => {
-      //   if(text === "br/" || text == "b" || text == "p" || text === "h" || text === "br /" || text === "/b" || text === "/p" || text === " " || text === "b " || text === "p " ){
-      //     hotelDescHeadingNContent.splice(index, 1);
-      //   }});
+      if (hotelDescHeadingNContent.length === 1){
+        
+        let i = 0, fullstop_infront_index = 0, statement_start = 0;
+        let temp_HotelDescHeadingNCont = [];
 
-      // hotelDescHeadingNContent.map((text, index) => {
-      //   if(text == "" || text == " " || text == null){
-      //     hotelDescHeadingNContent.splice(index, 1);
-      //   }});
+        while (i < hotelDescHeadingNContent[0].length){
+          let numOfSpaces = 0;
+
+          while(hotelDescHeadingNContent[0].charAt(i) !== "." && i < hotelDescHeadingNContent[0].length){
+            if (hotelDescHeadingNContent[0].charAt(i) === " "){
+              numOfSpaces = numOfSpaces + 1;
+            }
+            
+            i = i + 1;
+          }
+
+          if (numOfSpaces <= 3){  // If number of spaces less than or equal to 3, usually the sentence is a title.
+
+            
+            
+
+            if(statement_start !== 0){  // Only after next title reached, then push the first few statements that are not titles
+              temp_HotelDescHeadingNCont.push(hotelDescHeadingNContent[0].substring(statement_start, fullstop_infront_index - 1));
+             
+            }
+            
+            statement_start = i + 1;
+            
+            // Pushing of title here to prevent 2nd title from being pushed before the first few statements that are not titles.
+            temp_HotelDescHeadingNCont.push(hotelDescHeadingNContent[0].substring(fullstop_infront_index, i));   // Title starts from fullstop and reaches fullstop.
+            
+            
+          }
+
+          fullstop_infront_index = i + 1;  // The first character after the latest fullstop
+          i = i + 1; // To move to next character after fullstop.
+          
+
+          // hotelDescHeadingNContent.splice(0, 1, hotelDescHeadingNContent[0].substring(0, i));
+
+          console.log(temp_HotelDescHeadingNCont);
+          
+        }
+
+        temp_HotelDescHeadingNCont.push(hotelDescHeadingNContent[0].substring(statement_start, fullstop_infront_index - 1)); // Final few statements
+        hotelDescHeadingNContent = [].concat(temp_HotelDescHeadingNCont);
+        console.log(hotelDescHeadingNContent);
+      }
+     
     }
     catch(e){
       hotelDescHeadingNContent = ["Description Unavailable"];
     }
 
     console.log("hotelDescHeadingNContent : ",  hotelDescHeadingNContent);
+
+
+    // ======================== Setting up hotel description ========================== //
+
+
+
+
+    // ============================= Setting up room description (type choices) ========================== //
 
     {/* Resetting Array to Empty Array : https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript */}
     roomDescriptionArray.length = null
@@ -202,9 +261,9 @@ function HotelRoomDetails(props) {
       rooms.filter(
         (room) => (room.price >= minPrice && room.price <= maxPrice))
         .map(
-          (room) => {(room.description[room.description.length-1] !== " ") ? 
-            roomDescriptionArray.push(room.description) : 
-            roomDescriptionArray.push(room.description.slice(0,room.description.length - 1)) 
+          (room) => {(room.roomNormalizedDescription[room.roomNormalizedDescription.length-1] !== " ") ? 
+            roomDescriptionArray.push(room.roomNormalizedDescription) : 
+            roomDescriptionArray.push(room.roomNormalizedDescription.slice(0,room.roomNormalizedDescription.length - 1)) 
             })
           }
     catch(e){
@@ -213,6 +272,14 @@ function HotelRoomDetails(props) {
     
 
     RemoveDescriptionDuplicate(roomDescriptionArray);
+
+    // ============================= Setting up room description (type choices) ========================== //
+
+    
+
+
+    
+
 
  
     return (
@@ -277,7 +344,7 @@ function HotelRoomDetails(props) {
            <span>
             <select value={description} className = "DescriptionDropdown" onChange={(e) => {setDescription(e.target.value);}}>
               <option value = "Choose Room Type">Choose Room Type</option>
-              {roomDescriptionArray.map((room) => <option key = {room} value={room}> {LowerCaseChange(room)} </option>)}
+              {roomDescriptionArray.map((room) => <option key = {room} value={room}> {room} </option>)}  {/*LowerCaseChange(room)} </option>)*/}
             </select>
           </span>
 
@@ -306,7 +373,7 @@ function HotelRoomDetails(props) {
 
 
 
-        <div style={{margin: "10%"}}>
+        <div className = "HotelPicTitlePartDiv">
 
           
           
@@ -373,7 +440,38 @@ function HotelRoomDetails(props) {
 
           <h1 className = "HotelName">
                 {gotHandMeDowns.hotel.term} 
-              </h1>
+          </h1>
+
+
+          <p className = "HotelAddress">
+                {hotelAddress} 
+          </p>
+
+          <span className = "HotelRatings">
+            {/* Reference: https://www.youtube.com/watch?v=eDw46GYAIDQ */}
+            {/* {[ ... Array(hotelRating)].map(star => {
+              return(
+                <label>
+                  <FaStar size = {100} color = "yellow" />
+                </label>
+              )
+            })} */}
+          
+            {[ ... Array(hotelRating)].map(() => {
+              return(
+       
+                <span style={{color: "#FFAE42", fontSize: "15pt"}}>★</span> 
+ 
+              )
+            })}
+
+            {[ ... Array(5-hotelRating)].map(() => {
+              return(
+                <span style={{color: "black" , fontSize: "15pt"}}>★</span> 
+              )
+            })}
+
+          </span>
   
 
           
@@ -382,53 +480,66 @@ function HotelRoomDetails(props) {
 
         <br></br>
 
+
+        {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
+
         <div>
           
-
-
-          <span style = {{float: "left" , marginRight: "500px", marginBottom:"200px", fontSize: "10pt"}}> 
-            {hotelDescHeadingNContent.filter((text) => (text !== "" && text !== "br/" && text !== "b" && text !== "p" && text !== "h" && text !== "br /" && text !== "/b" && text !== "/p" && text !== " ")).map( (text, index) => { 
-              console.log(text, " ", index)
-              if(index % 2 === 0){
-                return(
-                  <>
-                    <br></br>
-                    <span style={{float: "left", fontSize:"15pt"}}>{text}</span>
-                    <br></br>
-                  </>)
-              }
-              else{
-                return(
-                  <>
-                    <br></br>
-                    <span style={{float: "left"}}>{text}</span>
-                    <br></br>
-                    <br></br>
-                  </>)
-              }
-            })} 
+          <span style = {{float: "left", fontSize: "10pt"}}> 
+            {hotelDescHeadingNContent.filter((text) => (text !== "" && text !== "br/" && text !== "b" && text !== "p" && text !== "h" && text !== "br /" && text !== "/b" && text !== "/p" && text !== " "))
+              .map( (text, index) => { 
+                console.log(text, " ", index)
+                if(index % 2 === 0){
+                  return(
+                    <>
+                      <br></br>
+                      <span style={{float: "left", fontSize:"15pt"}}>{text}</span>
+                      <br></br>
+                    </>)
+                }
+                else{
+                  return(
+                    <>
+                      <br></br>
+                      <span style={{float: "left"}}>{text}</span>
+                      <br></br>
+                      <br></br>
+                    </>)
+                }
+              })} 
           
           </span>
 
         </div>
 
+        {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
+
+       
+
+
+        {/* =================== ROOMS OUTPUT DISPLAY ====================== */}
         
+        <div style = {{ marginnTop:"200pt"}}>
+          {console.log("Rooms: ", rooms)}
+          {ShowRoomsOutput(rooms, minPrice, maxPrice, description)}
+        </div>
+
+        {/* =================== ROOMS OUTPUT DISPLAY ====================== */}
+
+
+
+
+        {/* =================== MAP OUTPUT DISPLAY ====================== */}
         
-        <br></br>
-        <br></br>
-        <br></br>
+        <div className = "MapGeneratorDiv"> <MapGenerator latitude = {gotHandMeDowns.hotel.latitude} longitude = {gotHandMeDowns.hotel.longitude}/>  </div>
+
+        {/* =================== MAP OUTPUT DISPLAY ====================== */}
 
 
 
-        
-
-        
-        {console.log("Rooms: ", rooms)}
-        {ShowRoomsOutput(rooms, minPrice, maxPrice, description)}
-
-        <span style = {{float: "right", marginRight: "50px", marginBottom: "-150px"}}> <MapGenerator latitude = {gotHandMeDowns.hotel.latitude} longitude = {gotHandMeDowns.hotel.longitude}/>  </span>
          
         <button onClick={finishStage}>Next</button>
+        
  
 
       </div>
