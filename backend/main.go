@@ -102,6 +102,7 @@ type User struct {
 // https://stackoverflow.com/questions/29418478/go-gin-framework-cors
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		fmt.Println("CORS")
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -120,8 +121,6 @@ func main() {
 	router.RedirectTrailingSlash = true
 	router.Use(CORSMiddleware())
 
-	auth.JwtSetup()
-
 	t := http.DefaultTransport.(*http.Transport).Clone()
 	t.MaxIdleConns = 100
 	t.MaxConnsPerHost = 100
@@ -136,8 +135,22 @@ func main() {
 	destClient, a := redisdb.InitDestAndAutoCompleterRedis()
 	bookingClient := redisdb.InitBookingDataRedis()
 
+	router.Use(func(c *gin.Context) {
+		fmt.Println("HO")
+		c.Set("key", "foo")
+	})
+	router.Use(auth.AddDatabaseToContext(userClient))
+
+	auth.JwtSetup()
+
 	redisdb.AddNewUser(userClient, "rktmeister1", "1234")
 	redisdb.CheckLogin(userClient, "rktmeister1", "1234")
+
+	redisdb.AddNewUser(userClient, "sunrise", "1234")
+	redisdb.CheckLogin(userClient, "sunrise", "1234")
+
+	redisdb.AddNewUser(userClient, "hoyo", "1234")
+	redisdb.CheckLogin(userClient, "hoyo", "1234")
 
 	api := router.Group("/api")
 	{
@@ -148,6 +161,7 @@ func main() {
 			if redisdb.CheckLogin(userClient, user.Username, user.Password) {
 				c.JSON(200, gin.H{
 					"message": "login success",
+					"jwt":     auth.GenerateJWT(user.Username),
 				})
 			} else {
 				c.JSON(401, gin.H{
@@ -155,15 +169,19 @@ func main() {
 				})
 			}
 		})
+	}
 
-		api.GET("/destinations/fuzzyName", func(c *gin.Context) {
+	authorized := api.Group("/")
+	authorized.Use(auth.Authorization)
+	{
+		authorized.GET("/destinations/fuzzyName", func(c *gin.Context) {
 			search := c.Query("search")
 			// fmt.Println(search)
 			c.JSON(http.StatusOK, redisdb.AutoCompleteDestination(a, destClient, search))
 		})
 
 		// "localhost:3000/api/hotels/destination?destination=Singapore, Singapore&checkin=2022-08-29&checkout=2022-08-31&guests=2"
-		api.GET("/hotels/destination", func(c *gin.Context) {
+		authorized.GET("/hotels/destination", func(c *gin.Context) {
 			var hotels []HotelBriefDescription
 			var prices HotelsPrice
 			destination := c.Query("destination")
@@ -259,7 +277,7 @@ func main() {
 			})
 		})
 
-		api.GET("/room/hotel", func(c *gin.Context) {
+		authorized.GET("/room/hotel", func(c *gin.Context) {
 			hotelId := c.Query("hotelId")
 
 			destination_id := c.Query("destination_id")
@@ -351,7 +369,7 @@ func main() {
 			})
 		})
 
-		api.POST("/room/hotel", func(c *gin.Context) {
+		authorized.POST("/room/hotel", func(c *gin.Context) {
 			redisdb.CreateBooking(bookingClient, c.PostForm("username"), c.PostForm("bookingUid"), c.PostForm("dest"), c.PostForm("checkin"), c.PostForm("checkout"), c.PostForm("time"))
 		})
 	}
