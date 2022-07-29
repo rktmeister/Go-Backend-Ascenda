@@ -1,6 +1,12 @@
 .HotelRoomDetails {
   text-align: left;
   margin-left:10pt;
+  
+}
+
+.HotelPicTitlePartDiv{
+  margin: 25%;
+
 }
 
 .HotelName{
@@ -29,35 +35,87 @@
   white-space: nowrap;
 }
 
+.HotelRatings{
+  float:left; 
+  font-size:10pt;  
+  font-weight: lighter;
+  margin-top: -300px;
+  margin-left: 850px;
+  color: black;
+  opacity: 100%;
+  position:relative;
+  overflow:hidden;
+  white-space: nowrap;
+}
+
 .HotelRoomBox{
   border-width:2px;
   border-style:solid;
-  border-color:purple;
+  
   margin-top: 1pt;
   margin-bottom: 1pt;
   
 
 }
 
-.HotelRoomBoxLeft{
-  flex: 1;
-  justify-content: flex-start;
-  margin-left: 10pt;
+.HotelRoomBoxTitle{
+  background-color: rgb(163, 154, 140);
+  font-size: 15pt;
+  font-weight: bold;
+  color: white;
 }
 
-.HotelRoomBoxRight{
+.HotelRoomBoxRightPrice{
   flex: 1;
   justify-content: flex-end;
   align-items:flex-end;
   float: right;
-  margin-right: 10pt;
+  font-size: 18px;
+  margin-right: 100pt;
+  margin-top:-110pt;
+  font-weight: 900;
+}
+
+.HotelRoomBoxRightPerRoomPerNight{
+  flex: 1;
+  justify-content: flex-end;
+  align-items:flex-end;
+  float: right;
+  font-size: 13px;
+  margin-right: 100pt;
+  margin-top:-90pt;
+ 
+}
+
+.HotelRoomBoxLeftFreeCancellation{
+  flex: 1;
+  justify-content: flex-start;
+  align-items:flex-start;
+  float: left;
+  font-size: 15px;
+  margin-left: 170pt;
+  margin-top:-60pt;
+  color: green;
+}
+
+.HotelRoomBoxLeftNonRefundable{
+  flex: 1;
+  justify-content: flex-start;
+  align-items:flex-start;
+  float: left;
+  font-size: 15px;
+  margin-left: 170pt;
+  margin-top:-60pt;
+  color: rgb(207, 159, 0);
 }
 
 
 .FilterBox{
   border: 0.5px solid cyan;
   margin-right:10pt;
-  margin-top: 200pt;
+  /*margin-top: 200pt;*/
+  position:sticky;
+  top:0;
 }
 
 .DescriptionDropdown{
@@ -150,3 +208,10 @@
   background: contain;
 
 } 
+
+.MapGeneratorDiv{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 50px;
+}
