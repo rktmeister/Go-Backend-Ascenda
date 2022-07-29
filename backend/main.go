@@ -11,6 +11,8 @@ import (
 	"Go-Backend-Ascenda/Backend-API/redisdb"
 
 	"github.com/gin-gonic/gin"
+
+	"Go-Backend-Ascenda/Backend-API/auth"
 )
 
 var (
@@ -117,6 +119,8 @@ func main() {
 	router := gin.Default()
 	router.RedirectTrailingSlash = true
 	router.Use(CORSMiddleware())
+
+	auth.JwtSetup()
 
 	t := http.DefaultTransport.(*http.Transport).Clone()
 	t.MaxIdleConns = 100

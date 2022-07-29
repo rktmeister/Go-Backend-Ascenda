@@ -108,6 +108,7 @@ func InitBookingDataRedis() *redisearch.Client {
 }
 
 func AddNewUser(u *redisearch.Client, username string, password string) {
+	fmt.Println("Adding new user", username, password)
 	if checkExistingUser(u, username) {
 		fmt.Println("User already exists")
 	} else {
@@ -133,6 +134,7 @@ func checkExistingUser(u *redisearch.Client, username string) bool {
 func CheckLogin(u *redisearch.Client, username string, password string) bool {
 	doc, total, _ := u.Search(redisearch.NewQuery(username).SetReturnFields("password").Limit(0, 1))
 	fmt.Println("Total Users with username:", username, "is", total)
+	fmt.Println(doc)
 	if fmt.Sprintf("%v", doc[0].Properties["uid"]) == password {
 		return true
 	} else {
