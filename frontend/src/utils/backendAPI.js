@@ -88,7 +88,7 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
             "/room/hotel",
             {
                 "hotelId": hotelId,
-                "destination_uid": destinationUid,
+                "destination_id": destinationUid,
                 "checkin": checkInDate,
                 "checkout": checkOutDate,
                 "guests": numberOfRooms,
@@ -110,7 +110,7 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
             popularity: res.hotelDesc.categories.overall.popularity,
             address: res.hotelDesc.address,
             rating: res.hotelDesc.rating,
-            rooms: res
+            rooms: res.roomPrice.rooms
         };
         return res2;
         // return res;

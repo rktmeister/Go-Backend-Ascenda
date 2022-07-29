@@ -15,7 +15,7 @@ function MapGenerator(props){
     {/* Centering Map (Tuhame's Answer): https://stackoverflow.com/questions/13034188/how-to-center-align-google-maps-in-a-div-with-a-variable-width */}
   
     return(
-      <MapContainer center={[props.latitude, props.longitude]} zoom = {20} style={{ height: '200vh', width: '300vh', margin: "200px"}}>
+      <MapContainer center={[props.latitude, props.longitude]} zoom = {20} style={{ height: '100vh', width: '100vh'}}>
         <Marker 
           position={[props.latitude, props.longitude]}
           icon={new Icon({iconUrl: markerIcon, iconSize: [25, 41], iconAnchor: [12, 41]})}>
