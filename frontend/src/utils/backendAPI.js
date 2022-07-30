@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 // const getDestinationsByFuzzyString = (fuzzyDestinationName)
 let exhaust = 20;
 
@@ -124,11 +126,31 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
 }
 
 export const attemptLogin = async (email, passwordHash) => {
-    await delay();
-    return {
-        token: "change this later",
-        email: "testemail@gmail.com",
-    };
+    if (MOCK) {
+        await delay();
+        return {
+            token: "change this later",
+            email: "testemail@gmail.com",
+        };
+    } else {
+        const res = await fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/login",
+            {}
+        ), {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify({
+                username: email,
+                password: passwordHash,
+            }),
+        }).then((response) => {
+            return response.json();
+        });
+        console.log(Cookies.get());
+        console.log(res);
+        return res;
+    }
 };
 
 export const sendSuccessfulPayment = async (name, phoneNumber, userEmail, specialRequests) => {
@@ -192,7 +214,45 @@ export const formatQueryParameters = (baseAddress, endpoint, params) => {
     return request;
 };
 
-export const getDestinationsByFuzzyString = async (fuzzyDestinationName) => {
+export const handleRefreshTokenExpire = async (func, nav) => {
+    const firstAttempt = await func();
+    console.log(firstAttempt);
+    if (firstAttempt !== null && firstAttempt.accessTokenExpired) {
+        await fetch(formatQueryParameters(DB_ADDRESS, "/refresh", {}), {
+            method: "POST",
+            credentials: "include",
+        }).then((response) => {
+            console.log(response);
+            if (!response.ok) {
+                throw new Error(response.status);
+            }
+            return;
+        }).catch((error) => {
+            switch (parseInt(error.message)) {
+                case 401:
+                    nav("/login", { replace: true });
+                    return;
+                default:
+                    console.log(error);
+                    return;
+            }
+        });
+        const secondAttempt = await func();
+        console.log(secondAttempt);
+        console.log("RETURN SECOND TRY");
+        return secondAttempt;
+    } else {
+        console.log("RETURN FIRST TRY");
+        return firstAttempt;
+    }
+
+}
+
+export const getDestinationsByFuzzyString = async (fuzzyDestinationName, nav) => {
+    return handleRefreshTokenExpire(async () => _getDestinationsByFuzzyString(fuzzyDestinationName), nav);
+}
+
+export const _getDestinationsByFuzzyString = async (fuzzyDestinationName) => {
     if (MOCK) {
         await delay();
         return [
@@ -210,26 +270,29 @@ export const getDestinationsByFuzzyString = async (fuzzyDestinationName) => {
             },
         ];
     } else {
-        // const res = await fetch(formatQueryParameters(
-        //     DB_ADDRESS,
-        //     "/destinations/fuzzyName",
-        //     {
-        //         "search":fuzzyDestinationName,
-        //     }
-        // ));
-        // const reader = res.body.getReader();
-
-        // console.log(res);
-        // return res;
-
         const res = await fetch(formatQueryParameters(
             DB_ADDRESS,
             "/destinations/fuzzyName",
             {
                 "search": fuzzyDestinationName,
             }
-        )).then((response) => {
+        ), {
+            credentials: "include",
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error(response.status);
+            }
             return response.json();
+        }).catch((error) => {
+            switch (parseInt(error.message)) {
+                case 401:
+                    return {
+                        accessTokenExpired: true
+                    };
+                default:
+                    console.log(error);
+                    break;
+            }
         });
         return res;
     }

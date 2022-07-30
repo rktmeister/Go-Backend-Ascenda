@@ -15,9 +15,13 @@ const Login = (props) => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        const user = await attemptLogin(email, hashPassword(passwordHash));
-        localStorage.setItem("user", JSON.stringify(user));
-        nav("/", { replace: true });
+        const jwt = await attemptLogin(email, hashPassword(passwordHash));
+        if (jwt.error) {
+            alert("Login unsuccessful");
+        } else {
+            localStorage.setItem("jwt", JSON.stringify(jwt));
+            nav("/", { replace: true });
+        }
     };
 
     return (
@@ -26,7 +30,7 @@ const Login = (props) => {
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input
-                        type="email"
+                        type="text"//"email"
                         className="form-control"
                         id="email"
                         aria-describedby="emailHelp"

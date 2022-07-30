@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/RediSearch/redisearch-go/redisearch"
@@ -38,11 +37,19 @@ func JwtSetup() {
 	}
 }
 
-func GenerateJWT(username string) string {
+func GenerateJWT(username string, isRefresh bool) string {
 	fmt.Println("gen")
+	var expiryOffset time.Duration
+	if isRefresh {
+		expiryOffset = time.Minute * 15
+	} else {
+		expiryOffset = time.Hour * 24 * 7
+	}
+
 	claims := &jwt.RegisteredClaims{
 		ID:        fmt.Sprint(username),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiryOffset)),
+		//ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)),
 	}
 	builder := jwt.NewBuilder(jwtSigner)
 	token, err := builder.Build(claims)
@@ -58,18 +65,18 @@ func VerifyJWT(tokenStr string) (string, error) {
 	fmt.Println("verify")
 	token, err := jwt.Parse([]byte(tokenStr), jwtVerifier)
 	if err != nil {
-		log.Fatal("Error parsing JWT")
+		log.Println("Error parsing JWT")
 		return "", err
 	}
 
 	if err := jwtVerifier.Verify(token); err != nil {
-		log.Fatal("Error verifying token")
+		log.Println("Error verifying token")
 		return "", err
 	}
 
 	var claims jwt.RegisteredClaims
 	if err := json.Unmarshal(token.Claims(), &claims); err != nil {
-		log.Fatal("Error unmarshalling JWT claims")
+		log.Println("Error unmarshalling JWT claims")
 		return "", err
 	}
 	fmt.Println(claims)
@@ -88,21 +95,24 @@ func VerifyJWT(tokenStr string) (string, error) {
 
 func Authorization(ctx *gin.Context) {
 	fmt.Println("auth")
-	authHeader := ctx.GetHeader("Authorization")
-	if authHeader == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing."})
-		return
-	}
-	headerParts := strings.Split(authHeader, " ")
-	if len(headerParts) != 2 {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header format is not valid."})
-		return
-	}
-	if headerParts[0] != "Bearer" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing bearer part."})
-		return
-	}
-	username, err := VerifyJWT(headerParts[1])
+	cookie, err := ctx.Cookie("access_jwt")
+	fmt.Println(cookie)
+
+	// authHeader := ctx.GetHeader("Authorization")
+	// if authHeader == "" {
+	// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing."})
+	// 	return
+	// }
+	// headerParts := strings.Split(authHeader, " ")
+	// if len(headerParts) != 2 {
+	// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header format is not valid."})
+	// 	return
+	// }
+	// if headerParts[0] != "Bearer" {
+	// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing bearer part."})
+	// 	return
+	// }
+	username, err := VerifyJWT(cookie) //VerifyJWT(headerParts[1])
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
@@ -112,7 +122,7 @@ func Authorization(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	user, err := (redisdb.GetUser(db, username))
+	user, err := redisdb.GetUser(db, username)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return

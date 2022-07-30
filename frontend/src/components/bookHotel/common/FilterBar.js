@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import MultiRangeSlider from "multi-range-slider-react";
 
 const FilterBar = (props) => {
     const [numberOfRooms, setNumberOfRooms] = useState(props.numberOfRooms);
@@ -7,6 +8,19 @@ const FilterBar = (props) => {
     const [minPrice, setMinPrice] = useState(props.minPrice);
     const [maxPrice, setMaxPrice] = useState(props.maxPrice);
     const [alertMessage, setAlertMessage] = useState("");
+
+
+
+
+    const [minValue, set_minValue] = useState(25);
+    const [maxValue, set_maxValue] = useState(75);
+    const handleInput = (e) => {
+        set_minValue(e.minValue);
+        set_maxValue(e.maxValue);
+    };
+
+
+
 
     const makeGuardFunction = (guardArray) => (newValue) => {
         for (let [func, msg] of guardArray) {
@@ -151,6 +165,20 @@ const FilterBar = (props) => {
                 </div>
                 <button type="submit" className="btn btn-primary" >Submit</button>
             </form>
+            <MultiRangeSlider
+                min={0}
+                max={100}
+                step={1}
+                ruler={false}
+                label={true}
+                preventWheel={false}
+                minValue={minValue}
+                maxValue={maxValue}
+                onInput={(e) => {
+                    handleInput(e);
+                    console.log(e);
+                }}
+            />
             <div className="alert alert-primary" role="alert">
                 {alertMessage}
             </div>

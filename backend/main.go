@@ -103,7 +103,7 @@ type User struct {
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		fmt.Println("CORS")
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3001")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
@@ -159,13 +159,44 @@ func main() {
 			c.BindJSON(&user)
 			fmt.Println(user)
 			if redisdb.CheckLogin(userClient, user.Username, user.Password) {
+				c.SetCookie("refresh_jwt", auth.GenerateJWT(user.Username, true), 60*60*24*7, "/", "", false, true)
+				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true)
 				c.JSON(200, gin.H{
 					"message": "login success",
-					"jwt":     auth.GenerateJWT(user.Username),
+					//"jwt":     auth.GenerateJWT(user.Username),
 				})
 			} else {
 				c.JSON(401, gin.H{
 					"message": "login failed",
+				})
+			}
+		})
+
+		api.POST("/refresh", func(c *gin.Context) {
+			cookie, err := c.Cookie("refresh_jwt")
+			if err != nil {
+				fmt.Println(err)
+				c.JSON(401, gin.H{
+					"message": "refresh failed",
+				})
+			}
+			username, err := auth.VerifyJWT(cookie)
+			if err != nil {
+				fmt.Println(err)
+				c.JSON(401, gin.H{
+					"message": "refresh failed",
+				})
+			}
+			user, err := redisdb.GetUser(userClient, username)
+			if err == nil {
+				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true)
+				c.JSON(200, gin.H{
+					"message": "refresh success",
+				})
+			} else {
+				fmt.Println(err)
+				c.JSON(401, gin.H{
+					"message": "refresh failed",
 				})
 			}
 		})
@@ -174,6 +205,12 @@ func main() {
 	authorized := api.Group("/")
 	authorized.Use(auth.Authorization)
 	{
+		authorized.GET("/testAccessToken", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "ok",
+			})
+		})
+
 		authorized.GET("/destinations/fuzzyName", func(c *gin.Context) {
 			search := c.Query("search")
 			// fmt.Println(search)

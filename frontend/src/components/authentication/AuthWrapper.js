@@ -5,10 +5,10 @@ const AuthWrapper = (props) => {
     const [authToken, setAuthToken] = useState(null);
 
     useEffect(() => {
-        const maybeUser = localStorage.getItem("user");
-        if (maybeUser) {
-            setAuthToken(JSON.parse(maybeUser).token);
-            console.log(JSON.parse(maybeUser).token);
+        const maybeToken = localStorage.getItem("jwt");
+        if (maybeToken) {
+            setAuthToken(JSON.parse(maybeToken));
+            console.log(JSON.parse(maybeToken));
         }
     }, []);
 

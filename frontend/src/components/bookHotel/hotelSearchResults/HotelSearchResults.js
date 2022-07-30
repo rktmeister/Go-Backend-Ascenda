@@ -81,11 +81,35 @@ const HotelSearchResults = (props) => {
     //     setDisplayHotels(getFilteredHotels());
     // }, [hotels, filterArray]);
 
-    const handleFilterChange = (formResults) => {
-        if (formResults.mustCallBackend || true) {
-            console.log("1");
+    const mustCallBackend = (formResults) => {
+        console.log([
+            [filterBarValues.checkInDate, formResults.checkInDate],
+            [filterBarValues.checkOutDate, formResults.checkOutDate],
+            [filterBarValues.numberOfRooms, formResults.numberOfRooms],
+        ]);
+
+        console.log([
+            [filterBarValues.checkInDate, formResults.checkInDate],
+            [filterBarValues.checkOutDate, formResults.checkOutDate],
+            [filterBarValues.numberOfRooms, formResults.numberOfRooms],
+        ].map(([a, b]) => a !== b));
+
+
+        return [
+            [filterBarValues.checkInDate, formResults.checkInDate],
+            [filterBarValues.checkOutDate, formResults.checkOutDate],
+            [filterBarValues.numberOfRooms, formResults.numberOfRooms],
+        ]
+            .map(([a, b]) => a !== b)
+            .reduce((a, b) => a || b, false);
+    };
+
+    const handleFilterChange = async (formResults) => {
+        console.log("MUST CALL BACKEND:", mustCallBackend(formResults));
+        if (mustCallBackend(formResults)) {
+            await console.log("1");
             initialLoadRoutine(formResults);
-            return;
+            //return;
         }
         const newFilterArray = makeFilterArray(formResults);
         setFilterBarValues(formResults);
