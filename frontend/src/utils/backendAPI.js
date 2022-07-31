@@ -49,7 +49,7 @@ export const getHotelBatch = async (destinationId, checkInDate, checkOutDate, nu
             rating: HotelBriefDescription.rating,
             defaultImageURL,
             categories: HotelBriefDescription.categories,
-            description: HotelBriefDescription.Description,
+            description: HotelBriefDescription.description,
 
             cloudflareImageURL: HotelBriefDescription.cloudflare_image_url,
             suffix: HotelBriefDescription.image_details.suffix,
@@ -109,6 +109,21 @@ export const attemptLogin = async (email, passwordHash) => {
             username: email,
             password: passwordHash,
         }),
+    }).then((response) => {
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+        return response.json();
+    }).catch((error) => {
+        switch (parseInt(error.message)) {
+            case 401:
+                return {
+                    error: "Login failed",
+                };
+            default:
+                console.log(error);
+                return;
+        }
     });
     return res;
 };
@@ -203,6 +218,10 @@ export const handleRefreshTokenExpire = async (func, nav) => {
     }
 };
 
+export const hashPassword = (password) => {
+    return password; // TODO: implement hash function
+};
+
 export const testAccessToken = (nav) => {
     return handleRefreshTokenExpire(() => {
         const res = fetch(formatQueryParameters(DB_ADDRESS, "/testAccessToken", {}), {
@@ -211,6 +230,30 @@ export const testAccessToken = (nav) => {
         return res;
     }, nav);
 };
+
+export const testIsLoggedIn = async () => {
+    const res = await fetch(formatQueryParameters(DB_ADDRESS, "/refresh", {}), {
+        method: "POST",
+        credentials: "include",
+    }).then((response) => {
+        console.log(response);
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+        return response.json();
+    }).catch((error) => {
+        switch (parseInt(error.message)) {
+            case 401:
+                return {
+                    error: "Not logged in",
+                };
+            default:
+                console.log(error);
+                return;
+        }
+    });
+    return res;
+}
 
 export const fetchErrorAdapter = async (fetcher) => {
     const res = await fetcher().then((response) => {

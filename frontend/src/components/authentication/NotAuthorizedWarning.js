@@ -11,7 +11,6 @@ const NotAuthorizedWarning = (props) => {
                     </blockquote>
                 </div>
             </div>
-            <div>h{props.test}i</div>
         </div>
     );
 };

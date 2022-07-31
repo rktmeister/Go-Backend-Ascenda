@@ -1,20 +1,32 @@
-import { forwardRef } from "react";
+import { forwardRef, Fragment } from "react";
+import HotelCardDescription from "./HotelCardDescription";
+import sanitizeHTML from "sanitize-html";
+import StarRatingDisplay from "../../common/StarRatingDisplay";
 
 const HotelCard = forwardRef((props, ref) => {
+    // const truncateDescription = (description) => {
+    //     return description.substring(0, 50)
+    // };
+
+
+
+
     return (
         <div ref={ref}>
             {
                 props.item ?
                     <div className="card" style={{ backgroundColor: "dodgerblue", height: props.height }}>
                         <div className="card-header">
-                            ID: {props.item.uid}, Price: {props.item.price} Rating: {props.item.rating}
+                            <span>ID: {props.item.uid}, Price: ${props.item.price} Rating: <StarRatingDisplay rating={props.item.rating} /></span>
                         </div>
                         <div className="card-body">
                             <blockquote className="blockquote mb-0">
                                 <p>Name: {props.item.term}</p>
-                                <footer className="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+                                {/* <button onClick={() => console.log(props)}>hi</button> */}
+                                <footer className="blockquote-footer">
+                                    <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(props.item.description) }} />
+                                </footer>
                                 <button onClick={() => props.onClick(props.item)}>CHOOSE</button>
-                                <button onClick={() => props.onClick(ref)}>TEST</button>
                                 <img src={props.item.defaultImageURL} width={props.height / 10} alt="" />
                             </blockquote>
                         </div>

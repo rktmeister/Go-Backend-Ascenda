@@ -1,26 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { attemptLogin, hashPassword } from "../../utils/backendAPI";
+import { hashPassword } from "../../utils/backendAPI";
 
-const Login = (props) => {
+const CreateAccountPage = (props) => {
     const nav = useNavigate();
-
     const [userName, setUserName] = useState("");
     const [passwordHash, setPasswordHash] = useState("");
 
-    const handleLogin = async (event) => {
+    const handleCreateAccount = async (event) => {
         event.preventDefault();
-        const res = await attemptLogin(userName, hashPassword(passwordHash));
-        if (res.error) {
-            alert(res.error);
-        } else {
-            nav("/", { replace: true });
-        }
+        // call backend
     };
 
     return (
         <div>
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleCreateAccount}>
                 <div className="form-group">
                     <label htmlFor="userName">Username</label>
                     <input
@@ -47,4 +41,4 @@ const Login = (props) => {
     );
 };
 
-export default Login;
+export default CreateAccountPage;
