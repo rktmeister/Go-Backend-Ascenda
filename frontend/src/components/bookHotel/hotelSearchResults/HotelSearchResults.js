@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import FilterBar from "../common/FilterBar";
+import FilterShow from "../common/FilterShow";
 import "./HotelSearchResults.css";
 import HotelCard from "./parts/HotelCard";
 import ScrollMenu from "./parts/ScrollMenu";
-import FilterBar from "../common/FilterBar";
-import FilterShow from "../common/FilterShow";
-import { useNavigate } from "react-router-dom";
 
 const HotelSearchResults = (props) => {
     const nav = useNavigate();
