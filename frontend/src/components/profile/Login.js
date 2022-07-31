@@ -19,7 +19,7 @@ const Login = (props) => {
         if (jwt.error) {
             alert("Login unsuccessful");
         } else {
-            localStorage.setItem("jwt", JSON.stringify(jwt));
+            // localStorage.setItem("jwt", JSON.stringify(jwt));
             nav("/", { replace: true });
         }
     };

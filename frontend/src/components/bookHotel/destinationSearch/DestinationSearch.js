@@ -35,7 +35,7 @@ function DestinationSearch(props) {
         nav
       );
       const newFilter = got.filter((value) => {
-        console.log(value.term, searchWord);
+        //console.log(value.term, searchWord);
         return value.term.toLowerCase().includes(searchWord.toLowerCase());
       });
       console.log("NF", newFilter);
@@ -99,7 +99,7 @@ function DestinationSearch(props) {
             filteredData.length !== 0 && (
               filteredData.slice(0, 15).map(
                 (value, key) => {
-                  console.log("V", value);
+                  //console.log("V", value);
                   return (
                     <DestinationCard key={key} value={value} onClick={handleChoice} />
                   );

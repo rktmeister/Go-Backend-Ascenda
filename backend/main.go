@@ -159,8 +159,8 @@ func main() {
 			c.BindJSON(&user)
 			fmt.Println(user)
 			if redisdb.CheckLogin(userClient, user.Username, user.Password) {
-				c.SetCookie("refresh_jwt", auth.GenerateJWT(user.Username, true), 60*60*24*7, "/", "", false, true)
-				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true)
+				c.SetCookie("refresh_jwt", auth.GenerateJWT(user.Username, true), 60*60*24*7, "/", "", false, true) // 60*60*24*7 for 7 days
+				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true)      // 60*15 for 15 min
 				c.JSON(200, gin.H{
 					"message": "login success",
 					//"jwt":     auth.GenerateJWT(user.Username),
@@ -189,7 +189,7 @@ func main() {
 			}
 			user, err := redisdb.GetUser(userClient, username)
 			if err == nil {
-				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true)
+				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true) // 60*15 for 15 min
 				c.JSON(200, gin.H{
 					"message": "refresh success",
 				})
