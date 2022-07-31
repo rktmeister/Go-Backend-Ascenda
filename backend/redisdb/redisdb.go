@@ -2,6 +2,7 @@ package redisdb
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -108,6 +109,7 @@ func InitBookingDataRedis() *redisearch.Client {
 }
 
 func AddNewUser(u *redisearch.Client, username string, password string) {
+	fmt.Println("Adding new user", username, password)
 	if checkExistingUser(u, username) {
 		fmt.Println("User already exists")
 	} else {
@@ -127,6 +129,27 @@ func checkExistingUser(u *redisearch.Client, username string) bool {
 		return false
 	} else {
 		return true
+	}
+}
+
+func GetUser(u *redisearch.Client, username string) (*User, error) {
+	doc, _, _ := u.Search(redisearch.NewQuery(fmt.Sprintf("%s%s%s", `"`, username, `"`)).SetReturnFields("username", "password").Limit(0, 1))
+	if len(doc) == 0 {
+		return nil, errors.New("No such user with username: " + username)
+	} else {
+		name, ok := doc[0].Properties["username"].(string)
+		if !ok {
+			return nil, errors.New("Name isn't string")
+		}
+		password, ok := doc[0].Properties["password"].(string)
+		if !ok {
+			return nil, errors.New("Password isn't string")
+		}
+
+		return &User{
+			Username: name,
+			Password: password,
+		}, nil
 	}
 }
 

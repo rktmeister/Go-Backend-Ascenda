@@ -4,125 +4,135 @@ import HotelCard from "./parts/HotelCard";
 import ScrollMenu from "./parts/ScrollMenu";
 import FilterBar from "../common/FilterBar";
 import FilterShow from "../common/FilterShow";
+import { useNavigate } from "react-router-dom";
 
 const HotelSearchResults = (props) => {
+    const nav = useNavigate();
     const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
 
     const [hotels, setHotels] = useState([]);
     const [displayHotels, setDisplayHotels] = useState([]);
     const [reserveHotels, setReserveHotels] = useState([]);
-    const [filterBarValues, setFilterBarValues] = useState(gotHandMeDowns.filterData);
+    const [readyHotels, setReadyHotels] = useState([]);
+
     const makeFilterArray = (filterBarData) => {
-        console.log(filterBarData, typeof filterBarData.minPrice, typeof filterBarData.maxPrice, (({ price }) => filterBarData.minPrice <= price && price <= filterBarData.maxPrice)(2));
+        console.log(
+            filterBarData,
+            typeof filterBarData.minPrice,
+            typeof filterBarData.maxPrice,
+            (({ price }) => filterBarData.minPrice <= price && price <= filterBarData.maxPrice)(2)
+        );
         return [
-            //({ number_of_rooms }) => number_of_rooms >= filterBarData.numberOfRooms,
             ({ price }) => filterBarData.minPrice <= price && price <= filterBarData.maxPrice,
         ];
     };
-    const [filterArray, setFilterArray] = useState(makeFilterArray(gotHandMeDowns.filterData));
+    const [filter, setFilter] = useState({
+        values: gotHandMeDowns.filterData,
+        funcs: makeFilterArray(gotHandMeDowns.filterData),
+        prev: {
+            values: {},
+            funcs: {},
+        },
+    });
+
     const [chosenHotel, setChosenHotel] = useState(null);
 
-    // const getFilteredHotels = () => {
-    //     return hotels.filter((hotel) => filterArray.every((filterFunc) => filterFunc(hotel)));
-    // }
-
-    const loadHotelsFromBackend = async (fbVals = filterBarValues) => {
+    const loadHotelsFromBackend = async (fbVals) => {
         console.log("3");
         const getResults = await props.backendPackage.getHotelBatch(
             gotHandMeDowns.destination.uid,
             fbVals.checkInDate,
             fbVals.checkOutDate,
-            fbVals.numberOfRooms
+            fbVals.numberOfRooms,
+            nav
         );
-        if (getResults.error) {
-            setHotels([]);
-            return [];
-        } else {
-            setHotels(getResults);
-        }
-        return getResults;
+        console.log("GR", getResults);
+        return getResults.error ? [] : getResults;
     };
 
-    const initializeDisplay = (getResults = hotels) => {
-        const slicePoint = Math.min(10, getResults.length);
-        console.log("D", getResults.slice(0, slicePoint));
-        console.log("R", getResults.slice(slicePoint));
-        setDisplayHotels(getResults.slice(0, slicePoint));
-        setReserveHotels(getResults.slice(slicePoint));
-    };
+    // change readyHotels if hotels, filter changes
+    useEffect(() => {
+        const newReadyHotels = hotels.filter(
+            (hotel) => filter.funcs.every((filterFunc) => filterFunc(hotel))
+        );
+        setReadyHotels(newReadyHotels);
+    }, [hotels, filter])
 
-    const bufferLoad = (buffer, lastHotelId, before) => {
+    // change displayHotels if readyHotels changes
+    useEffect(() => {
+        const slicePoint = Math.min(10, readyHotels.length);
+        const newDisplayHotels = readyHotels.slice(0, slicePoint);
+        setDisplayHotels(newDisplayHotels);
+    }, [readyHotels])
 
-    }
+    // change reserveHotels if readyHotels changes
+    useEffect(() => {
+        const slicePoint = Math.min(10, readyHotels.length);
+        const newReserveHotels = readyHotels.slice(slicePoint);
+        setReserveHotels(newReserveHotels);
+    }, [readyHotels])
 
-    // const sortHotels;
-
-    // const displayHote
-
-    const initialLoadRoutine = async (formResults = undefined) => {
-        console.log("2");
-        const getResults = await loadHotelsFromBackend(formResults);
-        const filteredResults = getResults.filter((hotel) => filterArray.every((filterFunc) => filterFunc(hotel)));
-        initializeDisplay(filteredResults);
-    };
-
-    const refilter = (newFilterArray) => {
-        const filteredResults = hotels.filter((hotel) => newFilterArray.every((filterFunc) => filterFunc(hotel)));
-        initializeDisplay(filteredResults);
-    }
-
+    // change hotels if filter changes
     useEffect(() => {
         (async () => {
-            await initialLoadRoutine();
+            if (mustCallBackend(filter)) {
+                const newHotels = await loadHotelsFromBackend(filter.values);
+                setHotels(newHotels);
+            }
         })();
-    }, []);
+    }, [filter])
 
     // useEffect(() => {
-    //     setDisplayHotels(getFilteredHotels());
-    // }, [hotels, filterArray]);
+    //     (async () => {
+    //         const newHotels = await loadHotelsFromBackend(filter.values);
+    //         setHotels(newHotels);
+    //     })();
+    // }, []);
 
-    const handleFilterChange = (formResults) => {
-        if (formResults.mustCallBackend || true) {
-            console.log("1");
-            initialLoadRoutine(formResults);
-            return;
-        }
-        const newFilterArray = makeFilterArray(formResults);
-        setFilterBarValues(formResults);
-        setFilterArray(newFilterArray);
-        refilter(newFilterArray);
+    const mustCallBackend = ({ values, prev }) => {
+        console.log([
+            [values.checkInDate, prev.values.checkInDate],
+            [values.checkOutDate, prev.values.checkOutDate],
+            [values.numberOfRooms, prev.values.numberOfRooms],
+        ]);
+
+        console.log([
+            [values.checkInDate, prev.values.checkInDate],
+            [values.checkOutDate, prev.values.checkOutDate],
+            [values.numberOfRooms, prev.values.numberOfRooms],
+        ].map(([a, b]) => a !== b));
+
+
+        return [
+            [values.checkInDate, prev.values.checkInDate],
+            [values.checkOutDate, prev.values.checkOutDate],
+            [values.numberOfRooms, prev.values.numberOfRooms],
+        ]
+            .map(([a, b]) => a !== b)
+            .reduce((a, b) => a || b, false);
+    };
+
+    const handleFilterChange = async (formResults) => {
+        console.log("FILTER CHANGE", filter);
+        const prevFilter = {
+            ...filter,
+        };
+        const newFilter = {
+            values: formResults,
+            funcs: makeFilterArray(formResults),
+            prev: {
+                values: prevFilter.values,
+                funcs: prevFilter.funcs,
+            },
+        };
+        setFilter(newFilter);
     };
 
     const displayMore = () => {
         console.log("DM");
         const res = reserveHotels.pop();
-        // let res = null;
-        // while (res === null && haveReserves()) {
-        //     const candidate = reserveHotels.pop();
-        //     console.log("POP", candidate, reserveHotels);
-        //     //console.log("CANDIDATE:", candidate, typeof candidate.price);
-        //     console.log(filterArray.every((filterFunc) => filterFunc(candidate)));
-        //     if (filterArray.every((filterFunc) => filterFunc(candidate))) {
-        //         //console.log("BINGO");
-        //         res = candidate;
-        //     }
-        // }
-        //console.log("END:", res, reserveHotels);
         setReserveHotels(reserveHotels);
         return res;
-
-        // const reserves = reserveHotels.slice();
-        // const transfer = []
-        // while (transfer.length < 10 || noMore)
-
-
-        // const transferAmount = Math.min(10, reserveHotels.length);
-        // const transfer = reserveHotels.slice(0, transferAmount);
-        // const newReserveHotels = reserveHotels.slice(transferAmount);
-        // //const newDisplayHotels = transfer.concat(displayHotels);
-        // setReserveHotels(newReserveHotels);
-        // //setDisplayHotels(newDisplayHotels);
-        // return transfer;
     };
 
     const haveReserves = () => {
@@ -133,7 +143,7 @@ const HotelSearchResults = (props) => {
         const dataToBePassedOn = {
             destination: gotHandMeDowns.destination,
             hotel: chosenHotel,
-            filterData: filterBarValues,
+            filterData: filter.values,
         };
         props.handMeDowns.push(dataToBePassedOn);
         props.finishStage(props.handMeDowns);
@@ -161,10 +171,10 @@ const HotelSearchResults = (props) => {
                 getMore={displayMore}
                 height={500}
             />
-            <button onClick={initialLoadRoutine} />
+            {/* <button onClick={initialLoadRoutine} /> */}
             <button onClick={() => console.log(hotels, displayHotels, reserveHotels, gotHandMeDowns, chosenHotel)} />
             <FilterShow
-                currentFilterData={filterBarValues}
+                currentFilterData={filter.values}
             />
             <button onClick={finishStage}>Next Stage</button>
         </div>
