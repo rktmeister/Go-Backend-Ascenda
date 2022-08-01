@@ -117,6 +117,28 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
+// func callGetRequest(url string, hClient *http.Client, variable) {
+// 	req, err := http.NewRequest(http.MethodGet, api_url_price, nil)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	res, getErr := hClient.Do(req)
+// 	if getErr != nil {
+// 		log.Fatal(getErr)
+// 	}
+// 	if res.Body != nil {
+// 		defer res.Body.Close()
+// 	}
+// 	body, readErr := ioutil.ReadAll(res.Body)
+// 	if readErr != nil {
+// 		log.Fatal(readErr)
+// 	}
+// 	err = json.Unmarshal(body, &roomPrices)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// }
+
 func main() {
 	router := gin.Default()
 	router.RedirectTrailingSlash = true
@@ -336,7 +358,7 @@ func main() {
 				if err != nil {
 					log.Fatal(err)
 				}
-				time.Sleep(100 * time.Millisecond)
+				time.Sleep(500 * time.Millisecond)
 			}
 
 			// NOW MERGE
@@ -434,7 +456,7 @@ func main() {
 				if err != nil {
 					log.Fatal(err)
 				}
-				time.Sleep(100 * time.Millisecond)
+				time.Sleep(500 * time.Millisecond)
 			}
 
 			c.JSON(http.StatusOK, gin.H{
