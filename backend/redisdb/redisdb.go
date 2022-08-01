@@ -110,7 +110,7 @@ func InitBookingDataRedis() *redisearch.Client {
 
 func AddNewUser(u *redisearch.Client, username string, password string) {
 	fmt.Println("Adding new user", username, password)
-	if checkExistingUser(u, username) {
+	if CheckExistingUser(u, username) {
 		fmt.Println("User already exists")
 	} else {
 		doc := redisearch.NewDocument("user:"+username, 1.0)
@@ -122,7 +122,7 @@ func AddNewUser(u *redisearch.Client, username string, password string) {
 	}
 }
 
-func checkExistingUser(u *redisearch.Client, username string) bool {
+func CheckExistingUser(u *redisearch.Client, username string) bool {
 	doc, total, _ := u.Search(redisearch.NewQuery(fmt.Sprintf("%s%s%s", `"`, username, `"`)).SetReturnFields("username").Limit(0, 1))
 	fmt.Println("Total Users with username:", username, "is", total)
 	if len(doc) == 0 {
@@ -139,11 +139,11 @@ func GetUser(u *redisearch.Client, username string) (*User, error) {
 	} else {
 		name, ok := doc[0].Properties["username"].(string)
 		if !ok {
-			return nil, errors.New("Name isn't string")
+			return nil, errors.New("name isn't string")
 		}
 		password, ok := doc[0].Properties["password"].(string)
 		if !ok {
-			return nil, errors.New("Password isn't string")
+			return nil, errors.New("password isn't string")
 		}
 
 		return &User{
@@ -154,7 +154,7 @@ func GetUser(u *redisearch.Client, username string) (*User, error) {
 }
 
 func CheckLogin(u *redisearch.Client, username string, password string) bool {
-	existingUser := checkExistingUser(u, username)
+	existingUser := CheckExistingUser(u, username)
 	if existingUser {
 		doc, _, _ := u.Search(redisearch.NewQuery(username).SetReturnFields("password").Limit(0, 1))
 		fmt.Println("User exists! Now checking password")
@@ -191,6 +191,22 @@ func GetDestinationUid(c *redisearch.Client, destination string) string {
 	} else {
 		output := fmt.Sprintf("%v", doc[0].Properties["uid"])
 		return output
+	}
+}
+
+func DeleteUserDocument(u *redisearch.Client, username string) bool {
+	doc, total, _ := u.Search(redisearch.NewQuery(fmt.Sprintf("%s%s%s", `"`, username, `"`)).SetReturnFields("username").Limit(0, 1))
+	fmt.Println("Total Users with username:", username, "is", total)
+	if len(doc) == 0 {
+		return false
+	} else {
+		documentId := doc[0].Id
+		if err := u.DeleteDocument(documentId); err != nil {
+			fmt.Println(err)
+			return false
+		}
+		fmt.Println("User", doc[0].Properties["username"], "deleted")
+		return true
 	}
 }
 

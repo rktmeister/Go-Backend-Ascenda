@@ -145,6 +145,7 @@ func main() {
 
 	redisdb.AddNewUser(userClient, "rktmeister1", "1234")
 	redisdb.CheckLogin(userClient, "rktmeister1", "1234")
+	redisdb.DeleteUserDocument(userClient, "rktmeister1")
 
 	redisdb.AddNewUser(userClient, "sunrise", "1234")
 	redisdb.CheckLogin(userClient, "sunrise", "1234")
@@ -168,6 +169,21 @@ func main() {
 			} else {
 				c.JSON(401, gin.H{
 					"message": "login failed",
+				})
+			}
+		})
+
+		api.POST("/register", func(c *gin.Context) {
+			var user User
+			c.BindJSON(&user)
+			if !redisdb.CheckExistingUser(userClient, user.Username) {
+				redisdb.AddNewUser(userClient, user.Username, user.Password)
+				c.JSON(200, gin.H{
+					"message": "register success",
+				})
+			} else {
+				c.JSON(401, gin.H{
+					"message": "register failed",
 				})
 			}
 		})
@@ -209,6 +225,26 @@ func main() {
 			c.JSON(http.StatusOK, gin.H{
 				"message": "ok",
 			})
+		})
+
+		authorized.POST("/deleteAccount", func(c *gin.Context) {
+			var user User
+			c.BindJSON(&user)
+			if redisdb.CheckLogin(userClient, user.Username, user.Password) {
+				if redisdb.DeleteUserDocument(userClient, user.Username) {
+					c.JSON(200, gin.H{
+						"message": "delete success",
+					})
+				} else {
+					c.JSON(401, gin.H{
+						"message": "delete failed for unknown reasons",
+					})
+				}
+			} else {
+				c.JSON(401, gin.H{
+					"message": "delete failed because user not found",
+				})
+			}
 		})
 
 		authorized.GET("/destinations/fuzzyName", func(c *gin.Context) {
