@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/RediSearch/redisearch-go v1.1.1
+	github.com/cristalhq/jwt/v4 v4.0.2
 	github.com/gin-gonic/gin v1.8.1
 )
 

@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 // const getDestinationsByFuzzyString = (fuzzyDestinationName)
 let exhaust = 20;
 
@@ -10,27 +12,9 @@ export const getStripePrice = async (hotelId) => {
     return "price_1LMX2uAML4yM4v0zWPOXMEa1";
 }
 
-export const getHotelBatch = async (destinationId, checkInDate, checkOutDate, numberOfRooms) => {
-    if (MOCK) {
-        exhaust -= 1;
-        if (exhaust <= 0) return [];
-        const res = [];
-        for (let i = 0; i < 5; i++) {
-            const name = randomStringForTesting(10, "A".charCodeAt(0) - 64);
-            res.push({
-                uid: randomStringForTesting(5, 0),
-                term: name,
-                number_of_rooms: Math.floor(Math.random() * 10),
-                price: Math.random() * 10,
-                latitude: 47.6000,
-                longitude: 3.5333,
-                description: "some description",
-            });
-        }
-        await delay();
-        return res;
-    } else {
-        const res = await fetch(formatQueryParameters(
+export const getHotelBatch = async (destinationId, checkInDate, checkOutDate, numberOfRooms, nav) => {
+    const res1 = await handleRefreshTokenExpire(() => {
+        const res = fetch(formatQueryParameters(
             DB_ADDRESS,
             "/hotels/destination",
             {
@@ -40,56 +24,49 @@ export const getHotelBatch = async (destinationId, checkInDate, checkOutDate, nu
                 "checkout": checkOutDate,
                 "guests": numberOfRooms,
             }
-        )).then((response) => {
-            return response.json();
+        ), {
+            credentials: "include"
         });
+        return res;
+    }, nav);
 
-        if (res.hotel_price === null) {
-            return {
-                error: "No hotels found",
-            };
-        }
 
-        console.log("GOT HOTELS:", res);
-        const transformedResults = res.hotel_price.map(({ HotelBriefDescription, Id, Price }) => {
-            const defaultImageURL = `${HotelBriefDescription.cloudflare_image_url}/${Id}/i${HotelBriefDescription.default_image_index}${HotelBriefDescription.image_details.suffix}`;
-            return {
-                uid: Id,
-                latitude: HotelBriefDescription.latitude,
-                longitude: HotelBriefDescription.longitude,
-                term: HotelBriefDescription.name,
-                price: Price,
-                address: HotelBriefDescription.address,
-                rating: HotelBriefDescription.rating,
-                defaultImageURL,
-                categories: HotelBriefDescription.categories,
-                description: HotelBriefDescription.description,
+    if (res1.hotel_price === null) {
+        return {
+            error: "No hotels found",
+        };
 
-                cloudflareImageURL: HotelBriefDescription.cloudflare_image_url,
-                suffix: HotelBriefDescription.image_details.suffix,
-                numberOfImages: HotelBriefDescription.number_of_images,
-                defaultImageIndex: HotelBriefDescription.default_image_index,
-                score: HotelBriefDescription.categories.overall.score,
-                popularity: HotelBriefDescription.categories.overall.popularity,
-            };
-        })
-        return transformedResults;
     }
+
+    console.log("GOT HOTELS:", res1);
+    const transformedResults = res1.hotel_price.map(({ HotelBriefDescription, Id, Price }) => {
+        const defaultImageURL = `${HotelBriefDescription.cloudflare_image_url}/${Id}/i${HotelBriefDescription.default_image_index}${HotelBriefDescription.image_details.suffix}`;
+        return {
+            uid: Id,
+            latitude: HotelBriefDescription.latitude,
+            longitude: HotelBriefDescription.longitude,
+            term: HotelBriefDescription.name,
+            price: Price,
+            address: HotelBriefDescription.address,
+            rating: HotelBriefDescription.rating,
+            defaultImageURL,
+            categories: HotelBriefDescription.categories,
+            description: HotelBriefDescription.Description,
+
+            cloudflareImageURL: HotelBriefDescription.cloudflare_image_url,
+            suffix: HotelBriefDescription.image_details.suffix,
+            numberOfImages: HotelBriefDescription.number_of_images,
+            defaultImageIndex: HotelBriefDescription.default_image_index,
+            score: HotelBriefDescription.categories.overall.score,
+            popularity: HotelBriefDescription.categories.overall.popularity,
+        };
+    })
+    return transformedResults;
 };
 
-export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, checkOutDate, numberOfRooms) => {
-    if (MOCK) {
-        // return await fetch("https://ascendahotels.mocklab.io/api/hotels/diH7/prices/ean")
-        //     .then(res => res.json());
-        return [
-            {
-                price: Math.floor(Math.random() * 20000),
-                description: randomStringForTesting(10, "A".charCodeAt(0) - 64),
-                uid: randomStringForTesting(5, 0),
-            }
-        ];
-    } else {
-        const res = await fetch(formatQueryParameters(
+export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, checkOutDate, numberOfRooms, nav) => {
+    const res = handleRefreshTokenExpire(() => {
+        const res = fetch(formatQueryParameters(
             DB_ADDRESS,
             "/room/hotel",
             {
@@ -99,46 +76,48 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
                 "checkout": checkOutDate,
                 "guests": numberOfRooms,
             }
-        )).then((response) => {
-            return response.json();
+        ), {
+            credentials: "include"
         });
-
         console.log("res is: ", res);
+        return res;
+    }, nav);
 
-        const res2 = {
-            description: res.hotelDesc.description,
-            uid: res.hotelDesc.id,
-            cloudflareImageURL: res.hotelDesc.cloudflare_image_url,
-            suffix: res.hotelDesc.image_details.suffix,
-	        numberOfImages : res.hotelDesc.number_of_images,
-	        defaultImageIndex : res.hotelDesc.default_image_index,
-            score: res.hotelDesc.categories.overall.score,
-            popularity: res.hotelDesc.categories.overall.popularity,
-            address: res.hotelDesc.address,
-            rating: res.hotelDesc.rating,
-            rooms: res.roomPrice.rooms
-        };
-        return res2;
-        // return res;
-    }
+    const res2 = {
+        description: res.hotelDesc.description,
+        uid: res.hotelDesc.id,
+        cloudflareImageURL: res.hotelDesc.cloudflare_image_url,
+        suffix: res.hotelDesc.image_details.suffix,
+        numberOfImages: res.hotelDesc.number_of_images,
+        defaultImageIndex: res.hotelDesc.default_image_index,
+        score: res.hotelDesc.categories.overall.score,
+        popularity: res.hotelDesc.categories.overall.popularity,
+        address: res.hotelDesc.address,
+        rating: res.hotelDesc.rating,
+        rooms: res.roomPrice.rooms
+    };
+    return res2;
 }
 
 export const attemptLogin = async (email, passwordHash) => {
-    await delay();
-    return {
-        token: "change this later",
-        email: "testemail@gmail.com",
-    };
+    const res = fetch(formatQueryParameters(
+        DB_ADDRESS,
+        "/login",
+        {}
+    ), {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({
+            username: email,
+            password: passwordHash,
+        }),
+    });
+    return res;
 };
 
-export const sendSuccessfulPayment = async (name, phoneNumber, userEmail, specialRequests) => {
-    if (MOCK) {
-        await delay();
-        return {
-            acknowledged: true,
-        };
-    } else {
-        const res = await fetch(formatQueryParameters(
+export const sendSuccessfulPayment = async (name, phoneNumber, userEmail, specialRequests, nav) => {
+    return handleRefreshTokenExpire(() => {
+        const res = fetch(formatQueryParameters(
             DB_ADDRESS,
             "/booking/logSuccess",
             {
@@ -149,9 +128,10 @@ export const sendSuccessfulPayment = async (name, phoneNumber, userEmail, specia
             }
         ), {
             method: "post",
+            credentials: "include",
         });
         return res;
-    }
+    }, nav);
 };
 
 // credit to https://stackoverflow.com/questions/20334486/simulate-a-timed-async-call
@@ -192,52 +172,79 @@ export const formatQueryParameters = (baseAddress, endpoint, params) => {
     return request;
 };
 
-export const getDestinationsByFuzzyString = async (fuzzyDestinationName) => {
-    if (MOCK) {
-        await delay();
-        return [
-            {
-                uid: 329,
-                term: "Singapore",
-            },
-            {
-                uid: 52,
-                term: "India",
-            },
-            {
-                uid: 130,
-                term: "Finland",
-            },
-        ];
+export const handleRefreshTokenExpire = async (func, nav) => {
+    const firstAttempt = await fetchErrorAdapter(func);
+    console.log(firstAttempt);
+    if (firstAttempt !== null && firstAttempt.accessTokenExpired) {
+        await fetch(formatQueryParameters(DB_ADDRESS, "/refresh", {}), {
+            method: "POST",
+            credentials: "include",
+        }).then((response) => {
+            console.log(response);
+            if (!response.ok) {
+                throw new Error(response.status);
+            }
+            return;
+        }).catch((error) => {
+            switch (parseInt(error.message)) {
+                case 401:
+                    nav("/login", { replace: true });
+                    return;
+                default:
+                    console.log(error);
+                    return;
+            }
+        });
+        const secondAttempt = await fetchErrorAdapter(func);
+        console.log(secondAttempt);
+        console.log("RETURN SECOND TRY");
+        return secondAttempt;
     } else {
-        // const res = await fetch(formatQueryParameters(
-        //     DB_ADDRESS,
-        //     "/destinations/fuzzyName",
-        //     {
-        //         "search":fuzzyDestinationName,
-        //     }
-        // ));
-        // const reader = res.body.getReader();
+        console.log("RETURN FIRST TRY");
+        return firstAttempt;
+    }
+};
 
-        // console.log(res);
-        // return res;
+export const testAccessToken = (nav) => {
+    return handleRefreshTokenExpire(() => {
+        const res = fetch(formatQueryParameters(DB_ADDRESS, "/testAccessToken", {}), {
+            credentials: "include",
+        });
+        return res;
+    }, nav);
+};
 
-        const res = await fetch(formatQueryParameters(
+export const fetchErrorAdapter = async (fetcher) => {
+    const res = await fetcher().then((response) => {
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+        return response.json();
+    }).catch((error) => {
+        switch (parseInt(error.message)) {
+            case 401:
+                return {
+                    accessTokenExpired: true
+                };
+            default:
+                console.log(error);
+                break;
+        }
+    });
+    return res;
+};
+
+export const getDestinationsByFuzzyString = async (fuzzyDestinationName, nav) => {
+    return handleRefreshTokenExpire(() => {
+        const res = fetch(formatQueryParameters(
             DB_ADDRESS,
             "/destinations/fuzzyName",
             {
                 "search": fuzzyDestinationName,
             }
-        )).then((response) => {
-            return response.json();
+        ), {
+            credentials: "include",
         });
         return res;
-    }
-}
-
-// const getDestinationsByFuzzyString = (fuzzyDestinationName) => {
-//     return [
-//         data={[{title: "azerbaijan"}, {title: "singapore"}]}  
-        
-//     ];
-// }
+    }, nav);
+};
