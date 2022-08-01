@@ -49,9 +49,10 @@ function HotelRoomDetails(props) {
     setCurrentIndex(Math.min(gotHandMeDowns.hotel.numberOfImages - 1, currentIndex + 1));
   }
 
-  const loadUntilSuccess = () => {
-    let periodicLoad = setInterval(async () => {
-      const result = await props.backendPackage.getHotelRoomBatch(
+  // if chosen hotel changes, load rooms from it
+  useEffect(() => {
+    (async () => {
+      const res = await props.backendPackage.getHotelRoomBatch(
         gotHandMeDowns.hotel.uid,
         gotHandMeDowns.destination.uid,
         gotHandMeDowns.filterData.checkInDate,
@@ -59,29 +60,10 @@ function HotelRoomDetails(props) {
         gotHandMeDowns.filterData.numberOfRooms,
         nav
       );
-      if (result.completed) {
-        
+      if (!res.error) {
+        setRooms(res);
       }
-    }, 5000)
-  };
-
-  useEffect(() => {
-    if (isLoaded) {
-      clearInterval(periodicLoad);
-    }
-  }, [isLoaded])
-
-  useEffect(() => {
-    periodicLoad = setInterval(async () => {
-      await props.backendPackage.getHotelRoomBatch(
-        gotHandMeDowns.hotel.uid,
-        gotHandMeDowns.destination.uid,
-        gotHandMeDowns.filterData.checkInDate,
-        gotHandMeDowns.filterData.checkOutDate,
-        gotHandMeDowns.filterData.numberOfRooms,
-        nav
-      );
-    }, 5000)
+    })();
   }, [gotHandMeDowns.hotel]);
 
   const handleChooseRoom = (room) => {
@@ -245,18 +227,13 @@ function HotelRoomDetails(props) {
                 ▶{/*&gt;*/}
               </button>
             </div>
-
-
             <div style={{ position: "inherit" }}>
               <h1 className="HotelName">
                 {gotHandMeDowns.hotel.term}
               </h1>
-
-
               <p className="HotelAddress">
                 {gotHandMeDowns.hotel.address}
               </p>
-
               <span className="HotelRatings">
                 {[...Array(gotHandMeDowns.hotel.rating)].map(() => {
                   return (
@@ -373,7 +350,7 @@ function HotelRoomDetails(props) {
 
 
           <div style={{ width: "1000px", height: "700px", overflow: "hidden", alignSelf: "center", position: "relative", display: "flex", justifyContent: "space-evenly" }}>
-            <img key={getCurrentImageURL()}
+            <img key={getCurrentImageURL()} // may not re-render on index (state) change
               src={getCurrentImageURL()}
               alt="some hotel from another angle lol"
               /*Reference: https://stackoverflow.com/questions/34660385/how-to-position-a-react-component-relative-to-its-parent */

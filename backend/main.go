@@ -83,11 +83,11 @@ type SpecificHotelRoomPrice struct {
 }
 
 type RoomPrices struct {
-	Key            string     `json:"key"`
-	RoomNormalDesc string     `json:"roomNormalizedDescription"`
-	Free_Cancel    bool       `json:"free_cancellation"`
-	Images         []ImageUrl `json:"images"`
-	Price          float32    `json:"price"`
+	Key                string             `json:"key"`
+	RoomNormalDesc     string             `json:"roomNormalizedDescription"`
+	Free_Cancel        bool               `json:"free_cancellation"`
+	Images             []ImageUrl         `json:"images"`
+	Price              float32            `json:"price"`
 	RoomAdditionalInfo RoomAdditionalInfo `json:"roomAdditionalInfo"`
 }
 
@@ -171,11 +171,13 @@ func main() {
 				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true)      // 60*15 for 15 min
 				c.JSON(200, gin.H{
 					"message": "login success",
+					"success": true,
 					//"jwt":     auth.GenerateJWT(user.Username),
 				})
 			} else {
 				c.JSON(401, gin.H{
 					"message": "login failed",
+					"success": false,
 				})
 			}
 		})
@@ -187,10 +189,12 @@ func main() {
 				redisdb.AddNewUser(userClient, user.Username, user.Password)
 				c.JSON(200, gin.H{
 					"message": "register success",
+					"success": true,
 				})
 			} else {
 				c.JSON(401, gin.H{
 					"message": "register failed",
+					"success": false,
 				})
 			}
 		})
@@ -201,6 +205,7 @@ func main() {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
 					"message": "refresh failed",
+					"success": false,
 				})
 			}
 			username, err := auth.VerifyJWT(cookie)
@@ -208,6 +213,7 @@ func main() {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
 					"message": "refresh failed",
+					"success": false,
 				})
 			}
 			user, err := redisdb.GetUser(userClient, username)
@@ -215,11 +221,13 @@ func main() {
 				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true) // 60*15 for 15 min
 				c.JSON(200, gin.H{
 					"message": "refresh success",
+					"success": true,
 				})
 			} else {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
 					"message": "refresh failed",
+					"success": false,
 				})
 			}
 		})
@@ -231,6 +239,7 @@ func main() {
 		authorized.GET("/testAccessToken", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
 				"message": "ok",
+				"success": true,
 			})
 		})
 
@@ -241,15 +250,18 @@ func main() {
 				if redisdb.DeleteUserDocument(userClient, user.Username) {
 					c.JSON(200, gin.H{
 						"message": "delete success",
+						"success": true,
 					})
 				} else {
 					c.JSON(401, gin.H{
 						"message": "delete failed for unknown reasons",
+						"success": false,
 					})
 				}
 			} else {
 				c.JSON(401, gin.H{
 					"message": "delete failed because user not found",
+					"success": false,
 				})
 			}
 		})
