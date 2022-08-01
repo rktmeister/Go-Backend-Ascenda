@@ -28,7 +28,8 @@ type ListOfHotelPrice struct {
 	SearchRank  float32 `json:"searchRank"`
 }
 type HotelsPrice struct {
-	Prices []ListOfHotelPrice `json:"hotels"`
+	Completed bool               `json:"completed"`
+	Prices    []ListOfHotelPrice `json:"hotels"`
 }
 type Hotel_Price struct {
 	Id                    string
@@ -313,28 +314,29 @@ func main() {
 				log.Fatal(err)
 			}
 
-			time.Sleep(time.Millisecond * 500)
+			for !prices.Completed {
+				req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+				if err != nil {
+					log.Fatal(err)
+				}
 
-			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
-			if err != nil {
-				log.Fatal(err)
-			}
+				res, getErr = hClient.Do(req)
+				if getErr != nil {
+					log.Fatal(getErr)
+				}
+				if res.Body != nil {
+					defer res.Body.Close()
+				}
 
-			res, getErr = hClient.Do(req)
-			if getErr != nil {
-				log.Fatal(getErr)
-			}
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
-
-			body, readErr = ioutil.ReadAll(res.Body)
-			if readErr != nil {
-				log.Fatal(readErr)
-			}
-			err = json.Unmarshal(body, &prices)
-			if err != nil {
-				log.Fatal(err)
+				body, readErr = ioutil.ReadAll(res.Body)
+				if readErr != nil {
+					log.Fatal(readErr)
+				}
+				err = json.Unmarshal(body, &prices)
+				if err != nil {
+					log.Fatal(err)
+				}
+				time.Sleep(100 * time.Millisecond)
 			}
 
 			// NOW MERGE
@@ -412,31 +414,28 @@ func main() {
 				log.Fatal(err)
 			}
 
-			// fmt.Println(roomPrices)
-
-			time.Sleep(time.Millisecond * 500)
-
-			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
-			if err != nil {
-				log.Fatal(err)
+			for !roomPrices.Completed {
+				req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+				if err != nil {
+					log.Fatal(err)
+				}
+				res, getErr = hClient.Do(req)
+				if getErr != nil {
+					log.Fatal(getErr)
+				}
+				if res.Body != nil {
+					defer res.Body.Close()
+				}
+				body, readErr = ioutil.ReadAll(res.Body)
+				if readErr != nil {
+					log.Fatal(readErr)
+				}
+				err = json.Unmarshal(body, &roomPrices)
+				if err != nil {
+					log.Fatal(err)
+				}
+				time.Sleep(100 * time.Millisecond)
 			}
-			res, getErr = hClient.Do(req)
-			if getErr != nil {
-				log.Fatal(getErr)
-			}
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
-			body, readErr = ioutil.ReadAll(res.Body)
-			if readErr != nil {
-				log.Fatal(readErr)
-			}
-			err = json.Unmarshal(body, &roomPrices)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			// fmt.Println(roomPrices)
 
 			c.JSON(http.StatusOK, gin.H{
 				"roomPrice": roomPrices,
