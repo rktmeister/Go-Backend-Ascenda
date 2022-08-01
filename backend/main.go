@@ -191,7 +191,8 @@ func main() {
 			if err == nil {
 				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true) // 60*15 for 15 min
 				c.JSON(200, gin.H{
-					"message": "refresh success",
+					"message":  "refresh success",
+					"username": username,
 				})
 			} else {
 				fmt.Println(err)
@@ -207,7 +208,7 @@ func main() {
 	{
 		authorized.GET("/testAccessToken", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
-				"message": "ok",
+				"success": true,
 			})
 		})
 

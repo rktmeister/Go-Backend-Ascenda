@@ -41,9 +41,9 @@ func GenerateJWT(username string, isRefresh bool) string {
 	fmt.Println("gen")
 	var expiryOffset time.Duration
 	if isRefresh {
-		expiryOffset = time.Minute * 15
-	} else {
 		expiryOffset = time.Hour * 24 * 7
+	} else {
+		expiryOffset = time.Minute * 15
 	}
 
 	claims := &jwt.RegisteredClaims{
