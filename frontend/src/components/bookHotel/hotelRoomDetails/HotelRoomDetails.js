@@ -11,6 +11,7 @@ import ShowRoomsOutput from './parts/ShowRoomsOutput';
 import { FaStar } from 'react-icons/fa';
 
 import { getHotelRoomBatch } from './../../../utils/backendAPI.js';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -18,6 +19,7 @@ import { getHotelRoomBatch } from './../../../utils/backendAPI.js';
 
 
 function HotelRoomDetails(props) {
+  const nav = useNavigate();
 
 
   const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
@@ -34,7 +36,7 @@ function HotelRoomDetails(props) {
   const maxSlider = 20000; // gotHandMeDowns.filterData.maxPrice * 1000);
   const minSlider = 60;
 
-  
+
   const [minPrice, setMinPrice] = useState(0); //gotHandMeDowns.filterData.minPrice);
   const [maxPrice, setMaxPrice] = useState(20000); // gotHandMeDowns.filterData.maxPrice * 10);
 
@@ -47,14 +49,14 @@ function HotelRoomDetails(props) {
 
   const [description, setDescription] = useState("Choose Room Type");
 
-  
 
-  const [sliderValueMax, setSliderValueMax] = useState(maxSlider); 
+
+  const [sliderValueMax, setSliderValueMax] = useState(maxSlider);
   const [sliderValueMin, setSliderValueMin] = useState(minSlider);
 
   const [hotelCloudflareImageURL, setHotelCloudflareImageURL] = useState("");
   const [hotelDescription, setHotelDescription] = useState("");
-  
+
   const [hotelScore, setHotelScore] = useState("");
   const [hotelPopularity, setHotelPopularity] = useState("");
 
@@ -81,23 +83,23 @@ function HotelRoomDetails(props) {
   const [currentIndex, setCurrentIndex] = useState(defaultImageIndex); // This is for overall hotel imagaes
 
   const decreaseCurrentIndex = () => {
-      console.log("Decrease " + currentIndex);
-      if (currentIndex - 1 < 1){
-        setCurrentIndex(numberOfImages);
-      }
-      else{
-        setCurrentIndex(currentIndex - 1);
-      }
+    console.log("Decrease " + currentIndex);
+    if (currentIndex - 1 < 1) {
+      setCurrentIndex(numberOfImages);
+    }
+    else {
+      setCurrentIndex(currentIndex - 1);
+    }
   }
 
   const increaseCurrentIndex = () => {
-      console.log("Increase " + currentIndex);
-      if (currentIndex + 1 > numberOfImages){
-        setCurrentIndex(defaultImageIndex);
-      }
-      else{
-        setCurrentIndex(currentIndex + 1);
-      }
+    console.log("Increase " + currentIndex);
+    if (currentIndex + 1 > numberOfImages) {
+      setCurrentIndex(defaultImageIndex);
+    }
+    else {
+      setCurrentIndex(currentIndex + 1);
+    }
   }
 
   //const closeEnlargeImageOuterArea
@@ -107,7 +109,7 @@ function HotelRoomDetails(props) {
 
 
 
-  
+
   useEffect(() => {
     
 
@@ -128,6 +130,7 @@ function HotelRoomDetails(props) {
         gotHandMeDowns.filterData.checkInDate,
         gotHandMeDowns.filterData.checkOutDate,
         gotHandMeDowns.filterData.numberOfRooms
+
       ).then(
         (result) => {
           console.log("Result is : ", result);
@@ -154,6 +157,7 @@ function HotelRoomDetails(props) {
           setError(error);
         }
       );
+
     })()
 
     if(hotelDescription == null){
@@ -203,36 +207,7 @@ function HotelRoomDetails(props) {
                       ]);
                       */
     
-  }, [gotHandMeDowns.hotel]); // []);// 
-
-  
-    
-
-    
-      // setTimeout( async function() {await fetch(firstReceived, 
-      //   {'Access-Control-Allow-Origin' : '*',
-      //     'Access-Control-Allow-Credentials' : 'true',
-      //     'Access-Control-Allow-Headers': 'Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With',
-      //     'Access-Control-Allow-Methods' : 'POST, OPTIONS, GET, PUT'}).catch( (error) => console.log(error.message));}, 2000);
-          
-
-      // setTimeout( async function() {await fetch(firstReceived, 
-      //   {'Access-Control-Allow-Origin' : '*',
-      //     'Access-Control-Allow-Credentials' : 'true',
-      //     'Access-Control-Allow-Headers': 'Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With',
-      //     'Access-Control-Allow-Methods' : 'POST, OPTIONS, GET, PUT'})
-      //     .then((finalResult) => {console.log(finalResult.json()); finalResult.json();})
-      //     .then( (result) => {
-      //       console.log("Final result: ", result);
-      //       setIsLoaded(true);
-      //       setRooms(result.rooms);
-      //     },
-          
-      //     (err) => {
-      //       setIsLoaded(true);
-      //       setError(error + " " + err);
-      //     })
-      //     .catch( (error) => console.log(error.message));}, 2000);
+  }, [gotHandMeDowns.hotel]); 
 
 
   const handleChooseRoom = (room) => {
@@ -248,6 +223,7 @@ function HotelRoomDetails(props) {
   // if (error) {
   //   console.log("Error: ", error.message);
 
+
   //   return(<div style={{textAlign: "center"}}><h1>Error 404</h1></div>)
     
   // }
@@ -258,6 +234,7 @@ function HotelRoomDetails(props) {
 
   // else{
 
+
     const finishStage = () => {
       const dataToBePassedOn = {
         ...gotHandMeDowns,
@@ -267,12 +244,8 @@ function HotelRoomDetails(props) {
       props.finishStage(props.handMeDowns);
     };
 
+
     
-
-
-
-
-
 
     if (error) {
       console.log("Error: ", error.message);
@@ -325,13 +298,16 @@ function HotelRoomDetails(props) {
 
             // hotelDescHeadingNContent.splice(0, 1, hotelDescHeadingNContent[0].substring(0, i));
 
+
             console.log(temp_HotelDescHeadingNCont);
             
           }
 
+
           temp_HotelDescHeadingNCont.push(hotelDescHeadingNContent[0].substring(statement_start, fullstop_infront_index - 1)); // Final few statements
           hotelDescHeadingNContent = [].concat(temp_HotelDescHeadingNCont);
           console.log(hotelDescHeadingNContent);
+
         }
       
       }
@@ -344,12 +320,14 @@ function HotelRoomDetails(props) {
       console.log("hotelDescHeadingNContent : ",  hotelDescHeadingNContent);
 
 
+
       // ======================== Setting up hotel description ========================== //
 
 
 
 
       // ============================= Setting up room description (type choices) ========================== //
+
 
       {/* Resetting Array to Empty Array : https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript */}
       roomDescriptionArray.length = null
@@ -375,10 +353,6 @@ function HotelRoomDetails(props) {
     }
 
 
-    
-
-
- 
     return (
 
 
@@ -391,10 +365,12 @@ function HotelRoomDetails(props) {
 
         <div className = "FilterBox">
           {/* <span style={{fontSize: "10px", background:"linear-gradient(white, white, white, cyan)"}}>
+
             Filters
           </span> */}
 
           <br></br>
+
 
           <div style={{position:"relative", left:20, top: 10}}>
           {/* <span >Max Price: </span> */}
@@ -421,9 +397,11 @@ function HotelRoomDetails(props) {
                   setMaxPrice(parseInt(e.target.value));
                   console.log(minPrice, " ", maxPrice);
                 }
+
               }
             }}
             id="myRange" />
+
 
             <span style = {{ position :"relative" ,left:140, bottom:-3}}> ${sliderValueMax} </span>
 
@@ -439,6 +417,7 @@ function HotelRoomDetails(props) {
               // if (e.target.valueAsNumber <= sliderValueMax){
               //   setSliderValueMin(e.target.valueAsNumber); 
               //   setMinPrice(parseInt(e.target.value));
+
 
               //   console.log(minPrice, " ", maxPrice);
               // }
@@ -458,21 +437,22 @@ function HotelRoomDetails(props) {
                   console.log(minPrice, " ", maxPrice);
                 }
               }
-              
-              }}
+
+            }}
             id="myRange" />
+
 
             <span style = {{ position :"relative", right:570, bottom:-4}}> ${sliderValueMin} </span>
             </div>
 
 
-          
-        
 
-           <span>
-            <select value={description} className = "DescriptionDropdown" onChange={(e) => {setDescription(e.target.value);}}>
-              <option value = "Choose Room Type">Choose Room Type</option>
-              {roomDescriptionArray.map((room) => <option key = {room} value={room}> {room} </option>)}  {/*LowerCaseChange(room)} </option>)*/}
+
+
+          <span>
+            <select value={description} className="DescriptionDropdown" onChange={(e) => { setDescription(e.target.value); }}>
+              <option value="Choose Room Type">Choose Room Type</option>
+              {roomDescriptionArray.map((room) => <option key={room} value={room}> {room} </option>)}  {/*LowerCaseChange(room)} </option>)*/}
             </select>
           </span>
 
@@ -481,16 +461,9 @@ function HotelRoomDetails(props) {
         <br></br>
         <br></br>
 
-        
-        
-        
-        
-        
+
 
        
-
-
-
 
         {/* ======================== Top Part (images and Title) ================== */}
         <div className="AllBoxes">
@@ -594,6 +567,7 @@ function HotelRoomDetails(props) {
                     )
                   })}
 
+
                   {[ ... Array(5-hotelRating)].map(() => {
                     return(
                       <span style={{color: "rgb(180,180,180)" , fontSize: "15pt"}}>★</span> 
@@ -606,10 +580,6 @@ function HotelRoomDetails(props) {
 
               </div>
 
-              
-
-              
-
           </div>
         </div>
 
@@ -620,6 +590,7 @@ function HotelRoomDetails(props) {
 
 
         {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
+
 
         <div className = "AllBoxes">
           <div style={{position:"relative", top:20, left: 20, paddingBottom:20, fontSize:25, fontWeight:"bold"}}>Hotel overview</div>
@@ -659,7 +630,7 @@ function HotelRoomDetails(props) {
 
         {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
 
-       
+
 
        {/* ====================== NEXT button========================= */}
        <button style={{
@@ -683,6 +654,7 @@ function HotelRoomDetails(props) {
 
 
         {/* =================== ROOMS OUTPUT DISPLAY ====================== */}
+
         <div style={{marginTop: 100}}>
           <div style ={{border:"0.5px solid rgb(240,240,240)"}}>
           { (error) ? 
@@ -697,6 +669,7 @@ function HotelRoomDetails(props) {
               </div>)
           }
           </div>
+
         </div>
         
 
@@ -706,16 +679,16 @@ function HotelRoomDetails(props) {
 
 
         {/* =================== MAP OUTPUT DISPLAY ====================== */}
+
         <div className = "AllBoxes">
           <div style={{fontSize:"25px", left:"20pt", top:"20pt", paddingBottom: 20, position:"relative", fontWeight:900 }}>Hotel Location</div>
           <div className = "MapGeneratorDiv"> <MapGenerator latitude = {hotelLatitude} longitude = {hotelLongitude}/></div>
         </div>
 
+
         {/* =================== MAP OUTPUT DISPLAY ====================== */}
 
 
-
-        
 
         {/* ====================== Hotel Room Pic ENLARGE ========================= */}
 
@@ -799,8 +772,7 @@ function HotelRoomDetails(props) {
                 onClick = {() => {console.log(enlargedImagesMode);setEnlargedImagesMode("none");console.log(enlargedImagesMode)}}
                 ></div>
             </div>
-        
- 
+       
 
       </div>
     );

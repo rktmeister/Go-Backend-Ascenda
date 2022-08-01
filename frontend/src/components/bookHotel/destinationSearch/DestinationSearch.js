@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../../App.css";
 import "../../../utils/backendAPI";
 import FilterBar from "../common/FilterBar";
@@ -6,6 +7,8 @@ import FilterShow from "../common/FilterShow";
 import DestinationCard from "./parts/DestinationCard";
 
 function DestinationSearch(props) {
+  const nav = useNavigate();
+
   const [filteredData, setFilteredData] = useState([]);
   const [wordEntered, setWordEntered] = useState("");
   const [readyToProceed, setReadyToProceed] = useState(false);
@@ -28,10 +31,11 @@ function DestinationSearch(props) {
       setFilteredData([]);
     } else {
       const got = await props.backendPackage.getDestinationsByFuzzyString(
-        searchWord
+        searchWord,
+        nav
       );
       const newFilter = got.filter((value) => {
-        console.log(value.term, searchWord);
+        //console.log(value.term, searchWord);
         return value.term.toLowerCase().includes(searchWord.toLowerCase());
       });
       console.log("NF", newFilter);
@@ -106,7 +110,7 @@ function DestinationSearch(props) {
             filteredData.length !== 0 && (
               filteredData.slice(0, 15).map(
                 (value, key) => {
-                  console.log("V", value);
+                  //console.log("V", value);
                   return (
                     <DestinationCard key={key} value={value} onClick={handleChoice} />
                   );
