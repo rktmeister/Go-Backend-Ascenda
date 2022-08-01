@@ -15,7 +15,7 @@ function HotelRoomInnerBox(props) {
 
     return (
 
-        <div style={{float:"right", width:700, height:140, position:"relative", bottom:227, right:1, border:"1px solid rgb(180, 180, 180)"}}>
+        <div style={{float:"right", width:700, position:"relative", bottom:227, right:1, border:"1px solid rgb(180, 180, 180)"}}>
             <div> 
                 <span style={{position:"relative", top:"1.5vh", left:"1vw", fontSize:"15pt", fontWeight:900 }}> 
                     {(props.room.roomAdditionalInfo.breakfast_info.includes("breakfast_included")) ?
@@ -37,7 +37,7 @@ function HotelRoomInnerBox(props) {
             style={{
                 
                 float:"right", 
-                left: 70, 
+                left: 95, 
                 bottom: 50, 
                 height: "40px", 
                 width: "100px",
@@ -48,7 +48,15 @@ function HotelRoomInnerBox(props) {
                 position:"relative",
                 fontWeight:900,
                 borderRadius:20,
-                color: "white"}} onClick={handleClick}>Choose</button>
+                color: "white"}} 
+            onClick={handleClick} 
+            onMouseOver={(e)=>{
+                e.target.style.backgroundColor = "rgb(255, 140, 0)"; 
+                console.log(e.target.id)}}
+            onMouseLeave = {(e)=>{
+                e.target.style.backgroundColor = "rgb(180, 180, 180)"; 
+                console.log(e.target.id)}}
+                >Choose</button>
 
             <span className="HotelRoomBoxRightPerRoomPerNight">per room per night</span>
         

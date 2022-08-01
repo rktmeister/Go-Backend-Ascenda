@@ -708,7 +708,13 @@ function HotelRoomDetails(props) {
         {/* =================== MAP OUTPUT DISPLAY ====================== */}
         <div className = "AllBoxes">
           <div style={{fontSize:"25px", left:"20pt", top:"20pt", paddingBottom: 20, position:"relative", fontWeight:900 }}>Hotel Location</div>
-          <div className = "MapGeneratorDiv"> <MapGenerator latitude = {hotelLatitude} longitude = {hotelLongitude}/></div>
+          {() => {
+            setHotelLatitude(gotHandMeDowns.hotel.latitude);
+            setHotelLongitude(gotHandMeDowns.hotel.longitude); 
+            console.log(hotelLatitude, " ", hotelLongitude);
+            }}
+
+            <div className = "MapGeneratorDiv"> <MapGenerator latitude = {hotelLatitude} longitude = {hotelLongitude}/></div>
         </div>
 
         {/* =================== MAP OUTPUT DISPLAY ====================== */}

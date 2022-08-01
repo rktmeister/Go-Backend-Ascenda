@@ -40,7 +40,7 @@ function HotelRoomBox(props) {
                 {console.log(eachRoomImagesSet)}
                 
                 {(eachRoomImagesSet != null && eachRoomImagesSet[0] !== undefined) ?
-                        (<div style={{marginLeft: "20px", width: "250px", height:"200px", overflow:"hidden"}}>
+                        (<div style={{marginLeft: "-5px", width: "450px", height:"350px", overflow:"hidden"}}>
                             <img key = {eachRoomImagesSet[0].url} 
                                 src = {eachRoomImagesSet[0].url}
                                 alt = ""
