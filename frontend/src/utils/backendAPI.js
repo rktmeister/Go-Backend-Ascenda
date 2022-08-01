@@ -63,7 +63,7 @@ export const getHotelBatch = async (destinationId, checkInDate, checkOutDate, nu
                 rating: HotelBriefDescription.rating,
                 defaultImageURL,
                 categories: HotelBriefDescription.categories,
-                description: HotelBriefDescription.Description,
+                description: HotelBriefDescription.description,
 
                 cloudflareImageURL: HotelBriefDescription.cloudflare_image_url,
                 suffix: HotelBriefDescription.image_details.suffix,

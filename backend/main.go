@@ -86,6 +86,11 @@ type RoomPrices struct {
 	Free_Cancel    bool       `json:"free_cancellation"`
 	Images         []ImageUrl `json:"images"`
 	Price          float32    `json:"price"`
+	RoomAdditionalInfo RoomAdditionalInfo `json:"roomAdditionalInfo"`
+}
+
+type RoomAdditionalInfo struct {
+	Breakfast_Info string `json:"breakfast_info"`
 }
 
 type ImageUrl struct {

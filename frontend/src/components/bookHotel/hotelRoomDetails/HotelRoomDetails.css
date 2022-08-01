@@ -1,11 +1,32 @@
-.HotelRoomDetails {
-  text-align: left;
-  margin-left:10pt;
+.AllBoxes{
+  margin-left: 20vw;
+  margin-right: 20vw;
+  border: 1px solid rgb(180, 180, 180);
+  width:860pt;
+  white-space: nowrap;
   
 }
 
+
+.HotelRoomDetails {
+  text-align: left;
+  width:100vw;
+  height:100vh;
+  white-space: nowrap;
+  
+}
+
+
+
 .HotelPicTitlePartDiv{
-  margin: 25%;
+
+ 
+
+  height:263pt;
+
+  width: 860pt;  /* viewport width is vw, viewport height is vh */ 
+
+
 
 }
 
@@ -17,7 +38,7 @@
   margin-left: 550px;
   color: black;
   opacity: 100%;
-  position:relative;
+  position:absolute;
   overflow:hidden;
   white-space: nowrap;
 }
@@ -30,7 +51,7 @@
   margin-left: 550px;
   color: black;
   opacity: 100%;
-  position:relative;
+  position:absolute;
   overflow:hidden;
   white-space: nowrap;
 }
@@ -41,28 +62,76 @@
   font-weight: lighter;
   margin-top: -300px;
   margin-left: 850px;
-  color: black;
+  color: rgb(180, 180, 180);
   opacity: 100%;
-  position:relative;
+  position:absolute;
   overflow:hidden;
   white-space: nowrap;
 }
 
 .HotelRoomBox{
-  border-width:2px;
-  border-style:solid;
-  
+  width: 860pt;
+  height:300pt;
   margin-top: 1pt;
   margin-bottom: 1pt;
   
 
 }
 
+.HotelRoomInnerBox{
+  background-color: black;
+  width: 199pt;
+  height: 50pt;
+  margin-top: 1pt;
+  margin-bottom: 1pt;
+  right:20;
+  position: relative;
+
+}
+
+.HotelRoomBoxChooseUnselected{
+  
+    float:right; 
+    left: 70; 
+    bottom: 50; 
+    height: 40px; 
+    width: 100px;
+    /* background:"rgb(255, 140, 0)", */
+    background: rgb(180, 180, 180);
+    /* border:"solid 1px rgb(255,130,180)", */
+    border: solid 1px rgb(200,200,200);
+    position:relative;
+    font-weight:900;
+    border-radius:20;
+    color: white;
+}
+
+.HotelRoomBoxChooseSelected{
+  
+  float:right; 
+  left: 70; 
+  bottom: 50; 
+  height: 40px; 
+  width: 100px;
+  background:rgb(255, 140, 0);
+  /* background: rgb(180, 180, 180); */
+  border: solid 1px rgb(255,130,180);
+  /* border: solid 1px rgb(200,200,200); */
+  position:relative;
+  font-weight:900;
+  border-radius:20;
+  color: white;
+}
+
 .HotelRoomBoxTitle{
-  background-color: rgb(163, 154, 140);
+  
+  background-color: rgb(37, 31, 109);
   font-size: 15pt;
+  height:40pt;
+  width:860pt;
   font-weight: bold;
   color: white;
+  position:relative;
 }
 
 .HotelRoomBoxRightPrice{
@@ -71,8 +140,10 @@
   align-items:flex-end;
   float: right;
   font-size: 18px;
-  margin-right: 100pt;
-  margin-top:-110pt;
+  right: 125pt;
+ 
+  bottom: 40pt;
+  position:relative;
   font-weight: 900;
 }
 
@@ -82,53 +153,72 @@
   align-items:flex-end;
   float: right;
   font-size: 13px;
-  margin-right: 100pt;
-  margin-top:-90pt;
+  left: 37pt;
+  bottom: 15pt;
+  position:relative;
  
 }
 
 .HotelRoomBoxLeftFreeCancellation{
   flex: 1;
-  justify-content: flex-start;
-  align-items:flex-start;
+  
   float: left;
   font-size: 15px;
-  margin-left: 170pt;
-  margin-top:-60pt;
+  left: 1.1vw;
+  top:1vh;
   color: green;
+  position:relative;
 }
 
 .HotelRoomBoxLeftNonRefundable{
   flex: 1;
-  justify-content: flex-start;
-  align-items:flex-start;
+
   float: left;
   font-size: 15px;
-  margin-left: 170pt;
-  margin-top:-60pt;
-  color: rgb(207, 159, 0);
+  left: 1.1vw;
+  top:1vh;
+  font-weight: 500;
+  color: rgb(255, 140, 0);
+  position:relative;
 }
 
 
 .FilterBox{
-  border: 0.5px solid cyan;
+  border: 0.5px solid rgb(37, 31, 109);
+  background-color: rgb(0, 5, 32);
   margin-right:10pt;
   /*margin-top: 200pt;*/
-  position:sticky;
+  color:white;
+  position:fixed;
+  width:100vw;
+  height:100pt;
+  font-weight: 900;
   top:0;
+  z-index:20;
 }
 
 .DescriptionDropdown{
   float: right;
-  margin-right:10pt;
-  margin-bottom: 20pt;
-  border: 0.5px solid cyan;
+  margin-right:40pt;
+  bottom: 20pt;
+  color: white;
+  background-color: rgb(121, 66, 0);
+  border:2px solid rgb(255, 140, 0);
+  font-weight: 900;
+  height:30pt;
+  width:300pt;
+  text-align: left;
+  position:relative;
+  
+ 
 }
 
 .HotelPicsLeftHandleNoHover{
+  z-index: 2;
   float:left; 
+  
   font-size:30pt;  
-  margin-top: -185px;
+  /*margin-top: -185px;*/
   color: white;
   opacity: 50%;
   position:relative;
@@ -137,9 +227,10 @@
 }
 
 .HotelPicsLeftHandleHover{
+  z-index: 2;
   float:left; 
   font-size:30pt;  
-  margin-top: -185px;
+  /*margin-top: -185px;*/
   color: white;
   opacity: 100%;
   position:relative;
@@ -148,9 +239,10 @@
 }
 
 .HotelPicsRightHandleNoHover{
+  z-index: 2;
   float:right; 
   font-size:30pt;  
-  margin-top: -185px;
+  /*margin-top: -185px;*/
   color: white;
   opacity: 50%;
   position:relative;
@@ -159,9 +251,10 @@
 }
 
 .HotelPicsRightHandleHover{
+  z-index: 2;
   float:right; 
   font-size:30pt;  
-  margin-top: -185px;
+  /*margin-top: -185px;*/
   color: white;
   opacity: 100%;
   position:relative;
@@ -176,9 +269,52 @@
   margin-left:10px;
   color: white;
   opacity: 100%;
-  position:relative;
+  position:absolute;
   background-color: grey 50%;
 
+}
+
+.HotelPicsEnlargingWordsNoHover{
+  float:right; 
+  font-size:12pt;  
+  bottom: 1pt;
+  right:10pt;
+  color: white;
+  opacity: 50%;
+  position:absolute;
+
+}
+
+.HotelPicsEnlargingWordsHover{
+  float:right; 
+  font-size:12pt;  
+  bottom: 1pt;
+  right:10pt;
+  color: white;
+  opacity: 100%;
+  position:absolute;
+}
+
+.HotelPicsEnlargedCloseNoHover{
+  float:right; 
+  font-size:15pt;  
+  top: 20px;
+  right:20px;
+  color: white;
+  opacity: 50%;
+  position:absolute;
+  z-index: 1;
+}
+
+.HotelPicsEnlargedCloseHover{
+  float:right; 
+  font-size:15pt;  
+  top: 20px;
+  right:20px;
+  color: white;
+  opacity: 100%;
+  position:absolute;
+  z-index: 1;
 }
 
 .SliderMax{
@@ -186,32 +322,130 @@
  
   background-color: transparent; /*grey;*/
   border-radius: 5px;
-  /*background-image: transparent,*/
-  border: 0.5px solid cyan;
-  border-color: linear-gradient(cyan, cyan);
+  /*background-image: rgb(255, 166, 0); /*sparent,*/
+  border: 2px solid rgb(255, 140, 0);
+  border-color: linear-gradient(rgb(255, 140, 0),rgb(255, 140, 0));
   background-repeat: no-repeat;
+  left:100pt;
   height: 3pt;
   width: 200pt;
+  position:relative;
 }
 
 
 
-.SliderMax::-webkit-slider-thumb{
+.SliderMax::-webkit-slider-thumb{       /* FOR CHROME */
+  -webkit-appearance:none;
+  width: 20px;
+  height: 20px;
+  background: rgb(255, 140, 0);
+  border-radius : 50%;
+  color:rgb(255, 140, 0);
+  border-color: rgb(255, 140, 0);
+  cursor: pointer;
+  border: 0.5px solid rgb(255, 140, 0);
+  background: contain;
+  z-index: 10;
+
+} 
+
+.SliderMax::-moz-range-thumb{       /* FOR MOZILLA */
+  -webkit-appearance:none;
+  width: 20px;
+  height: 20px;
+  background: rgb(255, 140, 0);
+  border-radius : 50%;
+  color:rgb(255, 140, 0);
+  border-color: rgb(255, 140, 0);
+  cursor: pointer;
+  border: 0.5px solid rgb(255, 140, 0);
+  background: contain;
+  z-index: 10;
+
+} 
+
+.SliderMax::-ms-thumb{        /* FOR INTERNET EXPLORER */
+  -webkit-appearance:none;
+  width: 20px;
+  height: 20px;
+  background: rgb(255, 140, 0);
+  border-radius : 50%;
+  color:rgb(255, 140, 0);
+  border-color: rgb(255, 140, 0);
+  cursor: pointer;
+  border: 0.5px solid rgb(255, 140, 0);
+  background: contain;
+  z-index: 10;
+
+} 
+
+.SliderMin{
+  -webkit-appearance: none;
+ 
+  background-color: transparent; /*grey;*/
+  border-radius: 5px;
+  /*background-image: rgb(255, 166, 0)sparent,*/
+  border: 2px solid rgb(255, 140, 0);
+  border-color: linear-gradient(rgb(255, 140, 0),rgb(255, 140, 0));
+  background-repeat: no-repeat;
+  left:-160pt;
+  height: 3pt;
+  width: 200pt;
+  position:relative;
+}
+
+
+
+.SliderMin::-webkit-slider-thumb{    /* FOR CHROME */
   -webkit-appearance: none;
   width: 20px;
   height: 20px;
-  background-color: cyan;
+  background-color: rgb(255, 140, 0);
   border-radius : 50%;
-  border-color: white;
+  border-color: rgb(255, 140, 0);
   cursor: pointer;
-  border: 0.5px solid cyan;
+  border: 0.5px solid rgb(255, 140, 0);
   background: contain;
 
 } 
 
+.SliderMin::-moz-range-thumb{  /* FOR MOZILLA */
+  -webkit-appearance:none;
+  width: 20px;
+  height: 20px;
+  background: rgb(255, 140, 0);
+  border-radius : 50%;
+  color:rgb(255, 140, 0);
+  border-color: rgb(255, 140, 0);
+  cursor: pointer;
+  border: 0.5px solid rgb(255, 140, 0);
+  background: contain;
+  z-index: 10;
+
+} 
+
+.SliderMin::-ms-thumb{        /* FOR INTERNET EXPLORER */
+  -webkit-appearance:none;
+  width: 20px;
+  height: 20px;
+  background: rgb(255, 140, 0);
+  border-radius : 50%;
+  color:rgb(255, 140, 0);
+  border-color: rgb(255, 140, 0);
+  cursor: pointer;
+  border: 0.5px solid rgb(255, 140, 0);
+  background: contain;
+  z-index: 10;
+
+} 
+
 .MapGeneratorDiv{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 50px;
+  left:30px;
+  padding-top: 100px;
+  bottom:20px;
+
+  z-index: 0;
+  position:relative;
+
+  
 }
