@@ -442,7 +442,7 @@ func main() {
 			})
 		})
 
-		authorized.POST("/room/hotel", func(c *gin.Context) {
+		authorized.POST("/room/hotel/book", func(c *gin.Context) {
 			redisdb.CreateBooking(bookingClient, c.PostForm("username"), c.PostForm("bookingUid"), c.PostForm("dest"), c.PostForm("checkin"), c.PostForm("checkout"), c.PostForm("time"))
 		})
 	}
