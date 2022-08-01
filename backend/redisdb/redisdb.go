@@ -210,14 +210,20 @@ func DeleteUserDocument(u *redisearch.Client, username string) bool {
 	}
 }
 
-func CreateBooking(b *redisearch.Client, username string, bookingUid string, dest string, checkin string, checkout string, time string) {
-	doc := redisearch.NewDocument("booking:"+username+time, 1.0)
-	doc.Set("username", username)
-	doc.Set("uid", bookingUid)
-	doc.Set("destination", dest)
+func CreateBooking(b *redisearch.Client, firstName string, lastName string, destination_id string, hotel_id string, special_requests string, salutation string, email string, phone string, guests string, checkin string, checkout string, price string) {
+	doc := redisearch.NewDocument("booking:"+firstName+lastName+hotel_id+checkin, 1.0)
+	doc.Set("destination_id", destination_id)
+	doc.Set("hotel_id", hotel_id)
+	doc.Set("special_requests", special_requests)
+	doc.Set("salutation", salutation)
+	doc.Set("email", email)
+	doc.Set("phone", phone)
+	doc.Set("firstName", firstName)
+	doc.Set("lastName", lastName)
 	doc.Set("checkin", checkin)
 	doc.Set("checkout", checkout)
-	doc.Set("bookingTime", time)
+	doc.Set("numberOfGuests", guests)
+	doc.Set("price", price)
 	if err := b.Index([]redisearch.Document{doc}...); err != nil {
 		log.Fatal(err)
 	}
