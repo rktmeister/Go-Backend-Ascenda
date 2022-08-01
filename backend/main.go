@@ -153,6 +153,8 @@ func main() {
 	redisdb.AddNewUser(userClient, "hoyo", "1234")
 	redisdb.CheckLogin(userClient, "hoyo", "1234")
 
+	redisdb.CreateBooking(bookingClient, "rktmeister1", "dylan", "raharja", "WD0M", "diH7", "kaligo", "NO_REQ", "Mr.", "dylan.raharja@gmail.com", "65656565", "1", "2022-08-29", "2022-08-31", "300.59")
+
 	api := router.Group("/api")
 	{
 		api.POST("/login", func(c *gin.Context) {
