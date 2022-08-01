@@ -210,7 +210,7 @@ func DeleteUserDocument(u *redisearch.Client, username string) bool {
 	}
 }
 
-func CreateBooking(b *redisearch.Client, firstName string, lastName string, destination_id string, hotel_id string, special_requests string, salutation string, email string, phone string, guests string, checkin string, checkout string, price string) {
+func CreateBooking(b *redisearch.Client, firstName string, lastName string, destination_id string, hotel_id string, supplier_id string, special_requests string, salutation string, email string, phone string, guests string, checkin string, checkout string, price string) {
 	doc := redisearch.NewDocument("booking:"+firstName+lastName+hotel_id+checkin, 1.0)
 	doc.Set("destination_id", destination_id)
 	doc.Set("hotel_id", hotel_id)
