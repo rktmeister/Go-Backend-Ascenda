@@ -286,20 +286,6 @@ function HotelRoomDetails(props) {
           zIndex: 10
         }}>
 
-<<<<<<< Updated upstream
-=======
-        {/* =================== MAP OUTPUT DISPLAY ====================== */}
-        <div className = "AllBoxes">
-          <div style={{fontSize:"25px", left:"20pt", top:"20pt", paddingBottom: 20, position:"relative", fontWeight:900 }}>Hotel Location</div>
-          {() => {
-            setHotelLatitude(gotHandMeDowns.hotel.latitude);
-            setHotelLongitude(gotHandMeDowns.hotel.longitude); 
-            console.log(hotelLatitude, " ", hotelLongitude);
-            }}
-
-            <div className = "MapGeneratorDiv"> <MapGenerator latitude = {hotelLatitude} longitude = {hotelLongitude}/></div>
-        </div>
->>>>>>> Stashed changes
 
           <div style={{ width: "1000px", height: "700px", overflow: "hidden", alignSelf: "center", position: "relative", display: "flex", justifyContent: "space-evenly" }}>
             <img key={getCurrentImageURL()} // may not re-render on index (state) change

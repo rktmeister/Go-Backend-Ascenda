@@ -43,18 +43,6 @@ function HotelRoomBox(props) {
                     </span>
                 </div>   {/* LowerCaseChange(props.room.roomNormalizedDescription)}</span>*/}
                 <br></br>
-<<<<<<< Updated upstream
-
-                <div style={{ width: "210px", height: "180px", marginLeft: "10px" }} >
-
-                    {console.log(eachRoomImagesSet)}
-
-                    {(eachRoomImagesSet !== null && eachRoomImagesSet[0] !== undefined) ?
-                        (<div style={{ marginLeft: "20px", width: "250px", height: "200px", overflow: "hidden" }}>
-                            <img key={eachRoomImagesSet[imageIndex].url}
-                                src={eachRoomImagesSet[imageIndex].url}
-                                alt=""
-=======
                 
                 <div style={{width: "210px", height:"180px", marginLeft: "10px"}} >
 
@@ -65,7 +53,6 @@ function HotelRoomBox(props) {
                             <img key = {eachRoomImagesSet[0].url} 
                                 src = {eachRoomImagesSet[0].url}
                                 alt = ""
->>>>>>> Stashed changes
                                 /*Reference: https://stackoverflow.com/questions/34660385/how-to-position-a-react-component-relative-to-its-parent */
                                 style={{ marginLeft: "20px", width: "80%", height: "80%", position: "relative" }}
                                 onClick={wraparoundIncrementImageIndex}
