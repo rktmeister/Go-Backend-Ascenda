@@ -46,7 +46,15 @@ function HotelRoomInnerBox(props) {
                 position:"relative",
                 fontWeight:900,
                 borderRadius:20,
-                color: "white"}} onClick={handleChooseRoom}>Choose</button>
+                color: "white"}} 
+            onClick={handleChooseRoom} 
+            onMouseOver={(e)=>{
+                e.target.style.backgroundColor = "rgb(255, 140, 0)"; 
+                console.log(e.target.id)}}
+            onMouseLeave = {(e)=>{
+                e.target.style.backgroundColor = "rgb(180, 180, 180)"; 
+                console.log(e.target.id)}}
+                >Choose</button>
 
             <span className="HotelRoomBoxRightPerRoomPerNight">per room per night</span>
         

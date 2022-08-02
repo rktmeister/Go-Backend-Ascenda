@@ -286,7 +286,6 @@ function HotelRoomDetails(props) {
           zIndex: 10
         }}>
 
-
           <div style={{ width: "1000px", height: "700px", overflow: "hidden", alignSelf: "center", position: "relative", display: "flex", justifyContent: "space-evenly" }}>
             <img key={getCurrentImageURL()} // may not re-render on index (state) change
               src={getCurrentImageURL()}
