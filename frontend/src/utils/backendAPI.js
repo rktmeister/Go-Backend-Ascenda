@@ -63,7 +63,7 @@ export const getHotelBatch = async (destinationId, checkInDate, checkOutDate, nu
 };
 
 export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, checkOutDate, numberOfRooms, nav) => {
-    const res = handleRefreshTokenExpire(() => {
+    const res = await handleRefreshTokenExpire(() => {
         const res = fetch(formatQueryParameters(
             DB_ADDRESS,
             "/room/hotel",
@@ -77,24 +77,26 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
         ), {
             credentials: "include"
         });
-        console.log("res is: ", res);
         return res;
     }, nav);
 
-    const res2 = {
-        description: res.hotelDesc.description,
-        uid: res.hotelDesc.id,
-        cloudflareImageURL: res.hotelDesc.cloudflare_image_url,
-        suffix: res.hotelDesc.image_details.suffix,
-        numberOfImages: res.hotelDesc.number_of_images,
-        defaultImageIndex: res.hotelDesc.default_image_index,
-        score: res.hotelDesc.categories.overall.score,
-        popularity: res.hotelDesc.categories.overall.popularity,
-        address: res.hotelDesc.address,
-        rating: res.hotelDesc.rating,
-        rooms: res.roomPrice.rooms
-    };
-    return res2;
+    console.log("res is: ", res);
+
+    // const res2 = {
+    //     description: res.hotelDesc.description,
+    //     uid: res.hotelDesc.id,
+    //     cloudflareImageURL: res.hotelDesc.cloudflare_image_url,
+    //     suffix: res.hotelDesc.image_details.suffix,
+    //     numberOfImages: res.hotelDesc.number_of_images,
+    //     defaultImageIndex: res.hotelDesc.default_image_index,
+    //     score: res.hotelDesc.categories.overall.score,
+    //     popularity: res.hotelDesc.categories.overall.popularity,
+    //     address: res.hotelDesc.address,
+    //     rating: res.hotelDesc.rating,
+    //     rooms: res.roomPrice.rooms
+    // };
+    // return res2;
+    return res.roomPrice.rooms;
 }
 
 export const attemptLogin = async (email, passwordHash) => {

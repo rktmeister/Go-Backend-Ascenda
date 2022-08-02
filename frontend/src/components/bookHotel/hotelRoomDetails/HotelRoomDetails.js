@@ -1,40 +1,48 @@
 import './HotelRoomDetails.css';
 import React, { useState, useEffect } from "react";
 
-import LowerCaseChange from "./parts/LowerCaseChange.js";
-import RemoveDescriptionDuplicate from "./parts/RemoveDescriptionDuplicate.js";
+import LowerCaseChange from "./_parts/LowerCaseChange.js";
+import RemoveDescriptionDuplicate from "./_parts/RemoveDescriptionDuplicate.js";
 
 import MapGenerator from './parts/MapGenerator';
 
-import ShowRoomsOutput from './parts/ShowRoomsOutput';
+import ShowRoomsOutput from './_parts/ShowRoomsOutput';
 
 import { FaStar } from 'react-icons/fa';
 
 import { getHotelRoomBatch } from './../../../utils/backendAPI.js';
 import { useNavigate } from 'react-router-dom';
+import DoubleSlider from './parts/DoubleSlider';
+import StarRating from '../common/StarRating';
+import RoomFilters from './parts/RoomFilters';
+import ListOfRoomTypes from './parts/ListOfRoomTypes';
 function HotelRoomDetails(props) {
   const nav = useNavigate();
   const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
 
-  const maxSlider = 2000; // gotHandMeDowns.filterData.maxPrice * 1000);
-  const minSlider = 60;
+  const maxPriceLimit = 10000; // gotHandMeDowns.filterData.maxPrice * 1000);
+  const minPriceLimit = 0;
 
 
   const [minPrice, setMinPrice] = useState(gotHandMeDowns.filterData.minPrice); //gotHandMeDowns.filterData.minPrice);
-  const [maxPrice, setMaxPrice] = useState(gotHandMeDowns.filterData.maxPrice * 10); // gotHandMeDowns.filterData.maxPrice * 10);
+  const [maxPrice, setMaxPrice] = useState(gotHandMeDowns.filterData.maxPrice); // gotHandMeDowns.filterData.maxPrice * 10);
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [chosenRoom, setChosenRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [description, setDescription] = useState("Choose Room Type");
-  const [sliderValueMax, setSliderValueMax] = useState(maxSlider);
-  const [sliderValueMin, setSliderValueMin] = useState(minSlider);
+
+  // const [maxPrice, setMaxPrice] = useState(maxPriceLimit);
+  // const [minPrice, setMinPrice] = useState(minPriceLimit);
+
   const [enlargingImageWordsHovering, setEnlargingImageWordsHovering] = useState("HotelPicsEnlargingWordsNoHover")
   const [enlargedCloseHovering, setEnlargingCloseHovering] = useState("HotelPicsEnlargedCloseNoHover")
   const [enlargedImagesMode, setEnlargedImagesMode] = useState("none");
   const [hotelPicLeftHandle, setHotelPicLeftHandle] = useState("HotelPicsLeftHandleNoHover");
   const [hotelPicRightHandle, setHotelPicRightHandle] = useState("HotelPicsRightHandleNoHover");
+
+  const [filters, setFilters] = useState([]);
 
 
   const [currentIndex, setCurrentIndex] = useState(0); // This is for overall hotel imagaes
@@ -67,7 +75,7 @@ function HotelRoomDetails(props) {
   }, [gotHandMeDowns.hotel]);
 
   const handleChooseRoom = (room) => {
-    let buttonToColor = document.getElementById(room.key + "_CHOOSE");
+    const buttonToColor = document.getElementById(room.key + "_CHOOSE");
     buttonToColor.style.color = "rgb(255, 140, 0)";
     console.log("ROOM CHOSEN:", room);
     setChosenRoom(room);
@@ -76,6 +84,28 @@ function HotelRoomDetails(props) {
   const getCurrentImageURL = () => {
     return `${gotHandMeDowns.hotel.cloudflareImageURL}/${gotHandMeDowns.hotel.uid}/i${currentIndex}${gotHandMeDowns.hotel.suffix}`
   }
+
+  useEffect(() => {
+    if (rooms.length > 0) {
+      setIsLoaded(true);
+    } else {
+      setIsLoaded(false);
+    }
+  }, [rooms]);
+
+  const handleFilterChange = (filterValues) => {
+    const newFilters = [
+      ({ price }) => filterValues.minPrice <= price && price <= filterValues.maxPrice,
+      ({ roomNormalizedDescription }) => {
+        if (filterValues.chosenRoomType === "Choose Room Type") {
+          return true;
+        } else {
+          return roomNormalizedDescription === filterValues.chosenRoomType;
+        }
+      },
+    ];
+    setFilters(newFilters);
+  };
 
 
   const finishStage = () => {
@@ -91,84 +121,20 @@ function HotelRoomDetails(props) {
     console.log("Error: ", error.message);
   }
 
-
-  else if (isLoaded) {
-
-  }
-
   return (
     <div className="HotelRoomDetails">
       <br></br>
       <br></br>
       <br></br>
       <br></br>
-      <div className="FilterBox">
-        <br></br>
-        <div style={{ position: "relative", left: 20, top: 10 }}>
-          <input
-            type="range"
-            className="SliderMax"
-            min={minSlider}
-            max={maxSlider}
-            value={sliderValueMax}
-            onMouseOver={(e) => { e.target.valueAsNumber() }}
-            onChange={(e) => {
-              if (e.target.valueAsNumber < sliderValueMin + ((sliderValueMax - sliderValueMin) / 2)) {
-                if (e.target.valueAsNumber <= sliderValueMax) {
-                  setSliderValueMin(e.target.valueAsNumber);
-                  setMinPrice(parseInt(e.target.value));
-
-                  console.log(minPrice, " ", maxPrice);
-                }
-              }
-              else {
-                if (e.target.valueAsNumber >= sliderValueMin) {
-                  setSliderValueMax(e.target.valueAsNumber);
-                  setMaxPrice(parseInt(e.target.value));
-                  console.log(minPrice, " ", maxPrice);
-                }
-              }
-            }}
-            id="myRange"
-          />
-          <span style={{ position: "relative", left: 140, bottom: -3 }}> ${sliderValueMax} </span>
-          <input
-            type="range"
-            className="SliderMin"
-            min={minSlider}
-            max={maxSlider}
-            value={sliderValueMin}
-            onChange={(e) => {
-              if (e.target.valueAsNumber < sliderValueMin + ((sliderValueMax - sliderValueMin) / 2)) {
-                if (e.target.valueAsNumber <= sliderValueMax) {
-                  setSliderValueMin(e.target.valueAsNumber);
-                  setMinPrice(parseInt(e.target.value));
-
-                  console.log(minPrice, " ", maxPrice);
-                }
-              }
-              else {
-                if (e.target.valueAsNumber >= sliderValueMin) {
-                  setSliderValueMax(e.target.valueAsNumber);
-                  setMaxPrice(parseInt(e.target.value));
-                  console.log(minPrice, " ", maxPrice);
-                }
-              }
-
-            }}
-            id="myRange"
-          />
-          <span style={{ position: "relative", right: 570, bottom: -4 }}> ${sliderValueMin} </span>
-        </div>
-
-        <span>
-          <select value={description} className="DescriptionDropdown" onChange={(e) => { setDescription(e.target.value); }}>
-            <option value="Choose Room Type">Choose Room Type</option>
-            {rooms.map((room) => <option key={room.key} value={room}> {room.roomNormalizedDescription} </option>)}
-          </select>
-        </span>
-
-      </div>
+      <RoomFilters
+        prior={{
+          minPrice: gotHandMeDowns.filterData.minPrice,
+          maxPrice: gotHandMeDowns.filterData.maxPrice,
+        }}
+        onSubmit={handleFilterChange}
+        rooms={rooms}
+      />
 
       <br></br>
       <br></br>
@@ -189,7 +155,7 @@ function HotelRoomDetails(props) {
 
             <div style={{ width: "450px", height: "350px", overflow: "hidden" }}>
               <img key={gotHandMeDowns.hotel.uid}
-                src={gotHandMeDowns.hotel.defaultImageURL}
+                src={getCurrentImageURL()}
                 alt="some hotel lol"
                 /*Reference: https://stackoverflow.com/questions/34660385/how-to-position-a-react-component-relative-to-its-parent */
                 style={{ background: "rgb(40,40,40)", width: "150%", height: "150%", top: "-20%", left: "-20%", position: "relative", zIndex: 0 }} />
@@ -234,22 +200,10 @@ function HotelRoomDetails(props) {
               <p className="HotelAddress">
                 {gotHandMeDowns.hotel.address}
               </p>
-              <span className="HotelRatings">
-                {[...Array(gotHandMeDowns.hotel.rating)].map(() => {
-                  return (
-
-                    <span style={{ color: "#FFAE42", fontSize: "15pt" }}>★</span>
-
-                  )
-                })}
-
-                {[...Array(5 - gotHandMeDowns.hotel.rating)].map(() => {
-                  return (
-                    <span style={{ color: "rgb(180,180,180)", fontSize: "15pt" }}>★</span>
-                  )
-                })}
-              </span>
-
+              <StarRating
+                totalPossibleStars={5}
+                rating={gotHandMeDowns.hotel.rating}
+              />
             </div>
 
           </div>
@@ -280,39 +234,23 @@ function HotelRoomDetails(props) {
       {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
 
 
-
-      {/* ====================== NEXT button========================= */}
-      <button style={{
-        background: "rgb(255, 140, 0)",
-        fontSize: 30,
-        color: "white",
-        borderRadius: 30,
-        fontWeight: 900,
-        width: 100,
-        height: 70,
-        textAlign: "center",
-        position: "fixed",
-        top: 700,
-        left: 1750,
-        zIndex: 20,
-        border: "transparent"
-      }}
-        onClick={finishStage}> ▶▶</button>
-      {/* ====================== NEXT button========================= */}
-
-
-      {/* =================== ROOMS OUTPUT DISPLAY ====================== */}
+      {/* =================== ROOMS OUTPUT DISPLAY ======================roomtypelist */}
       <div style={{ marginTop: 100 }}>
         <div style={{ border: "0.5px solid rgb(240,240,240)" }}>
           {(error) ?
-            (<div className="AllBoxes" /*style={{textAlign: "center", fontSize:"10px"}}*/> <div style={{ textAlign: "center", height: 100 }}>{console.log("Error: ", error.message)}<br></br> <h1>No Rooms Available</h1></div></div>)
+            (<div className="AllBoxes"> <div style={{ textAlign: "center", height: 100 }}>{console.log("Error: ", error.message)}<br></br> <h1>No Rooms Available</h1></div></div>)
 
             : (!isLoaded) ?
-              (<div className="AllBoxes" /*style={{textAlign: "center", fontSize:"10px"}}*/> <div style={{ textAlign: "center", height: 100 }}><br></br> <h1>Fetching Room...</h1></div></div>)
+              (<div className="AllBoxes"> <div style={{ textAlign: "center", height: 100 }}><br></br> <h1>Fetching Room...</h1></div></div>)
 
               : (<div>
-                {console.log("Rooms: ", rooms)}
-                {ShowRoomsOutput(rooms, minPrice, maxPrice, description)}
+                {/* {console.log("Rooms: ", rooms)} */}
+                {/* {ShowRoomsOutput(rooms, minPrice, maxPrice, description)} */}
+                <ListOfRoomTypes
+                  rooms={rooms}
+                  filters={filters}
+                  handleChooseRoom={handleChooseRoom}
+                />
               </div>)
           }
         </div>
@@ -324,7 +262,7 @@ function HotelRoomDetails(props) {
 
 
 
-      {/* =================== MAP OUTPUT DISPLAY ====================== */}
+      {/* =================== MAP OUTPUT DISPLAY ======================map */}
       <div className="AllBoxes">
         <div style={{ fontSize: "25px", left: "20pt", top: "20pt", paddingBottom: 20, position: "relative", fontWeight: 900 }}>Hotel Location</div>
         <div className="MapGeneratorDiv"> <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
@@ -401,7 +339,24 @@ function HotelRoomDetails(props) {
         ></div>
       </div>
 
-
+      {/* ====================== NEXT button========================= */}
+      <button style={{
+        background: "rgb(255, 140, 0)",
+        fontSize: 30,
+        color: "white",
+        borderRadius: 30,
+        fontWeight: 900,
+        width: 100,
+        height: 70,
+        textAlign: "center",
+        position: "fixed",
+        top: 700,
+        left: 1750, // way out of view on narrow screens lol
+        zIndex: 20,
+        border: "transparent"
+      }}
+        onClick={finishStage}> ▶▶</button>
+      {/* ====================== NEXT button========================= */}
 
     </div>
   );

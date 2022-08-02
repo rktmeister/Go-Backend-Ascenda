@@ -1,5 +1,5 @@
-import HotelRoomBox from './HotelRoomBox';
-import handleChooseRoom from './../HotelRoomDetails.js'
+import HotelRoomBox from '../parts/HotelRoomBox';
+import handleChooseRoom from '../HotelRoomDetails.js'
 
 function ShowRoomsOutput(rooms, minPrice, maxPrice, description){
 
@@ -9,17 +9,17 @@ function ShowRoomsOutput(rooms, minPrice, maxPrice, description){
 
     var roomsMap = {};
 
-    rooms.filter((room) => (((room.price >= minPrice && room.price <= maxPrice) ) && 
+    rooms.filter((room) => (((room.price >= minPrice && room.price <= maxPrice) ) && // valid rooms
                 ((room.roomNormalizedDescription.charAt(room.roomNormalizedDescription.length - 1) !== " " && room.roomNormalizedDescription === description) || 
                 (room.roomNormalizedDescription.charAt(room.roomNormalizedDescription.length - 1) === " " && room.roomNormalizedDescription.slice(0, room.roomNormalizedDescription.length - 1) === description) || 
                 description === "Choose Room Type" ))
                 )
-        .sort((room1, room2) => 
+        .sort((room1, room2) => // sort by price
             parseInt(room1.price) > parseInt(room2.price) ?  1 
             : parseInt(room1.price) < parseInt(room2.price) ? -1 
             : room1.roomNormalizedDescription > room2.roomNormalizedDescription ? 1
             : -1)
-        .map((room) => {
+        .map((room) => { // group by normalized description
             if(roomsMap[room.roomNormalizedDescription] == null){
                 roomsMap[room.roomNormalizedDescription] = [room];
             }
@@ -63,7 +63,10 @@ function ShowRoomsOutput(rooms, minPrice, maxPrice, description){
                 console.log("roomsMap[] is ", roomsMap[key], " and roomsMap.key is : ", roomsMap.key);
                 console.log(key, " ", index);
                
-                return (<div> <HotelRoomBox roomsSet={roomsMap[key]} roomTitle={key} key={key} index = {index} onClick={handleChooseRoom} /> </div>); })
+                return (
+                    <div> <HotelRoomBox roomsSet={roomsMap[key]} key={key} onClick={handleChooseRoom} /> </div>
+                );
+            })
             
             );
 }

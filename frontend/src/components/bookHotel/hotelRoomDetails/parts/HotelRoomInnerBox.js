@@ -1,15 +1,13 @@
-import LowerCaseChange from "./LowerCaseChange.js";
+import LowerCaseChange from "../_parts/LowerCaseChange.js";
 import { useState } from "react";
 import './../HotelRoomDetails.css';
 
 
 function HotelRoomInnerBox(props) {
 
-    const handleClick = () => {
-        props.onClick(props.room);
+    const handleChooseRoom = () => {
+        props.handleChooseRoom(props.room);
     }
-
-    let index = 0;
 
 
 
@@ -48,7 +46,7 @@ function HotelRoomInnerBox(props) {
                 position:"relative",
                 fontWeight:900,
                 borderRadius:20,
-                color: "white"}} onClick={handleClick}>Choose</button>
+                color: "white"}} onClick={handleChooseRoom}>Choose</button>
 
             <span className="HotelRoomBoxRightPerRoomPerNight">per room per night</span>
         
