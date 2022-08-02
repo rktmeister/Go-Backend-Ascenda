@@ -18,7 +18,9 @@ function DestinationSearch(props) {
     checkInDate: "2022-08-29",
     checkOutDate: "2022-08-31",
     minPrice: 0,
-    maxPrice: 9999999,
+    maxPrice: 10000,
+    minRating: 0,
+    maxRating: 10,
   };
 
   const [filterBarValues, setFilterBarValues] = useState(defaultStartingFilterValues);
@@ -60,7 +62,18 @@ function DestinationSearch(props) {
       };
       props.handMeDowns.push(dataToBePassedOn);
       props.finishStage(props.handMeDowns);
-    } else {
+    } 
+    
+    else if(1){ //====================================================== REMOVE AFTER USE
+      const dataToBePassedOn = {
+        filterData: filterBarValues,
+        destination: chosenDestination,
+      };
+      props.handMeDowns.push(dataToBePassedOn);
+      props.finishStage(props.handMeDowns);
+    }
+    
+    else {
       alert("Select a location!");
     }
   };
