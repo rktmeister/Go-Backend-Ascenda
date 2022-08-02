@@ -70,15 +70,19 @@
 }
 
 .HotelRoomBox{
+  display:table;
+  height:-50;
+  flex:1;
+  flex-wrap: wrap;
   width: 860pt;
-  height:300pt;
   margin-top: 1pt;
-  margin-bottom: 1pt;
+  position:static;
   
 
 }
 
 .HotelRoomInnerBox{
+  display:table;
   background-color: black;
   width: 199pt;
   height: 50pt;
@@ -140,7 +144,7 @@
   align-items:flex-end;
   float: right;
   font-size: 18px;
-  right: 125pt;
+  right: 130pt;
  
   bottom: 40pt;
   position:relative;

@@ -167,7 +167,7 @@ func CheckLogin(u *redisearch.Client, username string, password string) bool {
 }
 
 func AutoCompleteDestination(a *redisearch.Autocompleter, c *redisearch.Client, prefix string) []Destination {
-	result, err := a.SuggestOpts(prefix, redisearch.SuggestOptions{Num: 5, Fuzzy: false})
+	result, err := a.SuggestOpts(prefix, redisearch.SuggestOptions{Num: 5, Fuzzy: true})
 	if err != nil {
 		fmt.Println(err)
 	}
