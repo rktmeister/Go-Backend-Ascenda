@@ -46,11 +46,8 @@ function HotelRoomInnerBox(props) {
                 position:"relative",
                 fontWeight:900,
                 borderRadius:20,
-<<<<<<< Updated upstream
-                color: "white"}} onClick={handleChooseRoom}>Choose</button>
-=======
                 color: "white"}} 
-            onClick={handleClick} 
+            onClick={handleChooseRoom} 
             onMouseOver={(e)=>{
                 e.target.style.backgroundColor = "rgb(255, 140, 0)"; 
                 console.log(e.target.id)}}
@@ -58,7 +55,6 @@ function HotelRoomInnerBox(props) {
                 e.target.style.backgroundColor = "rgb(180, 180, 180)"; 
                 console.log(e.target.id)}}
                 >Choose</button>
->>>>>>> Stashed changes
 
             <span className="HotelRoomBoxRightPerRoomPerNight">per room per night</span>
         
