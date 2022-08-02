@@ -59,12 +59,12 @@ func GenerateJWT(username string, isRefresh bool) string {
 	return token.String()
 }
 
-func VerifyJWT(db *redisearch.Client, tokenStr string) (string, error) {
+func VerifyJWT(tdb *redisearch.Client, tokenStr string) (string, error) {
 	fmt.Println(tokenStr)
 	fmt.Println([]byte(tokenStr))
 	fmt.Println("verify")
 
-	if redisdb.CheckLoggedOutToken(db, tokenStr) {
+	if redisdb.CheckLoggedOutToken(tdb, tokenStr) {
 		return "", errors.New("logged out already")
 	}
 
@@ -103,7 +103,12 @@ func Authorization(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("access_jwt")
 	fmt.Println(cookie)
 
-	db, ok := ctx.MustGet("DB").(*redisearch.Client)
+	udb, ok := ctx.MustGet("userDB").(*redisearch.Client)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	tdb, ok := ctx.MustGet("tokenDB").(*redisearch.Client)
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
@@ -122,13 +127,13 @@ func Authorization(ctx *gin.Context) {
 	// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing bearer part."})
 	// 	return
 	// }
-	username, err := VerifyJWT(db, cookie) //VerifyJWT(headerParts[1])
+	username, err := VerifyJWT(tdb, cookie) //VerifyJWT(headerParts[1])
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := redisdb.GetUser(db, username)
+	user, err := redisdb.GetUser(udb, username)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
@@ -137,10 +142,11 @@ func Authorization(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func AddDatabaseToContext(u *redisearch.Client) gin.HandlerFunc {
+func AddDatabasesToContext(u *redisearch.Client, t *redisearch.Client) gin.HandlerFunc {
 	fmt.Println("adddbtocontext")
 	return func(c *gin.Context) {
-		c.Set("DB", u)
+		c.Set("userDB", u)
+		c.Set("tokenDB", t)
 		c.Next()
 	}
 }

@@ -160,6 +160,7 @@ func main() {
 	}
 
 	userClient := redisdb.InitUserRedis()
+	loggedOutTokensClient := redisdb.InitLoggedOutTokensRedis()
 	destClient, a := redisdb.InitDestAndAutoCompleterRedis()
 	bookingClient := redisdb.InitBookingDataRedis()
 
@@ -167,7 +168,7 @@ func main() {
 		fmt.Println("HO")
 		c.Set("key", "foo")
 	})
-	router.Use(auth.AddDatabaseToContext(userClient))
+	router.Use(auth.AddDatabasesToContext(userClient, loggedOutTokensClient))
 
 	auth.JwtSetup()
 
@@ -268,7 +269,7 @@ func main() {
 		})
 
 		authorized.POST("/logout", func(c *gin.Context) {
-			cookie, err := c.Cookie("refresh_jwt")
+			refreshCookie, err := c.Cookie("refresh_jwt")
 			if err != nil {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
@@ -276,7 +277,16 @@ func main() {
 					"success": false,
 				})
 			}
-			redisdb.AddLoggedOutToken(userClient, cookie)
+			accessCookie, err := c.Cookie("access_jwt")
+			if err != nil {
+				fmt.Println(err)
+				c.JSON(401, gin.H{
+					"message": "logout failed",
+					"success": false,
+				})
+			}
+			redisdb.AddLoggedOutToken(loggedOutTokensClient, refreshCookie)
+			redisdb.AddLoggedOutToken(loggedOutTokensClient, accessCookie)
 			c.JSON(200, gin.H{
 				"message": "logout success",
 				"success": true,
