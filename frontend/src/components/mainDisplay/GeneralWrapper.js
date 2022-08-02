@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { testIsLoggedIn } from "../../utils/backendAPI";
 import GlobalNavBar from "../bookHotel/common/globalNavBar/GlobalNavBar";
 
 const GeneralWrapper = (props) => {
@@ -11,7 +10,7 @@ const GeneralWrapper = (props) => {
     // does NOT redirect to login if refresh token is invalid, just detects
     useEffect(() => {
         (async () => {
-            const res = await testIsLoggedIn();
+            const res = await props.backendPackage.testIsLoggedIn();
             console.log(res);
             if (res.error) {
                 setIsAuthorized(false);
@@ -38,7 +37,7 @@ const GeneralWrapper = (props) => {
 
     return (
         <div>
-            <GlobalNavBar isAuthorized={isAuthorized} userName={userName} />
+            <GlobalNavBar isAuthorized={isAuthorized} userName={userName} backendPackage={props.backendPackage} />
             {
                 isVisible ?
                     isAuthorized ?

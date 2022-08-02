@@ -4,8 +4,14 @@ import { hashPassword } from "../../../../utils/backendAPI";
 const SignedInView = (props) => {
     const nav = useNavigate();
     const logOut = () => {
-        // call backend
-        nav("/", { replace: true });
+        const res = props.backendPackage.logOut(
+            nav
+        );
+        if (res.success) {
+            nav("/", { replace: true });
+        } else {
+            alert(res.message);
+        }
     };
     const deleteAccount = () => {
         const password = prompt("Enter password:");
@@ -20,7 +26,7 @@ const SignedInView = (props) => {
             nav
         )
         if (res.success) {
-            nav("/authed/profile", { replace: true });
+            nav("/", { replace: true });
         } else {
             alert(res.message);
         }
@@ -31,7 +37,7 @@ const SignedInView = (props) => {
                 Welcome, {props.userName}.
             </div>
             <button onClick={logOut}>Log Out</button>
-            <button onClick={deleteAccount}>Go to profile page</button>
+            <button onClick={deleteAccount}>Delete Account</button>
         </div>
     )
 };

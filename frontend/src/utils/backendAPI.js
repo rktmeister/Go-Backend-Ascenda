@@ -12,6 +12,20 @@ export const getStripePrice = async (hotelId) => {
     return "price_1LMX2uAML4yM4v0zWPOXMEa1";
 }
 
+export const logOut = async (nav) => {
+    const res = await handleRefreshTokenExpire(() => {
+        const res = fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/logout",
+            {}
+        ), {
+            credentials: "include"
+        });
+        return res;
+    }, nav);
+    return res;
+}
+
 export const getHotelBatch = async (destinationId, checkInDate, checkOutDate, numberOfRooms, nav) => {
     const res1 = await handleRefreshTokenExpire(() => {
         const res = fetch(formatQueryParameters(
@@ -99,7 +113,38 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
     return res.roomPrice.rooms;
 }
 
-export const attemptLogin = async (email, passwordHash) => {
+export const attemptCreateAccount = async (username, passwordHash) => {
+    const res = fetch(formatQueryParameters(
+        DB_ADDRESS,
+        "/signUp",
+        {}
+    ), {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({
+            username,
+            password: passwordHash,
+        }),
+    }).then((response) => {
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+        return response.json();
+    }).catch((error) => {
+        switch (parseInt(error.message)) {
+            case 401:
+                return {
+                    error: "Create account failed",
+                };
+            default:
+                console.log(error);
+                return;
+        }
+    });
+    return res;
+};
+
+export const attemptLogin = async (username, passwordHash) => {
     const res = fetch(formatQueryParameters(
         DB_ADDRESS,
         "/login",
@@ -108,7 +153,7 @@ export const attemptLogin = async (email, passwordHash) => {
         method: "POST",
         credentials: "include",
         body: JSON.stringify({
-            username: email,
+            username,
             password: passwordHash,
         }),
     }).then((response) => {
@@ -130,20 +175,53 @@ export const attemptLogin = async (email, passwordHash) => {
     return res;
 };
 
-export const sendSuccessfulPayment = async (name, phoneNumber, userEmail, specialRequests, nav) => {
+export const sendSuccessfulPayment = async (
+    username,
+    firstName,
+    lastName,
+    destination_id,
+    hotel_id,
+    supplier_id,
+    special_requests,
+    salutation,
+    email,
+    phone,
+    guests,
+    checkin,
+    checkout,
+    price,
+    nav
+) => {
     return handleRefreshTokenExpire(() => {
+        const formData = new FormData();
+        const formKeyVals = {
+            "username": username,
+            "firstName": firstName,
+            "lastName": lastName,
+            "destination_id": destination_id,
+            "hotel_id": hotel_id,
+            "supplier_id": supplier_id,
+            "special_requests": special_requests,
+            "salutation": salutation,
+            "email": email,
+            "phone": phone,
+            "guests": guests,
+            "checkin": checkin,
+            "checkout": checkout,
+            "price": price,
+        };
+
+        Object.entries(formKeyVals).forEach(([key, val]) => {
+            formData.append(key, val);
+        });
         const res = fetch(formatQueryParameters(
             DB_ADDRESS,
             "/booking/logSuccess",
-            {
-                "name": name,
-                "phoneNumber": phoneNumber,
-                "userEmail": userEmail,
-                "specialRequests": specialRequests,
-            }
+            {}
         ), {
             method: "post",
             credentials: "include",
+            body: formData,
         });
         return res;
     }, nav);
@@ -157,6 +235,24 @@ export const delay = async (delay = 1000, callback = () => { }) => {
 
     callback();
 }
+
+export const deleteAccount = async (userName, passwordHash, nav) => {
+    const res = await handleRefreshTokenExpire(() => {
+        const res = fetch(formatQueryParameters(
+            DB_ADDRESS,
+            "/deleteAccount",
+            {
+                "username": userName,
+                "password": passwordHash,
+            }
+        ), {
+            method: "DELETE",
+            credentials: "include"
+        });
+        return res;
+    }, nav);
+    return res;
+};
 
 // credit to https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 const shuffleArray = (array) => {

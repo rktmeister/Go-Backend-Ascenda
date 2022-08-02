@@ -75,7 +75,13 @@ function App() {
           } />
           <Route path="/signUp" element={<CreateAccountPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<GeneralWrapper />}>
+          <Route path="/" element={<GeneralWrapper
+            backendPackage={{
+              testIsLoggedIn: backend.testIsLoggedIn,
+              attemptCreateAccount: backend.attemptCreateAccount,
+              logOut: backend.logOut,
+            }}
+          />}>
             <Route path="authed" element={<AuthWrapper />}>
               {/* <Route path="profile" element={<ProfilePage />} /> */}
               <Route path="book" element={
@@ -91,6 +97,7 @@ function App() {
                       getHotelRoomBatch: backend.getHotelRoomBatch,
                     }} />,
                     <BookingData backendPackage={{
+                      testIsLoggedIn: backend.testIsLoggedIn,
                       sendSuccessfulPayment: backend.sendSuccessfulPayment,
                       getStripePrice: backend.getStripePrice,
                     }} />,

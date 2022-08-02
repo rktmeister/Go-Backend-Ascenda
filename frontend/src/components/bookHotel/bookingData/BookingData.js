@@ -1,5 +1,6 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 let stripePromise;
 (async () => {
@@ -7,21 +8,52 @@ let stripePromise;
 })();
 
 const BookingData = (props) => {
+    const nav = useNavigate();
+    const loc = useLocation();
     const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
 
+    // username,
+    //     firstName,
+    //     lastName,
+    //     destination_id,
+    //     hotel_id,
+    //     supplier_id,
+    //     special_requests,
+    //     salutation,
+    //     email,
+    //     phone,
+    //     guests,
+    //     checkin,
+    //     checkout,
+    //     price,
+    //     nav
+
+    const [userName, setUserName] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [userEmail, setUserEmail] = useState("");
+    const [destinationId, setDestinationId] = useState("");
+    const [hotelId, setHotelId] = useState("");
+    const [supplierId, setSupplierId] = useState("");
     const [specialRequests, setSpecialRequests] = useState("");
-
+    const [salutation, setSalutation] = useState("");
+    const [userEmail, setUserEmail] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [numberOfRooms, setNumberOfRooms] = useState(0);
+    const [checkInDate, setCheckInDate] = useState("");
+    const [checkOutDate, setCheckOutDate] = useState("");
+    const [price, setPrice] = useState(0);
 
     useEffect(() => {
-        const maybeUser = localStorage.getItem("user");
-        if (maybeUser) {
-            setUserEmail(JSON.parse(maybeUser).email);
-        }
-    }, []);
+        (async () => {
+            const res = await props.backendPackage.testIsLoggedIn();
+            console.log(res);
+            if (res.error) {
+                //setIsAuthorized(false);
+            } else {
+                setUserName(res.username);
+            }
+        })();
+    }, [loc]);
 
     const handleCheckout = async (event) => {
         event.preventDefault();
@@ -37,10 +69,21 @@ const BookingData = (props) => {
          */
         const fullName = firstName + " " + lastName;
         await props.backendPackage.sendSuccessfulPayment(
-            fullName,
-            phoneNumber,
+            userName,
+            firstName,
+            lastName,
+            destinationId,
+            hotelId,
+            supplierId,
+            specialRequests,
+            salutation,
             userEmail,
-            specialRequests
+            phoneNumber,
+            numberOfRooms,
+            checkInDate,
+            checkOutDate,
+            price,
+            nav
         );
 
         await mockStripeCheckout();
