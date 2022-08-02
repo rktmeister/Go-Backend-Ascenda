@@ -168,6 +168,144 @@ func main() {
 			} else {
 				c.JSON(401, gin.H{
 					"message": "login failed",
+<<<<<<< Updated upstream
+=======
+					"success": false,
+				})
+			}
+		})
+
+		// api.GET("/hotels/destination", func(c *gin.Context) {
+		// 	var hotels []HotelBriefDescription
+		// 	var prices HotelsPrice
+		// 	destination := c.Query("destination")
+		// 	checkin := c.Query("checkin")
+		// 	checkout := c.Query("checkout")
+		// 	guests := c.Query("guests")
+
+		// 	api_url_price := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels/prices?destination_id=%s&checkin=%s&checkout=%s&lang=en_US&currency=SGD&partner_id=1&guests=%s", redisdb.GetDestinationUid(destClient, destination), checkin, checkout, guests)
+		// 	api_url_hotel := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels?destination_id=%s&checkin=%s&checkout=%s&lang=en_US&currency=SGD&partner_id=1&guests=%s", redisdb.GetDestinationUid(destClient, destination), checkin, checkout, guests)
+		// 	fmt.Println(api_url_hotel)
+		// 	// HOTEL FIRST
+		// 	req, err := http.NewRequestWithContext(c, http.MethodGet, api_url_hotel, nil)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	res, getErr := hClient.Do(req)
+		// 	if getErr != nil {
+		// 		log.Fatal(getErr)
+		// 	}
+
+		// 	defer res.Body.Close()
+
+		// 	body, readErr := ioutil.ReadAll(res.Body)
+		// 	if readErr != nil {
+		// 		log.Fatal(readErr)
+		// 	}
+		// 	err = json.Unmarshal(body, &hotels)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	// NOW PRICE
+		// 	req, err = http.NewRequestWithContext(c, http.MethodGet, api_url_price, nil)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	res, getErr = hClient.Do(req)
+		// 	if getErr != nil {
+		// 		log.Fatal(getErr)
+		// 	}
+
+		// 	defer res.Body.Close()
+
+		// 	body, readErr = ioutil.ReadAll(res.Body)
+		// 	if readErr != nil {
+		// 		log.Fatal(readErr)
+		// 	}
+		// 	err = json.Unmarshal(body, &prices)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	// time.Sleep(1000 * time.Millisecond)
+		// 	// req, err = http.NewRequestWithContext(c, http.MethodGet, api_url_price, nil)
+		// 	// if err != nil {
+		// 	// 	log.Fatal(err)
+		// 	// }
+
+		// 	// res, getErr = hClient.Do(req)
+		// 	// if getErr != nil {
+		// 	// 	log.Fatal(getErr)
+		// 	// }
+		// 	// if res.Body != nil {
+		// 	// 	defer res.Body.Close()
+		// 	// }
+
+		// 	// body, readErr = ioutil.ReadAll(res.Body)
+		// 	// if readErr != nil {
+		// 	// 	log.Fatal(readErr)
+		// 	// }
+		// 	// err = json.Unmarshal(body, &prices)
+		// 	// if err != nil {
+		// 	// 	log.Fatal(err)
+		// 	// }
+
+		// 	for !prices.Completed {
+		// 		time.Sleep(1000 * time.Millisecond)
+		// 		req, err = http.NewRequestWithContext(c, http.MethodGet, api_url_price, nil)
+		// 		if err != nil {
+		// 			log.Fatal(err)
+		// 		}
+
+		// 		res, getErr = hClient.Do(req)
+		// 		if getErr != nil {
+		// 			log.Fatal(getErr)
+		// 		}
+
+		// 		defer res.Body.Close()
+
+		// 		body, readErr = ioutil.ReadAll(res.Body)
+		// 		if readErr != nil {
+		// 			log.Fatal(readErr)
+		// 		}
+		// 		err = json.Unmarshal(body, &prices)
+		// 		if err != nil {
+		// 			log.Fatal(err)
+		// 		}
+		// 	}
+
+		// 	// NOW MERGE
+		// 	var hotel_price []Hotel_Price
+		// 	for i := 0; i < len(hotels); i++ {
+		// 		for j := 0; j < len(prices.Prices); j++ {
+		// 			if hotels[i].Id == prices.Prices[j].Id {
+		// 				hotel_price = append(hotel_price, Hotel_Price{Id: hotels[i].Id, HotelBriefDescription: hotels[i], Price: prices.Prices[j].Price})
+		// 			}
+		// 		}
+
+		// 	}golang needs to call external api twice to get body response
+		// 	c.JSON(http.StatusOK, gin.H{
+		// 		"hotel_price": hotel_price,
+		// 	})
+		// })
+
+		api.POST("/register", func(c *gin.Context) {
+			var user User
+			c.BindJSON(&user)
+			if !redisdb.CheckExistingUser(userClient, user.Username) {
+				redisdb.AddNewUser(userClient, user.Username, user.Password)
+				c.JSON(200, gin.H{
+					"message": "register success",
+					"success": true,
+				})
+			} else {
+				c.JSON(401, gin.H{
+					"message": "register failed",
+					"success": false,
+>>>>>>> Stashed changes
 				})
 			}
 		})
