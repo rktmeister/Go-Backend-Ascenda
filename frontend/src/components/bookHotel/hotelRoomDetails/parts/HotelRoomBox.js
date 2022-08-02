@@ -6,7 +6,14 @@ import HotelRoomInnerBox from "./HotelRoomInnerBox";
 function HotelRoomBox(props) {
 
     const DEFAULT_ROOM_IMAGE_URL = "https://cdn-s3.kaligo.com/assets/images/hotels_missing_images/hotel-room.jpg";
-    const roomImageURL = props.roomsSet[0].images !== undefined ? props.roomsSet[0].images[0].url : DEFAULT_ROOM_IMAGE_URL;
+    let roomImageURL;
+    if (props.roomsSet[0].images && props.roomsSet[0].images.url) {
+        roomImageURL = props.roomsSet[0].images.url;
+    } else {
+        roomImageURL = DEFAULT_ROOM_IMAGE_URL;
+    }
+
+    // = props.roomsSet[0].images !== undefined ? props.roomsSet[0].images[0].url : DEFAULT_ROOM_IMAGE_URL;
 
     // ============================= Setting up each room set of images (type choices) ========================== //
 

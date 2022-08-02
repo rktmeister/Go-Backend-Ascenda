@@ -9,7 +9,16 @@ const CreateAccountPage = (props) => {
 
     const handleCreateAccount = async (event) => {
         event.preventDefault();
-        // call backend
+        const res = await props.backendPackage.attemptCreateAccount(
+            userName,
+            passwordHash,
+            nav
+        );
+        if (res.success) {
+            nav("/", { replace: true });
+        } else {
+            alert(res.message);
+        }
     };
 
     return (
@@ -32,7 +41,7 @@ const CreateAccountPage = (props) => {
                         className="form-control"
                         id="password"
                         placeholder="Password"
-                        onChange={(event) => setPasswordHash(event.target.value)}
+                        onChange={(event) => setPasswordHash(hashPassword(event.target.value))}
                     />
                 </div>
                 <button type="submit" id="submitButton" className="btn btn-primary" >Submit</button>

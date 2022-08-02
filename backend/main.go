@@ -160,6 +160,7 @@ func main() {
 	}
 
 	userClient := redisdb.InitUserRedis()
+	loggedOutTokensClient := redisdb.InitLoggedOutTokensRedis()
 	destClient, a := redisdb.InitDestAndAutoCompleterRedis()
 	bookingClient := redisdb.InitBookingDataRedis()
 
@@ -167,7 +168,7 @@ func main() {
 		fmt.Println("HO")
 		c.Set("key", "foo")
 	})
-	router.Use(auth.AddDatabaseToContext(userClient))
+	router.Use(auth.AddDatabasesToContext(userClient, loggedOutTokensClient))
 
 	auth.JwtSetup()
 
@@ -180,6 +181,9 @@ func main() {
 
 	redisdb.AddNewUser(userClient, "hoyo", "1234")
 	redisdb.CheckLogin(userClient, "hoyo", "1234")
+
+	redisdb.AddLoggedOutToken(loggedOutTokensClient, "qwoidh1d1821h0dh128hd12bdvb120bd0v12b0vd12bd")
+	redisdb.CheckLoggedOutToken(loggedOutTokensClient, "qwoidh1d1821h0dh128hd12bdvb120bd0v12b0vd12bd")
 
 	redisdb.CreateBooking(bookingClient, "rktmeister1", "dylan", "raharja", "WD0M", "diH7", "kaligo", "NO_REQ", "Mr.", "dylan.raharja@gmail.com", "65656565", "1", "2022-08-29", "2022-08-31", "300.59")
 
@@ -231,7 +235,7 @@ func main() {
 					"success": false,
 				})
 			}
-			username, err := auth.VerifyJWT(cookie)
+			username, err := auth.VerifyJWT(userClient, cookie)
 			if err != nil {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
@@ -243,8 +247,9 @@ func main() {
 			if err == nil {
 				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true) // 60*15 for 15 min
 				c.JSON(200, gin.H{
-					"message": "refresh success",
-					"success": true,
+					"message":  "refresh success",
+					"username": username,
+					"success":  true,
 				})
 			} else {
 				fmt.Println(err)
@@ -266,7 +271,32 @@ func main() {
 			})
 		})
 
-		authorized.POST("/deleteAccount", func(c *gin.Context) {
+		authorized.POST("/logout", func(c *gin.Context) {
+			refreshCookie, err := c.Cookie("refresh_jwt")
+			if err != nil {
+				fmt.Println(err)
+				c.JSON(401, gin.H{
+					"message": "logout failed",
+					"success": false,
+				})
+			}
+			accessCookie, err := c.Cookie("access_jwt")
+			if err != nil {
+				fmt.Println(err)
+				c.JSON(401, gin.H{
+					"message": "logout failed",
+					"success": false,
+				})
+			}
+			redisdb.AddLoggedOutToken(loggedOutTokensClient, refreshCookie)
+			redisdb.AddLoggedOutToken(loggedOutTokensClient, accessCookie)
+			c.JSON(200, gin.H{
+				"message": "logout success",
+				"success": true,
+			})
+		})
+
+		authorized.DELETE("/deleteAccount", func(c *gin.Context) {
 			var user User
 			c.BindJSON(&user)
 			if redisdb.CheckLogin(userClient, user.Username, user.Password) {

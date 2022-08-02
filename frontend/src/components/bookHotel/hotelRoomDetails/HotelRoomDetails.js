@@ -365,7 +365,7 @@ function HotelRoomDetails(props) {
         textAlign: "center",
         position: "fixed",
         top: 700,
-        left: 1750, // way out of view on narrow screens lol
+        left: 750, // way out of view on narrow screens lol original 1750
         zIndex: 20,
         border: "transparent"
       }}

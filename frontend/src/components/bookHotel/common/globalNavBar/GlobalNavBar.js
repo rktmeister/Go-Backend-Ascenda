@@ -6,7 +6,10 @@ const GlobalNavBar = (props) => {
         <div>
             {
                 props.isAuthorized ?
-                    <SignedInView userName={props.userName} />
+                    <SignedInView
+                        userName={props.userName}
+                        backendPackage={props.backendPackage}
+                    />
                     : <SignedOutView />
             }
         </div>
