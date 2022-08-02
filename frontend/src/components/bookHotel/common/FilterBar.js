@@ -2,21 +2,22 @@ import { useEffect, useState } from "react";
 import MultiRangeSlider from "multi-range-slider-react";
 
 const FilterBar = (props) => {
-    const [numberOfRooms, setNumberOfRooms] = useState(props.numberOfRooms);
-    const [checkInDate, setCheckInDate] = useState(props.checkInDate);
-    const [checkOutDate, setCheckOutDate] = useState(props.checkOutDate);
-    const [minPrice, setMinPrice] = useState(props.minPrice);
-    const [maxPrice, setMaxPrice] = useState(props.maxPrice);
+    const [numberOfRooms, setNumberOfRooms] = useState(props.prior.numberOfRooms);
+    const [checkInDate, setCheckInDate] = useState(props.prior.checkInDate);
+    const [checkOutDate, setCheckOutDate] = useState(props.prior.checkOutDate);
+    const [minPrice, setMinPrice] = useState(props.prior.minPrice);
+    const [maxPrice, setMaxPrice] = useState(props.prior.maxPrice);
+    const [minRating, setMinRating] = useState(props.prior.minRating);
+    const [maxRating, setMaxRating] = useState(props.prior.maxRating);
     const [alertMessage, setAlertMessage] = useState("");
 
-
-
-
-    const [minValue, set_minValue] = useState(25);
-    const [maxValue, set_maxValue] = useState(75);
-    const handleInput = (e) => {
-        set_minValue(e.minValue);
-        set_maxValue(e.maxValue);
+    const handlePriceInput = (e) => {
+        setMinPrice(e.minValue);
+        setMaxPrice(e.maxValue);
+    };
+    const handleRatingInput = (e) => {
+        setMinRating(e.minValue);
+        setMaxRating(e.maxValue);
     };
 
 
@@ -52,6 +53,13 @@ const FilterBar = (props) => {
         [({ minPrice, maxPrice }) => minPrice <= maxPrice, "Min price must be equal to or lower than max price"]
     ]);
 
+    const verifyMinAndMaxRating = makeGuardFunction([
+        [({ minRating }) => typeof minRating === "number", "Min rating must be number!"],
+        [({ minRating }) => minRating >= 0, "Min rating cannot be below zero!"],
+        [({ maxRating }) => typeof maxRating === "number", "Max rating must be number!"],
+        [({ minRating, maxRating }) => minRating <= maxRating, "Min rating must be equal to or lower than max price"]
+    ]);
+
     const guardSubmit = (event) => {
         event.preventDefault();
 
@@ -59,6 +67,7 @@ const FilterBar = (props) => {
         if (!verifyNumberOfRooms(numberOfRooms)) return;
         if (!verifyCheckInAndOutDate({ checkInDate, checkOutDate })) return;
         if (!verifyMinAndMaxPrice({ minPrice, maxPrice })) return;
+        if (!verifyMinAndMaxRating({ minRating, maxRating })) return;
 
         const formResults = {
             numberOfRooms,
@@ -66,6 +75,8 @@ const FilterBar = (props) => {
             checkOutDate,
             minPrice,
             maxPrice,
+            minRating,
+            maxRating,
         };
         setAlertMessage("Submission successful!");
         props.onSubmit(formResults);
@@ -74,14 +85,14 @@ const FilterBar = (props) => {
 
     }
 
-    const typeGuard = (setter, tryFunc) => {
-        try {
-            const transformedValue = tryFunc();
-            setter(transformedValue);
-        } catch (e) {
-            // Do nothing
-        }
-    }
+    // const typeGuard = (setter, tryFunc) => {
+    //     try {
+    //         const transformedValue = tryFunc();
+    //         setter(transformedValue);
+    //     } catch (e) {
+    //         // Do nothing
+    //     }
+    // }
 
     useEffect(() => {
         setNumberOfRooms(props.prior.numberOfRooms);
@@ -92,7 +103,7 @@ const FilterBar = (props) => {
     }, []);
 
     const testButton = () => {
-        console.log(numberOfRooms, minPrice, maxPrice, typeof minPrice);
+        console.log(numberOfRooms, minPrice, maxPrice);
     };
 
     return (
@@ -135,50 +146,36 @@ const FilterBar = (props) => {
                         value={checkOutDate}
                     />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="minPrice">Min</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        id="minPrice"
-                        placeholder=""
-                        onChange={(event) => {
-                            if (!isNaN(event.target.value))
-                                setMinPrice(parseInt(event.target.value));
-                        }}
-                        value={minPrice}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="maxPrice">Max</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        id="maxPrice"
-                        placeholder=""
-                        onChange={(event) => {
-                            if (!isNaN(event.target.value))
-                                setMaxPrice(parseInt(event.target.value));
-                        }}
-                        value={maxPrice}
-                    />
-                </div>
+                <MultiRangeSlider
+                    min={0}
+                    max={10000}
+                    step={1}
+                    ruler={false}
+                    label={true}
+                    preventWheel={false}
+                    minValue={minPrice}
+                    maxValue={maxPrice}
+                    onInput={(e) => {
+                        handlePriceInput(e);
+                        console.log(e);
+                    }}
+                />
+                <MultiRangeSlider
+                    min={0}
+                    max={10}
+                    step={1}
+                    ruler={false}
+                    label={true}
+                    preventWheel={false}
+                    minValue={minRating}
+                    maxValue={maxRating}
+                    onInput={(e) => {
+                        handleRatingInput(e);
+                        console.log(e);
+                    }}
+                />
                 <button type="submit" className="btn btn-primary" >Submit</button>
             </form>
-            <MultiRangeSlider
-                min={0}
-                max={100}
-                step={1}
-                ruler={false}
-                label={true}
-                preventWheel={false}
-                minValue={minValue}
-                maxValue={maxValue}
-                onInput={(e) => {
-                    handleInput(e);
-                    console.log(e);
-                }}
-            />
             <div className="alert alert-primary" role="alert">
                 {alertMessage}
             </div>

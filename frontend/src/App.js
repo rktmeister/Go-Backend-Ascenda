@@ -8,6 +8,8 @@ import HotelSearchResults from './components/bookHotel/hotelSearchResults/HotelS
 import HotelCard from "./components/bookHotel/hotelSearchResults/parts/HotelCard";
 import ScrollMenu from './components/bookHotel/hotelSearchResults/parts/ScrollMenu';
 import StageHandler from './components/bookHotel/stageHandler/StageHandler';
+import GeneralWrapper from "./components/mainDisplay/GeneralWrapper";
+import CreateAccountPage from "./components/profile/CreateAccountPage";
 import Login from './components/profile/Login';
 import * as backend from "./utils/backendAPI";
 
@@ -71,28 +73,34 @@ function App() {
               })}
             />
           } />
+          <Route path="/signUp" element={<CreateAccountPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={
-            <AuthWrapper privateComponent={
-              <StageHandler
-                stages={[
-                  <DestinationSearch backendPackage={{
-                    getDestinationsByFuzzyString: backend.getDestinationsByFuzzyString,
-                  }} />,
-                  <HotelSearchResults backendPackage={{
-                    getHotelBatch: backend.getHotelBatch,
-                  }} />,
-                  <HotelRoomDetails backendPackage={{
-                    getHotelRoomBatch: backend.getHotelRoomBatch,
-                  }} />,
-                  <BookingData backendPackage={{
-                    sendSuccessfulPayment: backend.sendSuccessfulPayment,
-                    getStripePrice: backend.getStripePrice,
-                  }} />,
-                ]}
-              />
-            } />
-          } />
+          <Route path="/" element={<GeneralWrapper />}>
+            <Route path="authed" element={<AuthWrapper />}>
+              {/* <Route path="profile" element={<ProfilePage />} /> */}
+              <Route path="book" element={
+                <StageHandler
+                  stages={[
+                    <DestinationSearch backendPackage={{
+                      getDestinationsByFuzzyString: backend.getDestinationsByFuzzyString,
+                    }} />,
+                    <HotelSearchResults backendPackage={{
+                      getHotelBatch: backend.getHotelBatch,
+                    }} />,
+                    <HotelRoomDetails backendPackage={{
+                      getHotelRoomBatch: backend.getHotelRoomBatch,
+                    }} />,
+                    <BookingData backendPackage={{
+                      sendSuccessfulPayment: backend.sendSuccessfulPayment,
+                      getStripePrice: backend.getStripePrice,
+                    }} />,
+                  ]} />
+              } />
+              <Route path="paymentSuccess" element={<div>yay</div>} />
+              <Route path="paymentFailure" element={<div>nuu</div>} />
+              <Route path="hello" element={<div>hello there lol</div>} />
+            </Route>
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>

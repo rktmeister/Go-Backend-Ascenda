@@ -24,6 +24,7 @@ const HotelSearchResults = (props) => {
         );
         return [
             ({ price }) => filterBarData.minPrice <= price && price <= filterBarData.maxPrice,
+            ({ rating }) => filterBarData.minRating <= rating && rating <= filterBarData.maxRating,
         ];
     };
     const [filter, setFilter] = useState({
@@ -140,6 +141,10 @@ const HotelSearchResults = (props) => {
     }
 
     const finishStage = () => {
+        if (chosenHotel === null) {
+            alert("Must choose a hotel before proceeding!");
+            return;
+        }
         const dataToBePassedOn = {
             destination: gotHandMeDowns.destination,
             hotel: chosenHotel,
