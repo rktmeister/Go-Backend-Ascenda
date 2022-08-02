@@ -347,9 +347,8 @@ func main() {
 			if getErr != nil {
 				log.Fatal(getErr)
 			}
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
+
+			defer res.Body.Close()
 
 			body, readErr := ioutil.ReadAll(res.Body)
 			if readErr != nil {
@@ -361,7 +360,7 @@ func main() {
 			}
 
 			// NOW PRICE
-			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+			req, err = http.NewRequestWithContext(c, http.MethodGet, api_url_price, nil)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -370,9 +369,8 @@ func main() {
 			if getErr != nil {
 				log.Fatal(getErr)
 			}
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
+
+			defer res.Body.Close()
 
 			body, readErr = ioutil.ReadAll(res.Body)
 			if readErr != nil {
@@ -383,53 +381,52 @@ func main() {
 				log.Fatal(err)
 			}
 
-			time.Sleep(1000 * time.Millisecond)
-			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			res, getErr = hClient.Do(req)
-			if getErr != nil {
-				log.Fatal(getErr)
-			}
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
-
-			body, readErr = ioutil.ReadAll(res.Body)
-			if readErr != nil {
-				log.Fatal(readErr)
-			}
-			err = json.Unmarshal(body, &prices)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			// for !prices.Completed {
-			// 	time.Sleep(700 * time.Millisecond)
-			// 	req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
-			// 	if err != nil {
-			// 		log.Fatal(err)
-			// 	}
-
-			// 	res, getErr = hClient.Do(req)
-			// 	if getErr != nil {
-			// 		log.Fatal(getErr)
-			// 	}
-			// 	if res.Body != nil {
-			// 		defer res.Body.Close()
-			// 	}
-
-			// 	body, readErr = ioutil.ReadAll(res.Body)
-			// 	if readErr != nil {
-			// 		log.Fatal(readErr)
-			// 	}
-			// 	err = json.Unmarshal(body, &prices)
-			// 	if err != nil {
-			// 		log.Fatal(err)
-			// 	}
+			// time.Sleep(1000 * time.Millisecond)
+			// req, err = http.NewRequestWithContext(c, http.MethodGet, api_url_price, nil)
+			// if err != nil {
+			// 	log.Fatal(err)
 			// }
+
+			// res, getErr = hClient.Do(req)
+			// if getErr != nil {
+			// 	log.Fatal(getErr)
+			// }
+			// if res.Body != nil {
+			// 	defer res.Body.Close()
+			// }
+
+			// body, readErr = ioutil.ReadAll(res.Body)
+			// if readErr != nil {
+			// 	log.Fatal(readErr)
+			// }
+			// err = json.Unmarshal(body, &prices)
+			// if err != nil {
+			// 	log.Fatal(err)
+			// }
+
+			for !prices.Completed {
+				time.Sleep(1000 * time.Millisecond)
+				req, err = http.NewRequestWithContext(c, http.MethodGet, api_url_price, nil)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				res, getErr = hClient.Do(req)
+				if getErr != nil {
+					log.Fatal(getErr)
+				}
+
+				defer res.Body.Close()
+
+				body, readErr = ioutil.ReadAll(res.Body)
+				if readErr != nil {
+					log.Fatal(readErr)
+				}
+				err = json.Unmarshal(body, &prices)
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
 
 			// NOW MERGE
 			var hotel_price []Hotel_Price
@@ -467,9 +464,9 @@ func main() {
 			if getErr != nil {
 				log.Fatal(getErr)
 			}
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
+
+			defer res.Body.Close()
+
 			body, readErr := ioutil.ReadAll(res.Body)
 			if readErr != nil {
 				log.Fatal(readErr)
@@ -483,7 +480,7 @@ func main() {
 			var roomPrices SpecificHotelRoomPrice
 			// fmt.Println(api_url_price)
 
-			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+			req, err = http.NewRequestWithContext(c, http.MethodGet, api_url_price, nil)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -493,9 +490,8 @@ func main() {
 				log.Fatal(getErr)
 			}
 			// fmt.Println(res.Body)
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
+			defer res.Body.Close()
+
 			body, readErr = ioutil.ReadAll(res.Body)
 			if readErr != nil {
 				log.Fatal(readErr)
@@ -506,49 +502,49 @@ func main() {
 				log.Fatal(err)
 			}
 
-			time.Sleep(1000 * time.Millisecond)
-			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
-			if err != nil {
-				log.Fatal(err)
-			}
-			res, getErr = hClient.Do(req)
-			if getErr != nil {
-				log.Fatal(getErr)
-			}
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
-			body, readErr = ioutil.ReadAll(res.Body)
-			if readErr != nil {
-				log.Fatal(readErr)
-			}
-			err = json.Unmarshal(body, &roomPrices)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			// for !roomPrices.Completed {
-			// 	req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
-			// 	if err != nil {
-			// 		log.Fatal(err)
-			// 	}
-			// 	res, getErr = hClient.Do(req)
-			// 	if getErr != nil {
-			// 		log.Fatal(getErr)
-			// 	}
-			// 	if res.Body != nil {
-			// 		defer res.Body.Close()
-			// 	}
-			// 	body, readErr = ioutil.ReadAll(res.Body)
-			// 	if readErr != nil {
-			// 		log.Fatal(readErr)
-			// 	}
-			// 	err = json.Unmarshal(body, &roomPrices)
-			// 	if err != nil {
-			// 		log.Fatal(err)
-			// 	}
-			// 	time.Sleep(500 * time.Millisecond)
+			// time.Sleep(1000 * time.Millisecond)
+			// req, err = http.NewRequestWithContext(c, http.MethodGet, api_url_price, nil)
+			// if err != nil {
+			// 	log.Fatal(err)
 			// }
+			// res, getErr = hClient.Do(req)
+			// if getErr != nil {
+			// 	log.Fatal(getErr)
+			// }
+			// if res.Body != nil {
+			// 	defer res.Body.Close()
+			// }
+			// body, readErr = ioutil.ReadAll(res.Body)
+			// if readErr != nil {
+			// 	log.Fatal(readErr)
+			// }
+			// err = json.Unmarshal(body, &roomPrices)
+			// if err != nil {
+			// 	log.Fatal(err)
+			// }
+
+			for !roomPrices.Completed {
+				time.Sleep(1000 * time.Millisecond)
+				req, err = http.NewRequestWithContext(c, http.MethodGet, api_url_price, nil)
+				if err != nil {
+					log.Fatal(err)
+				}
+				res, getErr = hClient.Do(req)
+				if getErr != nil {
+					log.Fatal(getErr)
+				}
+
+				defer res.Body.Close()
+
+				body, readErr = ioutil.ReadAll(res.Body)
+				if readErr != nil {
+					log.Fatal(readErr)
+				}
+				err = json.Unmarshal(body, &roomPrices)
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
 
 			c.JSON(http.StatusOK, gin.H{
 				"roomPrice": roomPrices,

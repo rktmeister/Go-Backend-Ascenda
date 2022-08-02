@@ -6,7 +6,14 @@ import HotelRoomInnerBox from "./HotelRoomInnerBox";
 function HotelRoomBox(props) {
 
     const DEFAULT_ROOM_IMAGE_URL = "https://cdn-s3.kaligo.com/assets/images/hotels_missing_images/hotel-room.jpg";
-    const roomImageURL = props.roomsSet[0].images !== undefined ? props.roomsSet[0].images[0].url : DEFAULT_ROOM_IMAGE_URL;
+    let roomImageURL;
+    if (props.roomsSet[0].images && props.roomsSet[0].images.url) {
+        roomImageURL = props.roomsSet[0].images.url;
+    } else {
+        roomImageURL = DEFAULT_ROOM_IMAGE_URL;
+    }
+
+    // = props.roomsSet[0].images !== undefined ? props.roomsSet[0].images[0].url : DEFAULT_ROOM_IMAGE_URL;
 
     // ============================= Setting up each room set of images (type choices) ========================== //
 
@@ -36,16 +43,16 @@ function HotelRoomBox(props) {
                     </span>
                 </div>   {/* LowerCaseChange(props.room.roomNormalizedDescription)}</span>*/}
                 <br></br>
-
                 <div style={{ width: "210px", height: "180px", marginLeft: "10px" }} >
 
                     {console.log(eachRoomImagesSet)}
 
                     {(eachRoomImagesSet !== null && eachRoomImagesSet[0] !== undefined) ?
-                        (<div style={{ marginLeft: "20px", width: "250px", height: "200px", overflow: "hidden" }}>
+                        (<div style={{marginLeft: "-5px", width: "450px", height:"350px", overflow:"hidden"}}>
                             <img key={eachRoomImagesSet[imageIndex].url}
                                 src={eachRoomImagesSet[imageIndex].url}
                                 alt=""
+
                                 /*Reference: https://stackoverflow.com/questions/34660385/how-to-position-a-react-component-relative-to-its-parent */
                                 style={{ marginLeft: "20px", width: "80%", height: "80%", position: "relative" }}
                                 onClick={wraparoundIncrementImageIndex}

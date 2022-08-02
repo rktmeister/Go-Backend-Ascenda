@@ -286,7 +286,6 @@ function HotelRoomDetails(props) {
           zIndex: 10
         }}>
 
-
           <div style={{ width: "1000px", height: "700px", overflow: "hidden", alignSelf: "center", position: "relative", display: "flex", justifyContent: "space-evenly" }}>
             <img key={getCurrentImageURL()} // may not re-render on index (state) change
               src={getCurrentImageURL()}
@@ -351,7 +350,7 @@ function HotelRoomDetails(props) {
         textAlign: "center",
         position: "fixed",
         top: 700,
-        left: 1750, // way out of view on narrow screens lol
+        left: 750, // way out of view on narrow screens lol original 1750
         zIndex: 20,
         border: "transparent"
       }}
