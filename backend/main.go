@@ -231,7 +231,7 @@ func main() {
 					"success": false,
 				})
 			}
-			username, err := auth.VerifyJWT(cookie)
+			username, err := auth.VerifyJWT(userClient, cookie)
 			if err != nil {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
@@ -267,7 +267,23 @@ func main() {
 			})
 		})
 
-		authorized.POST("/deleteAccount", func(c *gin.Context) {
+		authorized.POST("/logout", func(c *gin.Context) {
+			cookie, err := c.Cookie("refresh_jwt")
+			if err != nil {
+				fmt.Println(err)
+				c.JSON(401, gin.H{
+					"message": "logout failed",
+					"success": false,
+				})
+			}
+			redisdb.AddLoggedOutToken(userClient, cookie)
+			c.JSON(200, gin.H{
+				"message": "logout success",
+				"success": true,
+			})
+		})
+
+		authorized.DELETE("/deleteAccount", func(c *gin.Context) {
 			var user User
 			c.BindJSON(&user)
 			if redisdb.CheckLogin(userClient, user.Username, user.Password) {

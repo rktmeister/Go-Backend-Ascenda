@@ -210,6 +210,29 @@ func DeleteUserDocument(u *redisearch.Client, username string) bool {
 	}
 }
 
+func AddLoggedOutToken(u *redisearch.Client, tokenString string) {
+	fmt.Println("Token logged out", tokenString)
+	if CheckLoggedOutToken(u, tokenString) {
+		fmt.Println("Token already logged out")
+	} else {
+		doc := redisearch.NewDocument("loggedOutToken:"+tokenString, 1.0)
+		doc.Set("token", tokenString)
+		if err := u.Index([]redisearch.Document{doc}...); err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+func CheckLoggedOutToken(u *redisearch.Client, tokenString string) bool {
+	doc, total, _ := u.Search(redisearch.NewQuery(fmt.Sprintf("%s%s%s", `"`, tokenString, `"`)).SetReturnFields("token").Limit(0, 1))
+	fmt.Println("Total such logged out tokens:", tokenString, ":", total)
+	if len(doc) == 0 {
+		return false
+	} else {
+		return true
+	}
+}
+
 func CreateBooking(b *redisearch.Client, username string, firstName string, lastName string, destination_id string, hotel_id string, supplier_id string, special_requests string, salutation string, email string, phone string, guests string, checkin string, checkout string, price string) {
 	doc := redisearch.NewDocument("booking:"+username+"-"+hotel_id+"-"+checkin, 1.0)
 	doc.Set("destination_id", destination_id)
