@@ -229,7 +229,7 @@ func AddLoggedOutToken(t *redisearch.Client, tokenString string) {
 		fmt.Println("Token already logged out")
 	} else {
 		doc := redisearch.NewDocument("loggedOutToken:"+tokenString, 1.0)
-		doc.Set("tokenString", tokenString)
+		doc.Set("tokenString", redisearch.EscapeTextFileString(tokenString))
 		if err := t.Index([]redisearch.Document{doc}...); err != nil {
 			log.Fatal(err)
 		}
@@ -238,7 +238,7 @@ func AddLoggedOutToken(t *redisearch.Client, tokenString string) {
 }
 
 func CheckLoggedOutToken(t *redisearch.Client, tokenString string) bool {
-	doc, total, _ := t.Search(redisearch.NewQuery(fmt.Sprintf("%s%s%s", `"`, tokenString, `"`)).SetReturnFields("tokenString").Limit(0, 1))
+	doc, total, _ := t.Search(redisearch.NewQuery(fmt.Sprintf("%s%s%s", `"`, redisearch.EscapeTextFileString(tokenString), `"`)).SetReturnFields("tokenString").Limit(0, 1))
 	fmt.Println("Total such logged out tokens:", tokenString, ":", total, doc)
 	if len(doc) == 0 {
 		return false
