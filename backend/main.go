@@ -28,7 +28,8 @@ type ListOfHotelPrice struct {
 	SearchRank  float32 `json:"searchRank"`
 }
 type HotelsPrice struct {
-	Prices []ListOfHotelPrice `json:"hotels"`
+	Completed bool               `json:"completed"`
+	Prices    []ListOfHotelPrice `json:"hotels"`
 }
 type Hotel_Price struct {
 	Id                    string
@@ -83,11 +84,16 @@ type SpecificHotelRoomPrice struct {
 }
 
 type RoomPrices struct {
-	Key            string     `json:"key"`
-	RoomNormalDesc string     `json:"roomNormalizedDescription"`
-	Free_Cancel    bool       `json:"free_cancellation"`
-	Images         []ImageUrl `json:"images"`
-	Price          float32    `json:"price"`
+	Key                string             `json:"key"`
+	RoomNormalDesc     string             `json:"roomNormalizedDescription"`
+	Free_Cancel        bool               `json:"free_cancellation"`
+	Images             []ImageUrl         `json:"images"`
+	Price              float32            `json:"price"`
+	RoomAdditionalInfo RoomAdditionalInfo `json:"roomAdditionalInfo"`
+}
+
+type RoomAdditionalInfo struct {
+	Breakfast_Info string `json:"breakfast_info"`
 }
 
 type ImageUrl struct {
@@ -115,6 +121,28 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+// func callGetRequest(url string, hClient *http.Client, variable) {
+// 	req, err := http.NewRequest(http.MethodGet, api_url_price, nil)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	res, getErr := hClient.Do(req)
+// 	if getErr != nil {
+// 		log.Fatal(getErr)
+// 	}
+// 	if res.Body != nil {
+// 		defer res.Body.Close()
+// 	}
+// 	body, readErr := ioutil.ReadAll(res.Body)
+// 	if readErr != nil {
+// 		log.Fatal(readErr)
+// 	}
+// 	err = json.Unmarshal(body, &roomPrices)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// }
 
 func main() {
 	router := gin.Default()
@@ -145,12 +173,15 @@ func main() {
 
 	redisdb.AddNewUser(userClient, "rktmeister1", "1234")
 	redisdb.CheckLogin(userClient, "rktmeister1", "1234")
+	redisdb.DeleteUserDocument(userClient, "rktmeister1")
 
 	redisdb.AddNewUser(userClient, "sunrise", "1234")
 	redisdb.CheckLogin(userClient, "sunrise", "1234")
 
 	redisdb.AddNewUser(userClient, "hoyo", "1234")
 	redisdb.CheckLogin(userClient, "hoyo", "1234")
+
+	redisdb.CreateBooking(bookingClient, "rktmeister1", "dylan", "raharja", "WD0M", "diH7", "kaligo", "NO_REQ", "Mr.", "dylan.raharja@gmail.com", "65656565", "1", "2022-08-29", "2022-08-31", "300.59")
 
 	api := router.Group("/api")
 	{
@@ -163,11 +194,30 @@ func main() {
 				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true)      // 60*15 for 15 min
 				c.JSON(200, gin.H{
 					"message": "login success",
+					"success": true,
 					//"jwt":     auth.GenerateJWT(user.Username),
 				})
 			} else {
 				c.JSON(401, gin.H{
 					"message": "login failed",
+					"success": false,
+				})
+			}
+		})
+
+		api.POST("/register", func(c *gin.Context) {
+			var user User
+			c.BindJSON(&user)
+			if !redisdb.CheckExistingUser(userClient, user.Username) {
+				redisdb.AddNewUser(userClient, user.Username, user.Password)
+				c.JSON(200, gin.H{
+					"message": "register success",
+					"success": true,
+				})
+			} else {
+				c.JSON(401, gin.H{
+					"message": "register failed",
+					"success": false,
 				})
 			}
 		})
@@ -178,6 +228,7 @@ func main() {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
 					"message": "refresh failed",
+					"success": false,
 				})
 			}
 			username, err := auth.VerifyJWT(cookie)
@@ -185,6 +236,7 @@ func main() {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
 					"message": "refresh failed",
+					"success": false,
 				})
 			}
 			user, err := redisdb.GetUser(userClient, username)
@@ -193,11 +245,13 @@ func main() {
 				c.JSON(200, gin.H{
 					"message":  "refresh success",
 					"username": username,
+					"success":  true,
 				})
 			} else {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
 					"message": "refresh failed",
+					"success": false,
 				})
 			}
 		})
@@ -208,8 +262,32 @@ func main() {
 	{
 		authorized.GET("/testAccessToken", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
+				"message": "ok",
 				"success": true,
 			})
+		})
+
+		authorized.POST("/deleteAccount", func(c *gin.Context) {
+			var user User
+			c.BindJSON(&user)
+			if redisdb.CheckLogin(userClient, user.Username, user.Password) {
+				if redisdb.DeleteUserDocument(userClient, user.Username) {
+					c.JSON(200, gin.H{
+						"message": "delete success",
+						"success": true,
+					})
+				} else {
+					c.JSON(401, gin.H{
+						"message": "delete failed for unknown reasons",
+						"success": false,
+					})
+				}
+			} else {
+				c.JSON(401, gin.H{
+					"message": "delete failed because user not found",
+					"success": false,
+				})
+			}
 		})
 
 		authorized.GET("/destinations/fuzzyName", func(c *gin.Context) {
@@ -276,8 +354,7 @@ func main() {
 				log.Fatal(err)
 			}
 
-			time.Sleep(time.Millisecond * 500)
-
+			time.Sleep(1000 * time.Millisecond)
 			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
 			if err != nil {
 				log.Fatal(err)
@@ -299,6 +376,31 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+
+			// for !prices.Completed {
+			// 	time.Sleep(700 * time.Millisecond)
+			// 	req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+			// 	if err != nil {
+			// 		log.Fatal(err)
+			// 	}
+
+			// 	res, getErr = hClient.Do(req)
+			// 	if getErr != nil {
+			// 		log.Fatal(getErr)
+			// 	}
+			// 	if res.Body != nil {
+			// 		defer res.Body.Close()
+			// 	}
+
+			// 	body, readErr = ioutil.ReadAll(res.Body)
+			// 	if readErr != nil {
+			// 		log.Fatal(readErr)
+			// 	}
+			// 	err = json.Unmarshal(body, &prices)
+			// 	if err != nil {
+			// 		log.Fatal(err)
+			// 	}
+			// }
 
 			// NOW MERGE
 			var hotel_price []Hotel_Price
@@ -375,10 +477,7 @@ func main() {
 				log.Fatal(err)
 			}
 
-			// fmt.Println(roomPrices)
-
-			time.Sleep(time.Millisecond * 500)
-
+			time.Sleep(1000 * time.Millisecond)
 			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
 			if err != nil {
 				log.Fatal(err)
@@ -399,7 +498,28 @@ func main() {
 				log.Fatal(err)
 			}
 
-			// fmt.Println(roomPrices)
+			// for !roomPrices.Completed {
+			// 	req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+			// 	if err != nil {
+			// 		log.Fatal(err)
+			// 	}
+			// 	res, getErr = hClient.Do(req)
+			// 	if getErr != nil {
+			// 		log.Fatal(getErr)
+			// 	}
+			// 	if res.Body != nil {
+			// 		defer res.Body.Close()
+			// 	}
+			// 	body, readErr = ioutil.ReadAll(res.Body)
+			// 	if readErr != nil {
+			// 		log.Fatal(readErr)
+			// 	}
+			// 	err = json.Unmarshal(body, &roomPrices)
+			// 	if err != nil {
+			// 		log.Fatal(err)
+			// 	}
+			// 	time.Sleep(500 * time.Millisecond)
+			// }
 
 			c.JSON(http.StatusOK, gin.H{
 				"roomPrice": roomPrices,
@@ -407,8 +527,9 @@ func main() {
 			})
 		})
 
-		authorized.POST("/room/hotel", func(c *gin.Context) {
-			redisdb.CreateBooking(bookingClient, c.PostForm("username"), c.PostForm("bookingUid"), c.PostForm("dest"), c.PostForm("checkin"), c.PostForm("checkout"), c.PostForm("time"))
+		authorized.POST("/room/hotel/book", func(c *gin.Context) {
+			redisdb.CreateBooking(bookingClient, c.PostForm("username"), c.PostForm("firstName"), c.PostForm("lastName"), c.PostForm("destination_id"), c.PostForm("hotel_id"), c.PostForm("supplier_id"), c.PostForm("special_requests"), c.PostForm("salutation"),
+				c.PostForm("email"), c.PostForm("phone"), c.PostForm("guests"), c.PostForm("checkin"), c.PostForm("checkout"), c.PostForm("price"))
 		})
 	}
 
