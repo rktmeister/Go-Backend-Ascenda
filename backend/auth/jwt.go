@@ -41,9 +41,9 @@ func GenerateJWT(username string, isRefresh bool) string {
 	fmt.Println("gen")
 	var expiryOffset time.Duration
 	if isRefresh {
-		expiryOffset = time.Minute * 15
-	} else {
 		expiryOffset = time.Hour * 24 * 7
+	} else {
+		expiryOffset = time.Minute * 15
 	}
 
 	claims := &jwt.RegisteredClaims{
@@ -59,10 +59,15 @@ func GenerateJWT(username string, isRefresh bool) string {
 	return token.String()
 }
 
-func VerifyJWT(tokenStr string) (string, error) {
+func VerifyJWT(tdb *redisearch.Client, tokenStr string) (string, error) {
 	fmt.Println(tokenStr)
 	fmt.Println([]byte(tokenStr))
 	fmt.Println("verify")
+
+	if redisdb.CheckLoggedOutToken(tdb, tokenStr) {
+		return "", errors.New("logged out already")
+	}
+
 	token, err := jwt.Parse([]byte(tokenStr), jwtVerifier)
 	if err != nil {
 		log.Println("Error parsing JWT")
@@ -98,6 +103,16 @@ func Authorization(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("access_jwt")
 	fmt.Println(cookie)
 
+	udb, ok := ctx.MustGet("userDB").(*redisearch.Client)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	tdb, ok := ctx.MustGet("tokenDB").(*redisearch.Client)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
 	// authHeader := ctx.GetHeader("Authorization")
 	// if authHeader == "" {
 	// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing."})
@@ -112,17 +127,13 @@ func Authorization(ctx *gin.Context) {
 	// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing bearer part."})
 	// 	return
 	// }
-	username, err := VerifyJWT(cookie) //VerifyJWT(headerParts[1])
+	username, err := VerifyJWT(tdb, cookie) //VerifyJWT(headerParts[1])
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	db, ok := ctx.MustGet("DB").(*redisearch.Client)
-	if !ok {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	}
 
-	user, err := redisdb.GetUser(db, username)
+	user, err := redisdb.GetUser(udb, username)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
@@ -131,10 +142,11 @@ func Authorization(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func AddDatabaseToContext(u *redisearch.Client) gin.HandlerFunc {
+func AddDatabasesToContext(u *redisearch.Client, t *redisearch.Client) gin.HandlerFunc {
 	fmt.Println("adddbtocontext")
 	return func(c *gin.Context) {
-		c.Set("DB", u)
+		c.Set("userDB", u)
+		c.Set("tokenDB", t)
 		c.Next()
 	}
 }

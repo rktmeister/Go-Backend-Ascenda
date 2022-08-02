@@ -24,7 +24,7 @@ const HotelCard = forwardRef((props, ref) => {
                                 <p>Name: {props.item.term}</p>
                                 {/* <button onClick={() => console.log(props)}>hi</button> */}
                                 <footer className="blockquote-footer">
-                                    <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(props.item.description) }} />
+                                    {/* <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(props.item.description) }} /> */}description
                                 </footer>
                                 <button onClick={() => props.onClick(props.item)}>CHOOSE</button>
                                 <img src={props.item.defaultImageURL} width={props.height / 10} alt="" />

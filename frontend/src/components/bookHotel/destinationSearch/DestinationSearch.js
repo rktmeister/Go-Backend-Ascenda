@@ -62,7 +62,18 @@ function DestinationSearch(props) {
       };
       props.handMeDowns.push(dataToBePassedOn);
       props.finishStage(props.handMeDowns);
-    } else {
+    } 
+    
+    else if(1){ //====================================================== REMOVE AFTER USE
+      const dataToBePassedOn = {
+        filterData: filterBarValues,
+        destination: chosenDestination,
+      };
+      props.handMeDowns.push(dataToBePassedOn);
+      props.finishStage(props.handMeDowns);
+    }
+    
+    else {
       alert("Select a location!");
     }
   };
