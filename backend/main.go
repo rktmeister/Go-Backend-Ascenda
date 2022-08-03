@@ -213,6 +213,8 @@ func main() {
 			var user User
 			c.BindJSON(&user)
 			if !redisdb.CheckExistingUser(userClient, user.Username) {
+				c.SetCookie("refresh_jwt", auth.GenerateJWT(user.Username, true), 60*60*24*7, "/", "", false, true) // 60*60*24*7 for 7 days
+				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true)      // 60*15 for 15 min
 				redisdb.AddNewUser(userClient, user.Username, user.Password)
 				c.JSON(200, gin.H{
 					"message": "register success",
@@ -235,7 +237,7 @@ func main() {
 					"success": false,
 				})
 			}
-			username, err := auth.VerifyJWT(userClient, cookie)
+			username, err := auth.VerifyJWT(loggedOutTokensClient, cookie)
 			if err != nil {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
@@ -559,6 +561,11 @@ func main() {
 		authorized.POST("/room/hotel/book", func(c *gin.Context) {
 			redisdb.CreateBooking(bookingClient, c.PostForm("username"), c.PostForm("firstName"), c.PostForm("lastName"), c.PostForm("destination_id"), c.PostForm("hotel_id"), c.PostForm("supplier_id"), c.PostForm("special_requests"), c.PostForm("salutation"),
 				c.PostForm("email"), c.PostForm("phone"), c.PostForm("guests"), c.PostForm("checkin"), c.PostForm("checkout"), c.PostForm("price"))
+
+			c.JSON(http.StatusOK, gin.H{
+				"message": "ok",
+				"success": true,
+			})
 		})
 	}
 
