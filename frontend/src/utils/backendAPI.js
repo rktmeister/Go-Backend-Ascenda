@@ -43,6 +43,7 @@ export const getHotelBatch = async (destinationId, checkInDate, checkOutDate, nu
         });
         return res;
     }, nav);
+    console.log("HIIIIIIIII", res1);
 
     if (res1.hotel_price === null) {
         return {

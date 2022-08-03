@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import DoubleSlider from "./DoubleSlider";
+import RemoveDescriptionDuplicate from "./RemoveDescriptionDuplicate.js";
 
 const RoomFilters = (props) => {
     const [minPrice, setMinPrice] = useState(props.prior.minPrice);
     const [maxPrice, setMaxPrice] = useState(props.prior.maxPrice);
     const [chosenRoomType, setChosenRoomType] = useState("Choose Room Type");
+    var roomDescriptionArray = Array();
 
     const handleSubmit = () => {
         // TODO: guards
@@ -18,6 +20,15 @@ const RoomFilters = (props) => {
     useEffect(() => {
         handleSubmit();
     }, [minPrice, maxPrice, chosenRoomType])
+    
+    roomDescriptionArray.length = null;
+    try{
+        props.rooms.map((room) => {roomDescriptionArray.push(room.roomNormalizedDescription)})
+        RemoveDescriptionDuplicate(roomDescriptionArray);
+    }
+    catch(e){
+        console.log(e);
+    }
 
     return (
         <div className="FilterBox">
@@ -38,8 +49,8 @@ const RoomFilters = (props) => {
             <span>
                 <select value={chosenRoomType} className="DescriptionDropdown" onChange={(e) => { setChosenRoomType(e.target.value); }}>
                     <option value="Choose Room Type">Choose Room Type</option>
-                    {props.rooms ? props.rooms.map((room) => {
-                        return <option key={room.key} value={room.roomNormalizedDescription}> {room.roomNormalizedDescription} </option>;
+                    {props.rooms ? roomDescriptionArray.map((roomDescription) => {
+                        return <option key={roomDescription} value={roomDescription}> {roomDescription} </option>;
                     }) : <option value="Choose Room Type">Loading...</option>}
                 </select>
             </span>

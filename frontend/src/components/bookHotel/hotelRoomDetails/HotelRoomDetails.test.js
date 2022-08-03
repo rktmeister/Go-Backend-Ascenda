@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import LowerCaseChange from "./parts/LowerCaseChange";
 import RemoveDescriptionDuplicate from "./parts/RemoveDescriptionDuplicate";
 import HotelRoomBox from "./parts/HotelRoomBox.js";
 import HotelRoomDetails from "./HotelRoomDetails.js";
-import ShowRoomsOutput from "./parts/ShowRoomsOutput";
+import ListOfRoomTypes from "./parts/ListOfRoomTypes";
 
 
 // test('renders learn react link', () => {
@@ -13,50 +12,6 @@ import ShowRoomsOutput from "./parts/ShowRoomsOutput";
 // });
 
 
-
-//========================== Convert Lowercase and Uppercase Function Tests ===============================// 
-
-test('Transform lowercase empty', () =>{
-  expect(LowerCaseChange("")).toEqual("");
-});
-
-test('Transform lowercase whitespace', () =>{
-  expect(LowerCaseChange(" ")).toBe(" ");
-});
-
-test('Transform lowercase 1', () =>{
-  expect(LowerCaseChange("AbCDEfG")).toBe("Abcdefg");
-});
-
-test('Transform lowercase 2', () =>{
-  expect(LowerCaseChange("ABCDEFG")).toBe("Abcdefg");
-});
-
-test('Transform lowercase 3', () =>{
-  expect(LowerCaseChange("abcdefg")).toBe("Abcdefg");
-});
-
-test('Transform lowercase 4', () =>{
-  expect(LowerCaseChange("Abcdefg")).toBe("Abcdefg");
-});
-
-test('Transform 2 words lowercase 1', () =>{
-  expect(LowerCaseChange("AbCDEfG AbCDEfG")).toBe("Abcdefg Abcdefg");
-});
-
-test('Transform 2 words lowercase 2', () =>{
-  expect(LowerCaseChange("ABCDEFG ABCDEFG")).toBe("Abcdefg Abcdefg");
-});
-
-test('Transform 2 words lowercase 3', () =>{
-  expect(LowerCaseChange("abcdefg abcdefg")).toBe("Abcdefg Abcdefg");
-});
-
-test('Transform 2 words lowercase 4', () =>{
-  expect(LowerCaseChange("Abcdefg Abcdefg")).toBe("Abcdefg Abcdefg");
-});
-
-//========================== Convert Lowercase and Uppercase Function Tests ===============================// 
 
 
 
@@ -121,7 +76,7 @@ test('HotelRoomDetails Filter Price 0 : Show All', () => {
   
   
 
-  render(ShowRoomsOutput(rooms, 0, 2000, "-1", "Choose Room Type" ));
+  render(ListOfRoomTypes(rooms, 0, 2000, "-1", "Choose Room Type" ));
 
   const description_room_1 = screen.getByText(/Room 1/);
   const price_room_1 = screen.getByText(/\$500/);
@@ -161,7 +116,7 @@ test('HotelRoomDetails Filter Price 1', () => {
   
   
 
-  render(ShowRoomsOutput(rooms, 400, 600, "-1", "Choose Room Type" ));
+  render(ListOfRoomTypes(rooms, 400, 600, "-1", "Choose Room Type" ));
   const description_room_1 = screen.getByText(/Room 1/);
   const price_room_1 = screen.getByText(/\$500/);
   
@@ -186,7 +141,7 @@ test('HotelRoomDetails Filter Price 2', () => {
   
   
 
-  render(ShowRoomsOutput(rooms, 900, 1200, "-1", "Choose Room Type" ));
+  render(ListOfRoomTypes(rooms, 900, 1200, "-1", "Choose Room Type" ));
   const description_room_3 = screen.getByText(/Room 3/);
   const price_room_3 = screen.getByText(/\$900/);
 
@@ -216,7 +171,7 @@ test('HotelRoomDetails Filter Price 3 : Below Lowest Price', () => {
   
   
 
-  render(ShowRoomsOutput(rooms, 0, 400, "-1", "Choose Room Type" ));
+  render(ListOfRoomTypes(rooms, 0, 400, "-1", "Choose Room Type" ));
 
   const description_room_1 = screen.queryByText(/Room 1/);
   const price_room_1 = screen.queryByText(/\$500/);
@@ -255,7 +210,7 @@ test('HotelRoomDetails Filter Price 4 : Above Highest Price', () => {
   
   
 
-  render(ShowRoomsOutput(rooms, 1300, 2000, "-1", "Choose Room Type" ));
+  render(ListOfRoomTypes(rooms, 1300, 2000, "-1", "Choose Room Type" ));
 
   const description_room_1 = screen.queryByText(/Room 1/);
   const price_room_1 = screen.queryByText(/\$500/);
@@ -292,19 +247,19 @@ test('HotelRoomDetails Filter Price 4 : Above Highest Price', () => {
 //========================== Filtering Description Tests ===============================//
 test('HotelRoomDetails Filter Description 0 : Show All', () => {
 
-  const rooms = [{key: 1, description:"room 1", price:"500"}, 
-                  {key: 2, description:"room 2", price:"700"}, 
-                  {key: 3, description:"room 2", price:"1200"},
-                  {key: 4, description:"room 3", price:"900"},
-                  {key: 5, description:"room 4", price:"1200"},
-                  {key: 6, description:"room 4", price:"700"},
+  const rooms = [{"key": 1, "roomNormalizedDescription":"Room 1", "price":500, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_room_only"}, "free_cancellation": false}, 
+                  {"key": 2, "roomNormalizedDescription":"Room 2", "price":700, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_room_only"}, "free_cancellation": false}, 
+                  {"key": 3, "roomNormalizedDescription":"Room 2", "price":1200, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_breakfast_included"}, "free_cancellation": true},
+                  {"key": 4, "roomNormalizedDescription":"Room 3", "price":900, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_room_only"}, "free_cancellation": false},
+                  {"key": 5, "roomNormalizedDescription":"Room 4", "price":1200, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_room_only"}, "free_cancellation": false},
+                  {"key": 6, "roomNormalizedDescription":"Room 4", "price":700, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_breakfast_included"}, "free_cancellation": true},
 
                 ];
 
   
   
 
-  render(ShowRoomsOutput(rooms, 0, 2000, "-1", "Choose Room Type" ));
+  render(ListOfRoomTypes(rooms, 0, 2000, "-1", "Choose Room Type" ));
   const description_room_1 = screen.getByText(/Room 1/);
   const price_room_1 = screen.getByText(/\$500/);
   
@@ -333,7 +288,7 @@ test('HotelRoomDetails Filter Description 0 : Show All', () => {
   
   
 
-//   render(ShowRoomsOutput(rooms, 0, 1200, "-1", "a"));
+//   render(ListOfRoomTypes(rooms, 0, 1200, "-1", "a"));
 
 //   const description_room_1 = screen.queryByText(/Room 1/);
 //   const price_room_1 = screen.queryByText(/500/);
@@ -373,6 +328,62 @@ test('HotelRoomDetails Filter Description 0 : Show All', () => {
 
 
 
+
+
+
+
+//========================== HotellRoomDetails Display Tests ===============================//
+test('HotelRoomDetails Itself: Show All', () => {
+
+  const roomsInput = {"rooms": [{"key": 1, "roomNormalizedDescription":"Room 1", "price":500, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_room_only"}, "free_cancellation": false}, 
+                  {"key": 2, "roomNormalizedDescription":"Room 2", "price":700, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_room_only"}, "free_cancellation": false}, 
+                  {"key": 3, "roomNormalizedDescription":"Room 2", "price":1200, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_breakfast_included"}, "free_cancellation": true},
+                  {"key": 4, "roomNormalizedDescription":"Room 3", "price":900, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_room_only"}, "free_cancellation": false},
+                  {"key": 5, "roomNormalizedDescription":"Room 4", "price":1200, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_room_only"}, "free_cancellation": false},
+                  {"key": 6, "roomNormalizedDescription":"Room 4", "price":700, "roomAdditionalInfo": {"breakfast_info": "hotel_detail_breakfast_included"}, "free_cancellation": true},
+
+                ]};
+
+  
+  
+
+  render(<HotelRoomDetails
+    handMeDowns={[{
+      numberOfRooms: 10,
+      minPrice: 0,
+      maxPrice: 100,
+      destination: { id: 1 },
+  }]}
+    backendPackage= {roomsInput}/>);
+
+  const description_room_1 = screen.getByText(/Room 1/);
+  const price_room_1 = screen.getByText(/SGD 500/);
+  
+  const description_room_2 = screen.getByText(/Room 2/);
+  const price_room_2_a = screen.getByText(/SGD 700/);
+  const price_room_2_b = screen.getByText(/SGD 1200/);
+
+  const description_room_3 = screen.getByText(/Room 3/);
+  const price_room_3 = screen.getByText(/SGD 900/);
+
+  const description_room_4 = screen.getByText(/Room 4/);
+  const price_room_4_a = screen.getByText(/SGD 700/);
+  const price_room_4_b = screen.quergetByTextyByText(/SGD 1200/);
+
+  expect(description_room_1).toBeInTheDocument();
+  expect(description_room_2).toBeInTheDocument();
+  expect(description_room_3).toBeInTheDocument();
+  expect(description_room_4).toBeInTheDocument();
+
+  expect(price_room_1).toBeInTheDocument();
+  expect(price_room_2_a).toBeInTheDocument();
+  expect(price_room_2_b).toBeInTheDocument();
+  expect(price_room_3).toBeInTheDocument();
+  expect(price_room_4_a).toBeInTheDocument();
+  expect(price_room_4_b).toBeInTheDocument();
+
+
+});
 
 
 
