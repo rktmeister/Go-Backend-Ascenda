@@ -39,6 +39,7 @@ const ScrollMenu = (props) => {
     let loadDelay;
 
     const loadRoutine = () => {
+        console.log("loading");
         clearTimeout(loadDelay);
 
         loadDelay = setTimeout(() => {
@@ -109,7 +110,7 @@ const ScrollMenu = (props) => {
                 <button onClick={() => console.log(refs, refs["1"])}>test</button>
                 <button onClick={handleScroll}>test2</button>
                 <button onClick={() => console.log(currentItems, props.items)}>examine</button>
-                <button onClick={loadRoutine}>load</button>
+                <button data-testid="loadButton" onClick={loadRoutine}>load</button>
                 <button onClick={() => console.log(props.items, currentItems)}>stop</button>
                 Total count: {currentItems.length}
                 {

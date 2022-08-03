@@ -112,10 +112,10 @@ const FilterBar = (props) => {
                 <div className="form-group">
                     <label htmlFor="numberOfRooms">Number of Rooms</label>
                     <input
+                        data-testid="numberOfRoomsInput"
                         type="number"
                         className="form-control"
                         id="numberOfRooms"
-                        aria-describedby="emailHelp"
                         placeholder="Number of rooms/guests"
                         onChange={(event) => {
                             if (!isNaN(event.target.value))
@@ -147,6 +147,7 @@ const FilterBar = (props) => {
                     />
                 </div>
                 <MultiRangeSlider
+                    data-testid="priceSlider"
                     min={0}
                     max={10000}
                     step={1}
@@ -174,7 +175,7 @@ const FilterBar = (props) => {
                         console.log(e);
                     }}
                 />
-                <button type="submit" className="btn btn-primary" >Submit</button>
+                <button id="submitFilter" className="btn btn-primary" data-testid="filterSubmit" >Submit</button>
             </form>
             <div className="alert alert-primary" role="alert">
                 {alertMessage}

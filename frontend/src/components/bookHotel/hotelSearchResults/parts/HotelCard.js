@@ -12,7 +12,7 @@ const HotelCard = forwardRef((props, ref) => {
 
 
     return (
-        <div ref={ref}>
+        <div id={`hotelCard${props.item.uid}`} data-testid="hotelCard" ref={ref}>
             {
                 props.item ?
                     <div className="card" style={{ backgroundColor: "dodgerblue", height: props.height }}>

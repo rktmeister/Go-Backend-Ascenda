@@ -82,6 +82,7 @@ function DestinationSearch(props) {
       <div className="search">
         <div className="searchInputs">
           <input
+            id="destinationInput"
             data-testid="fuzzyInput"
             type="text"
             placeholder="Search!"
@@ -101,7 +102,7 @@ function DestinationSearch(props) {
             filteredData.length !== 0 && (
               filteredData.slice(0, 15).map(
                 (value, key) => {
-                  //console.log("V", value);
+                  console.log("K", key);
                   return (
                     <DestinationCard key={key} value={value} onClick={handleChoice} />
                   );
@@ -114,7 +115,7 @@ function DestinationSearch(props) {
           currentFilterData={filterBarValues}
           choice={chosenDestination.term}
         />
-        <button onClick={finishStage}>Next Stage</button>
+        <button id="submitButton" onClick={finishStage}>Next Stage</button>
       </div>
     </div>
   );

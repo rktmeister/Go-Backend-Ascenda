@@ -19,6 +19,7 @@ export const logOut = async (nav) => {
             "/logout",
             {}
         ), {
+            method: "POST",
             credentials: "include"
         });
         return res;
@@ -116,7 +117,7 @@ export const getHotelRoomBatch = async (hotelId, destinationUid, checkInDate, ch
 export const attemptCreateAccount = async (username, passwordHash) => {
     const res = fetch(formatQueryParameters(
         DB_ADDRESS,
-        "/signUp",
+        "/register",
         {}
     ), {
         method: "POST",
@@ -216,10 +217,10 @@ export const sendSuccessfulPayment = async (
         });
         const res = fetch(formatQueryParameters(
             DB_ADDRESS,
-            "/booking/logSuccess",
+            "/room/hotel/book",
             {}
         ), {
-            method: "post",
+            method: "POST",
             credentials: "include",
             body: formData,
         });

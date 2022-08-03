@@ -33,7 +33,7 @@ const BookingData = (props) => {
     const [lastName, setLastName] = useState("");
     const [destinationId, setDestinationId] = useState("");
     const [hotelId, setHotelId] = useState("");
-    const [supplierId, setSupplierId] = useState("");
+    const [supplierId, setSupplierId] = useState("vagohoteltri");
     const [specialRequests, setSpecialRequests] = useState("");
     const [salutation, setSalutation] = useState("");
     const [userEmail, setUserEmail] = useState("");
@@ -68,22 +68,41 @@ const BookingData = (props) => {
          * pages after a transaction.
          */
         const fullName = firstName + " " + lastName;
-        await props.backendPackage.sendSuccessfulPayment(
+        const res = await props.backendPackage.sendSuccessfulPayment(
             userName,
             firstName,
             lastName,
-            destinationId,
-            hotelId,
+            gotHandMeDowns.destination.uid,
+            gotHandMeDowns.hotel.uid,
             supplierId,
             specialRequests,
             salutation,
             userEmail,
             phoneNumber,
-            numberOfRooms,
-            checkInDate,
-            checkOutDate,
-            price,
+            gotHandMeDowns.filterData.numberOfRooms,
+            gotHandMeDowns.filterData.checkInDate,
+            gotHandMeDowns.filterData.checkOutDate,
+            gotHandMeDowns.room.price,
             nav
+        );
+
+        console.log(res);
+
+        console.log(
+            userName,
+            firstName,
+            lastName,
+            gotHandMeDowns.destination.uid,
+            gotHandMeDowns.hotel.uid,
+            supplierId,
+            specialRequests,
+            salutation,
+            userEmail,
+            phoneNumber,
+            gotHandMeDowns.filterData.numberOfRooms,
+            gotHandMeDowns.filterData.checkInDate,
+            gotHandMeDowns.filterData.checkOutDate,
+            gotHandMeDowns.room.price
         );
 
         await mockStripeCheckout();
@@ -117,6 +136,17 @@ const BookingData = (props) => {
         <div>
             <form onSubmit={handleCheckout}>
                 <div className="form-group">
+                    <label htmlFor="salutation">Salutation</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="salutation"
+                        placeholder="Mr"
+                        onChange={(event) => setSalutation(event.target.value)}
+                        value={salutation}
+                    />
+                </div>
+                <div className="form-group">
                     <label htmlFor="firstName">First Name</label>
                     <input
                         type="text"
@@ -127,7 +157,6 @@ const BookingData = (props) => {
                         onChange={(event) => setFirstName(event.target.value)}
                         value={firstName}
                     />
-                    <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div className="form-group">
                     <label htmlFor="lastName">Last Name</label>
@@ -140,7 +169,6 @@ const BookingData = (props) => {
                         onChange={(event) => setLastName(event.target.value)}
                         value={lastName}
                     />
-                    <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div className="form-group">
                     <label htmlFor="phoneNumber">Phone Number</label>
