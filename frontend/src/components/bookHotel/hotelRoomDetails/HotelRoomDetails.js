@@ -2,15 +2,11 @@ import './HotelRoomDetails.css';
 import React, { useState, useEffect } from "react";
 
 import LowerCaseChange from "./_parts/LowerCaseChange.js";
-import RemoveDescriptionDuplicate from "./_parts/RemoveDescriptionDuplicate.js";
+
 
 import MapGenerator from './parts/MapGenerator';
 
-import ShowRoomsOutput from './_parts/ShowRoomsOutput';
 
-import { FaStar } from 'react-icons/fa';
-
-import { getHotelRoomBatch } from './../../../utils/backendAPI.js';
 import { useNavigate } from 'react-router-dom';
 import DoubleSlider from './parts/DoubleSlider';
 import StarRating from '../common/StarRating';
@@ -29,6 +25,7 @@ function HotelRoomDetails(props) {
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [prevChosenRoomButton, setPrevChosenRoomButton] = useState("");
   const [chosenRoom, setChosenRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [description, setDescription] = useState("Choose Room Type");
@@ -46,6 +43,7 @@ function HotelRoomDetails(props) {
 
 
   const [currentIndex, setCurrentIndex] = useState(0); // This is for overall hotel imagaes
+
 
   const decreaseCurrentIndex = () => {
     console.log("Decrease " + currentIndex);
@@ -75,8 +73,17 @@ function HotelRoomDetails(props) {
   }, [gotHandMeDowns.hotel]);
 
   const handleChooseRoom = (room) => {
+    if (prevChosenRoomButton === ""){
+      setPrevChosenRoomButton(room.key + "_CHOOSE")
+    }
+
+    else{
+      (document.getElementById(prevChosenRoomButton)).style.backgroundColor = "rgb(180, 180, 180)";
+      setPrevChosenRoomButton(room.key + "_CHOOSE");
+    }
+
     const buttonToColor = document.getElementById(room.key + "_CHOOSE");
-    buttonToColor.style.color = "rgb(255, 140, 0)";
+    buttonToColor.style.backgroundColor = "rgb(255, 140, 0)";
     console.log("ROOM CHOSEN:", room);
     setChosenRoom(room);
   };
