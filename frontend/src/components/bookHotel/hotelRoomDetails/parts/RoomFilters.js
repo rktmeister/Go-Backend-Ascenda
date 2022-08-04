@@ -59,4 +59,4 @@ const RoomFilters = (props) => {
     )
 };
 
-export default RoomFilters;
+export default RoomFilters; 

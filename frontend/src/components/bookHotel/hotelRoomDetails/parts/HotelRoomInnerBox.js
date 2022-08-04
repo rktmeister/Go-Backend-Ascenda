@@ -48,11 +48,17 @@ function HotelRoomInnerBox(props) {
                 borderRadius:20,
                 color: "white"}} 
             onClick={handleChooseRoom} 
+            selected = {false}
             onMouseOver={(e)=>{
                 e.target.style.backgroundColor = "rgb(255, 140, 0)"; 
                 console.log(e.target.id)}}
             onMouseLeave = {(e)=>{
-                e.target.style.backgroundColor = "rgb(180, 180, 180)"; 
+                if(e.target.selected === false){
+                    e.target.style.backgroundColor = "rgb(180, 180, 180)"; 
+                }
+                else{
+                    e.target.style.backgroundColor = "rgb(255, 140, 0)"; 
+                }
                 console.log(e.target.id)}}
                 >Choose</button>
 
