@@ -25,7 +25,7 @@ function HotelRoomDetails(props) {
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [prevChosenRoomButton, setPrevChosenRoomButton] = useState("");
+  const [prevChosenRoom, setPrevChosenRoom] = useState(null);
   const [chosenRoom, setChosenRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [description, setDescription] = useState("Choose Room Type");
@@ -84,33 +84,30 @@ function HotelRoomDetails(props) {
   }, [gotHandMeDowns.hotel]);
 
   const handleChooseRoom = (room) => {
-    if (prevChosenRoomButton === ""){
-      setPrevChosenRoomButton(room.key + "_CHOOSE")
-    }
-
-    else{
-      const prevButtonToUncolor = document.getElementById(prevChosenRoomButton);
-      prevButtonToUncolor.style.backgroundColor = "rgb(180, 180, 180)";
-      buttonToColor.onMouseEnter = (e)=>{
-        e.target.style.backgroundColor = "rgb(255, 150, 10)"; 
-        console.log(e.target.id)}
-      prevButtonToUncolor.onMouseLeave = (e)=>{
-                                              e.target.style.backgroundColor = "rgb(180, 180, 180)"; 
-                                              console.log(e.target.id)}}
-      setPrevChosenRoomButton(room.key + "_CHOOSE");
-    }
-
-    const buttonToColor = document.getElementById(room.key + "_CHOOSE");
+    let buttonToColor = document.getElementById(room.key + "_CHOOSE");
+    console.log(buttonToColor.style.backgroundColor)
     buttonToColor.style.background = "rgb(255, 140, 0)";
-    buttonToColor.onMouseEnter = (e)=>{
-                                        e.target.style.backgroundColor = "rgb(255, 150, 10)"; 
-                                        console.log(e.target.id)}
-    buttonToColor.onMouseLeave = (e)=>{
-                                      e.target.style.backgroundColor = "rgb(255, 140, 0)"; 
-                                      console.log(e.target.id)}}
-    console.log(buttonToColor);
+    buttonToColor.selected = true;
+
     console.log("ROOM CHOSEN:", room);
     setChosenRoom(room);
+
+
+    console.log("prevChosenRoom : ", prevChosenRoom)
+    if (prevChosenRoom === null){
+      setPrevChosenRoom(room)
+    }
+
+    else if(prevChosenRoom !== room)
+    {
+      console.log("prevChosenRoom : ", prevChosenRoom)
+      let prevButtonToUncolor = document.getElementById(prevChosenRoom.key + "_CHOOSE");
+      prevButtonToUncolor.selected = false;
+      prevButtonToUncolor.style.background = "rgb(180, 180, 180)";
+
+      setPrevChosenRoom(room);
+    
+    }
   };
 
   const getCurrentImageURL = () => {
@@ -136,6 +133,13 @@ function HotelRoomDetails(props) {
         }
       },
     ];
+    if (prevChosenRoom !== null){    
+      let prevButtonToUncolor = document.getElementById(prevChosenRoom.key + "_CHOOSE");
+      prevButtonToUncolor.selected = false;
+      prevButtonToUncolor.style.background = "rgb(180, 180, 180)";
+      setPrevChosenRoom(null);
+    }
+
     setFilters(newFilters);
   };
 
