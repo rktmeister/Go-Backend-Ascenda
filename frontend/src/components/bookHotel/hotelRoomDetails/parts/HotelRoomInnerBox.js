@@ -13,9 +13,9 @@ function HotelRoomInnerBox(props) {
 
     return (
 
-        <div style={{float:"right", width:700, position:"relative", bottom:227, right:1, border:"1px solid rgb(180, 180, 180)"}}>
+        <div data-testid = {props.description + "_HotelRoomInnerBox"} style={{float:"right", width:700, position:"relative", bottom:227, right:1, border:"1px solid rgb(180, 180, 180)"}}>
             <div> 
-                <span style={{position:"relative", top:"1.5vh", left:"1vw", fontSize:"15pt", fontWeight:900 }}> 
+                <span data-testid = {props.description + "_roomAdditionalInfo.breakfast_info"} style={{position:"relative", top:"1.5vh", left:"1vw", fontSize:"15pt", fontWeight:900 }}> 
                     {(props.room.roomAdditionalInfo.breakfast_info.includes("breakfast_included")) ?
                         "Breakfast Included" 
                         : 
@@ -29,8 +29,8 @@ function HotelRoomInnerBox(props) {
             <br></br>
             
             {/*<span>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</span>*/}
-            <span className="HotelRoomBoxRightPrice">SGD {props.room.price}</span>
-            <button id = {props.room.key + "_CHOOSE"} 
+            <span data-testid = {props.description + "_" + props.room.price} className="HotelRoomBoxRightPrice">SGD {props.room.price}</span>
+            <button data-testid = {props.description + "_SELECT"} id = {props.room.key + "_SELECT"} 
             
             style={{
                 
@@ -60,15 +60,15 @@ function HotelRoomInnerBox(props) {
                     e.target.style.backgroundColor = "rgb(255, 140, 0)"; 
                 }
                 console.log(e.target.id)}}
-                >Choose</button>
+                >Select</button>
 
-            <span className="HotelRoomBoxRightPerRoomPerNight">per room per night</span>
+            <span data-testid = {props.description + "_perRoomPerNight"} className="HotelRoomBoxRightPerRoomPerNight">per room per night</span>
         
 
             {(props.room.free_cancellation === true) ?
-                    (<span className="HotelRoomBoxLeftFreeCancellation">Free cancellation (except for service fee)</span>)
+                    (<span data-testid = {props.description + "_free_cancellation_" + props.room.free_cancellation} className="HotelRoomBoxLeftFreeCancellation">Free cancellation (except for service fee)</span>)
                     :
-                    (<span className="HotelRoomBoxLeftNonRefundable">Non-refundable</span>)
+                    (<span data-testid = {props.description + "_free_cancellation_" + props.room.free_cancellation} className="HotelRoomBoxLeftNonRefundable">Non-refundable</span>)
             }
 
             

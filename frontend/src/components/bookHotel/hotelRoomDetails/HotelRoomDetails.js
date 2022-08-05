@@ -24,7 +24,13 @@ function HotelRoomDetails(props) {
   const [maxPrice, setMaxPrice] = useState(gotHandMeDowns.filterData.maxPrice); // gotHandMeDowns.filterData.maxPrice * 10);
 
   const [error, setError] = useState(null);
+
+
   const [isLoaded, setIsLoaded] = useState(false);
+
+  
+  
+
   const [prevChosenRoom, setPrevChosenRoom] = useState(null);
   const [chosenRoom, setChosenRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
@@ -68,19 +74,27 @@ function HotelRoomDetails(props) {
 
   // if chosen hotel changes, load rooms from it
   useEffect(() => {
-    (async () => {
-      const res = await props.backendPackage.getHotelRoomBatch(
-        gotHandMeDowns.hotel.uid,
-        gotHandMeDowns.destination.uid,
-        gotHandMeDowns.filterData.checkInDate,
-        gotHandMeDowns.filterData.checkOutDate,
-        gotHandMeDowns.filterData.numberOfRooms,
-        nav
-      );
-      if (!res.error) {
-        setRooms(res);
-      }
-    })();
+
+    if(props.test !== null)
+    {
+      setRooms(props.backendPackage)
+    }
+    else{
+      (async () => {
+        const res = await props.backendPackage.getHotelRoomBatch(
+          gotHandMeDowns.hotel.uid,
+          gotHandMeDowns.destination.uid,
+          gotHandMeDowns.filterData.checkInDate,
+          gotHandMeDowns.filterData.checkOutDate,
+          gotHandMeDowns.filterData.numberOfRooms,
+          nav
+        );
+        if (!res.error) {
+          setRooms(res);
+        }
+      })();
+    }
+
   }, [gotHandMeDowns.hotel]);
 
   const handleChooseRoom = (room) => {
@@ -119,6 +133,10 @@ function HotelRoomDetails(props) {
       setIsLoaded(true);
     } else {
       setIsLoaded(false);
+    }
+
+    if(props.test !== null){
+      setIsLoaded(true);
     }
   }, [rooms]);
 
@@ -238,6 +256,7 @@ function HotelRoomDetails(props) {
                 {gotHandMeDowns.hotel.address}
               </p>
               <StarRating
+                hotelName = {gotHandMeDowns.hotel.term}
                 totalPossibleStars={5}
                 rating={gotHandMeDowns.hotel.rating}
               />

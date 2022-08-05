@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import React from "react";
 import HotelSearchResults from './HotelSearchResults';
 import { act } from 'react-dom/test-utils';
+import { BrowserRouter } from 'react-router-dom';
 
 const mockHotel = (uid) => {
     const res = {
@@ -20,12 +21,15 @@ const mockHotel = (uid) => {
 test("uhh", async () => {
     let obj = 0;
     const belayedRender = () => {
-        render(<HotelSearchResults
+        render(<BrowserRouter><HotelSearchResults
             handMeDowns={[{
-                numberOfRooms: 10,
-                minPrice: 0,
-                maxPrice: 100,
-                destination: { id: 1 },
+                filterData:{
+                    checkInDate:"",
+                    checkOutDate:"",
+                    numberOfRooms: 10,
+                    minPrice: 0,
+                    maxPrice: 100},
+                destination: { uid: 1 },
             }]}
             handMeDownsIndex={0}
             backendPackage={{
@@ -34,9 +38,11 @@ test("uhh", async () => {
                     return await act(async () => [obj].map(mockHotel));
                 }
             }}
-        />);
+        /></BrowserRouter>);
     };
+
     await act(belayedRender);
+    await console.log(screen.debug())
     console.log("obj", obj);
     expect(obj).toBe(19);
 });

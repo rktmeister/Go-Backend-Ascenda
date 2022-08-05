@@ -36,7 +36,7 @@ function HotelRoomBox(props) {
 
     return (
         <div className="AllBoxes">
-            <div className="HotelRoomBox">
+            <div data-testid = {props.description + "_HotelRoomBox"} className="HotelRoomBox">
                 <div className="HotelRoomBoxTitle">
                     <span style={{ left: 30, position: "relative", top: 8, fontSize: 25 }}>
                         {props.roomsSet[0].roomNormalizedDescription /*props.roomsSet.roomNormalizedDescription*/}
@@ -69,7 +69,7 @@ function HotelRoomBox(props) {
                 <br></br>
 
                 {props.roomsSet.map((room) => {
-                    return (<HotelRoomInnerBox key={room.key} room={room} handleChooseRoom={handleChooseRoom} />)
+                    return (<HotelRoomInnerBox description = {props.description} key={room.key} room={room} handleChooseRoom={handleChooseRoom} />)
                 })}
             </div>
         </div>

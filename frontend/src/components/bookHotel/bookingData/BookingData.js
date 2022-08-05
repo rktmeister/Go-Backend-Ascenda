@@ -56,6 +56,27 @@ const BookingData = (props) => {
     }, [loc]);
 
     const handleCheckout = async (event) => {
+        
+        // This is for unit test
+        if(props.test){
+            props.inputs({
+                "userName": userName,
+                "firstName": firstName,
+                "lastName": lastName,
+                "destinationId": destinationId,
+                "hotelId": hotelId,
+                "supplierId": supplierId,
+                "specialRequests": specialRequests,
+                "salutation": salutation,
+                "userEmail": userEmail,
+                "phoneNumber": phoneNumber,
+                "numberOfRooms": numberOfRooms,
+                "checkInDate": checkInDate,
+                "checkOutDate": checkOutDate,
+                "price": price,
+            });
+        }
+
         event.preventDefault();
         /**
          * By right, of course, sending the successful payment should happen AFTER
@@ -85,6 +106,8 @@ const BookingData = (props) => {
             price,
             nav
         );
+
+        
 
         await mockStripeCheckout();
     };
@@ -119,6 +142,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="firstName">First Name</label>
                     <input
+                        data-testid = "First Name"
                         type="text"
                         className="form-control"
                         id="firstName"
@@ -132,6 +156,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="lastName">Last Name</label>
                     <input
+                        data-testid = "Last Name"
                         type="text"
                         className="form-control"
                         id="lastName"
@@ -145,6 +170,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="phoneNumber">Phone Number</label>
                     <input
+                        data-testid = "Phone Number"
                         type="tel"
                         className="form-control"
                         id="phoneNumber"
@@ -156,6 +182,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="userEmail">Email</label>
                     <input
+                        data-testid = "Email"
                         type="email"
                         className="form-control"
                         id="userEmail"
@@ -167,6 +194,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="specialRequests">Special Requests</label>
                     <input
+                        data-testid = "Special Requests"
                         type="text"
                         className="form-control"
                         id="specialRequests"
@@ -175,7 +203,7 @@ const BookingData = (props) => {
                         value={specialRequests}
                     />
                 </div>
-                <button type="submit" className="btn btn-primary" >Submit</button>
+                <button data-testid = "BookingData_Submit" type="submit" className="btn btn-primary" >Submit</button>
             </form>
             <button onClick={() => console.log(phoneNumber)}>test</button>
         </div>

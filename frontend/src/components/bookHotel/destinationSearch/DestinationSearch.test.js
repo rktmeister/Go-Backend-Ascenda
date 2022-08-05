@@ -3,6 +3,7 @@ import DestinationSearch from './DestinationSearch';
 import { act } from 'react-dom/test-utils';
 import userEvent, { user } from "@testing-library/user-event";
 import { keyboard } from '@testing-library/user-event/dist/keyboard';
+import { BrowserRouter } from 'react-router-dom';
 
 const mockDestination = (uid) => {
     return {
@@ -13,14 +14,14 @@ const mockDestination = (uid) => {
 
 test("destination search displays correctly", async () => {
     expect.assertions(16);
-    render(<DestinationSearch
+    render(<BrowserRouter><DestinationSearch
         backendPackage={{
             getDestinationsByFuzzyString: async (searchWord) => {
                 console.log([1, 6, 3, 14, 16, 71, 14].map(mockDestination));
                 return [1, 6, 3, 14, 16, 71, 14].map(mockDestination);
             }
         }}
-    />);
+    /></BrowserRouter>); 
     const input = screen.getByTestId("fuzzyInput");
     // fireEvent.change(input, { target: { value: "1" } });
     input.focus();
