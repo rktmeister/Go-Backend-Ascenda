@@ -27,7 +27,8 @@ test("destination search displays correctly", async () => {
     input.focus();
     userEvent.keyboard("1");
     const ls = await screen.findAllByTestId("destinationCard");
-    console.log(ls);
+    console.log("ls is: ", ls);
+    console.log(screen.debug())
     expect(ls.length).toBe(15);
 
     for (let i = 0; i < 15; i++) {

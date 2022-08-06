@@ -16,6 +16,8 @@ function HotelRoomDetails(props) {
   const nav = useNavigate();
   const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
 
+  console.log("gotHandMeDowns: ", gotHandMeDowns)
+
   const maxPriceLimit = 10000; // gotHandMeDowns.filterData.maxPrice * 1000);
   const minPriceLimit = 0;
 
@@ -25,12 +27,8 @@ function HotelRoomDetails(props) {
 
   const [error, setError] = useState(null);
 
-
   const [isLoaded, setIsLoaded] = useState(false);
-
   
-  
-
   const [prevChosenRoom, setPrevChosenRoom] = useState(null);
   const [chosenRoom, setChosenRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
@@ -46,8 +44,9 @@ function HotelRoomDetails(props) {
   const [hotelPicRightHandle, setHotelPicRightHandle] = useState("HotelPicsRightHandleNoHover");
 
   const [filters, setFilters] = useState([]);
-  const [hideFilters, setHideFilters] = useState("none")
+  const [hideFilters, setHideFilters] = useState("none");
 
+  const [amenitiesRatings, setAmenitiesRatings] = useState({});
 
   const [currentIndex, setCurrentIndex] = useState(1); // This is for overall hotel imagaes
 
@@ -175,6 +174,8 @@ function HotelRoomDetails(props) {
     console.log("Error: ", error.message);
   }
 
+  console.log("gotHandMeDowns:  ", gotHandMeDowns)
+
   return (
     <div className="HotelRoomDetails">
       <br></br>
@@ -288,6 +289,27 @@ function HotelRoomDetails(props) {
 
 
       {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
+
+
+
+      {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
+      <div className="AllBoxes">
+        { (gotHandMeDowns.hotel.amenities_ratings !== null) ?
+          gotHandMeDowns.hotel.amenities_ratings.map( (amenitiesWithRatings) => {
+          <div>
+            <span>{amenitiesWithRatings.name}</span> 
+            <input type="range" min={0} max={100} value={amenitiesWithRatings.score}></input>
+            <br></br>
+          </div>})
+          :
+          null
+        }
+      </div>
+
+
+      {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
+
+
 
 
       {/* =================== ROOMS OUTPUT DISPLAY ======================roomtypelist */}
