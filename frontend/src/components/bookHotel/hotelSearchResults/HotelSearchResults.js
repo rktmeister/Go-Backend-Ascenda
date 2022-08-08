@@ -181,7 +181,7 @@ const HotelSearchResults = (props) => {
             <FilterShow
                 currentFilterData={filter.values}
             />
-            <button onClick={finishStage}>Next Stage</button>
+            <button id="submitButton" onClick={finishStage}>Next Stage</button>
         </div>
     );
 };

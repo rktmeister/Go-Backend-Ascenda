@@ -11,7 +11,7 @@ const ListOfRoomTypes = (props) => {
             {
                 Object.entries(
                     props.rooms.filter((room) => props.filters.every((filterFunc) => filterFunc(room)))
-                        .reduce((group, product) => { // just fancy way to group stuff
+                        .reduce((group, product) => { // just a fancy way to group rooms by roomNormalizedDescription
                             const { roomNormalizedDescription } = product;
                             group[roomNormalizedDescription] = group[roomNormalizedDescription] ?? [];
                             group[roomNormalizedDescription].push(product);

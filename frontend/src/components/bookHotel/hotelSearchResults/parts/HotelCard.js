@@ -12,7 +12,7 @@ const HotelCard = forwardRef((props, ref) => {
 
 
     return (
-        <div id={`hotelCard${props.item.uid}`} data-testid="hotelCard" ref={ref}>
+        <div data-testid="hotelCard" ref={ref}>
             {
                 props.item ?
                     <div className="card" style={{ backgroundColor: "dodgerblue", height: props.height }}>
@@ -26,7 +26,7 @@ const HotelCard = forwardRef((props, ref) => {
                                 <footer className="blockquote-footer">
                                     {/* <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(props.item.description) }} /> */}description
                                 </footer>
-                                <button onClick={() => props.onClick(props.item)}>CHOOSE</button>
+                                <button id={`hotelCard${props.item.uid}`} onClick={() => props.onClick(props.item)}>CHOOSE</button>
                                 <img src={props.item.defaultImageURL} width={props.height / 10} alt="" />
                             </blockquote>
                         </div>
