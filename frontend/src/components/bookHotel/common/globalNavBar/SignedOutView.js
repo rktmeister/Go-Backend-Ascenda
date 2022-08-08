@@ -13,8 +13,8 @@ const SignedOutView = (props) => {
             <div>
                 Hey there!
             </div>
-            <button onClick={goToCreateAccount}>Create Account</button>
-            <button onClick={goToLogin}>Login</button>
+            <button id="createAccountButton" onClick={goToCreateAccount}>Create Account</button>
+            <button id="loginButton" onClick={goToLogin}>Login</button>
         </div>
     )
 };

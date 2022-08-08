@@ -110,11 +110,6 @@ func InitBookingDataRedis() *redisearch.Client {
 	b_schema.AddField(redisearch.NewTextFieldOptions("checkout", redisearch.TextFieldOptions{Sortable: true}))
 	b_schema.AddField(redisearch.NewTextFieldOptions("numberOfGuests", redisearch.TextFieldOptions{Sortable: true}))
 	b_schema.AddField(redisearch.NewTextFieldOptions("price", redisearch.TextFieldOptions{Sortable: true}))
-
-	err := b.Drop()
-	if err != nil {
-		fmt.Println(err)
-	}
 	b.CreateIndex(b_schema)
 
 	return b
@@ -276,17 +271,5 @@ func CreateBooking(b *redisearch.Client, username string, firstName string, last
 	doc.Set("price", price)
 	if err := b.Index([]redisearch.Document{doc}...); err != nil {
 		log.Fatal(err)
-	}
-}
-
-func SearchBooking(b *redisearch.Client, hotel_id string) string {
-	doc, total, _ := b.Search(redisearch.NewQuery(fmt.Sprintf("%s%s%s", `"`, hotel_id, `"`)).SetReturnFields("username").Limit(0, 1))
-	fmt.Println(hotel_id, "has", total, "bookings")
-	if len(doc) == 0 {
-		return "NO BOOKING"
-	} else {
-		documentId := doc[0].Id
-		fmt.Println(documentId)
-		return documentId
 	}
 }

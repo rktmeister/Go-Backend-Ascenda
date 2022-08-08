@@ -42,7 +42,7 @@ const GeneralWrapper = (props) => {
                 isVisible ?
                     isAuthorized ?
                         <div>
-                            <button onClick={goToBook}>Book!</button>
+                            <button id="bookButton" onClick={goToBook}>Book!</button>
                         </div>
                         : <div>Log in to book!</div>
                     : <div></div>

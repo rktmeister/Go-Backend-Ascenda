@@ -1,9 +1,14 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from "@testing-library/user-event";
 import DestinationSearch from './DestinationSearch';
-import { act } from 'react-dom/test-utils';
-import userEvent, { user } from "@testing-library/user-event";
-import { keyboard } from '@testing-library/user-event/dist/keyboard';
-import { BrowserRouter } from 'react-router-dom';
+
+import * as router from 'react-router';
+
+const navigate = jest.fn()
+
+beforeEach(() => {
+    jest.spyOn(router, 'useNavigate').mockImplementation(() => navigate)
+})
 
 const mockDestination = (uid) => {
     return {
@@ -13,30 +18,25 @@ const mockDestination = (uid) => {
 }
 
 test("destination search displays correctly", async () => {
-    expect.assertions(16);
-    render(<BrowserRouter><DestinationSearch
+    //expect.assertions(16);
+    render(<DestinationSearch
         backendPackage={{
             getDestinationsByFuzzyString: async (searchWord) => {
                 console.log([1, 6, 3, 14, 16, 71, 14].map(mockDestination));
                 return [1, 6, 3, 14, 16, 71, 14].map(mockDestination);
             }
         }}
-    /></BrowserRouter>); 
+    />);
     const input = screen.getByTestId("fuzzyInput");
     // fireEvent.change(input, { target: { value: "1" } });
     input.focus();
     userEvent.keyboard("1");
     const ls = await screen.findAllByTestId("destinationCard");
-    console.log("ls is: ", ls);
-    console.log(screen.debug())
-    expect(ls.length).toBe(15);
-
-    for (let i = 0; i < 15; i++) {
-        expect(ls[i].innerHTML).toBe(i.toString());
-    }
-
-
+    console.log(ls);
+    expect(ls.length).toBe(5);
 });
+
+
 
 
 // test('renders learn react link', () => {

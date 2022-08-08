@@ -28,7 +28,7 @@ function HotelRoomDetails(props) {
   const [error, setError] = useState(null);
 
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   const [prevChosenRoom, setPrevChosenRoom] = useState(null);
   const [chosenRoom, setChosenRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
@@ -53,20 +53,20 @@ function HotelRoomDetails(props) {
 
   const decreaseCurrentIndex = () => {
     console.log("Decrease " + currentIndex);
-    if (currentIndex - 1 < 1){
+    if (currentIndex - 1 < 1) {
       setCurrentIndex(gotHandMeDowns.hotel.numberOfImages);
     }
-    else{
+    else {
       setCurrentIndex(currentIndex - 1);
     }
   }
 
   const increaseCurrentIndex = () => {
     console.log("Increase " + currentIndex);
-    if (currentIndex + 1 > gotHandMeDowns.hotel.numberOfImages){
+    if (currentIndex + 1 > gotHandMeDowns.hotel.numberOfImages) {
       setCurrentIndex(1);
     }
-    else{
+    else {
       setCurrentIndex(currentIndex + 1);
     }
   }
@@ -74,12 +74,13 @@ function HotelRoomDetails(props) {
   // if chosen hotel changes, load rooms from it
   useEffect(() => {
 
-    if(props.test !== null)
-    {
+    if (props.test !== undefined) {
       setRooms(props.backendPackage)
+      console.log("tested");
     }
-    else{
+    else {
       (async () => {
+        console.log("backend called");
         const res = await props.backendPackage.getHotelRoomBatch(
           gotHandMeDowns.hotel.uid,
           gotHandMeDowns.destination.uid,
@@ -89,6 +90,7 @@ function HotelRoomDetails(props) {
           nav
         );
         if (!res.error) {
+          console.log("no errors here");
           setRooms(res);
         }
       })();
@@ -97,8 +99,9 @@ function HotelRoomDetails(props) {
   }, [gotHandMeDowns.hotel]);
 
   const handleChooseRoom = (room) => {
-    let buttonToColor = document.getElementById(room.key + "_CHOOSE");
-    console.log(buttonToColor.style.backgroundColor)
+    let buttonToColor = document.getElementById(room.key + "_SELECT");
+    console.log(buttonToColor);
+    // console.log(buttonToColor.style.backgroundColor)
     buttonToColor.style.background = "rgb(255, 140, 0)";
     buttonToColor.selected = true;
 
@@ -107,19 +110,18 @@ function HotelRoomDetails(props) {
 
 
     console.log("prevChosenRoom : ", prevChosenRoom)
-    if (prevChosenRoom === null){
+    if (prevChosenRoom === null) {
       setPrevChosenRoom(room)
     }
 
-    else if(prevChosenRoom !== room)
-    {
+    else if (prevChosenRoom !== room) {
       console.log("prevChosenRoom : ", prevChosenRoom)
-      let prevButtonToUncolor = document.getElementById(prevChosenRoom.key + "_CHOOSE");
+      let prevButtonToUncolor = document.getElementById(prevChosenRoom.key + "_SELECT");
       prevButtonToUncolor.selected = false;
       prevButtonToUncolor.style.background = "rgb(180, 180, 180)";
 
       setPrevChosenRoom(room);
-    
+
     }
   };
 
@@ -134,7 +136,7 @@ function HotelRoomDetails(props) {
       setIsLoaded(false);
     }
 
-    if(props.test !== null){
+    if (props.test !== undefined) {
       setIsLoaded(true);
     }
   }, [rooms]);
@@ -150,7 +152,7 @@ function HotelRoomDetails(props) {
         }
       },
     ];
-    if (prevChosenRoom !== null){    
+    if (prevChosenRoom !== null) {
       let prevButtonToUncolor = document.getElementById(prevChosenRoom.key + "_CHOOSE");
       prevButtonToUncolor.selected = false;
       prevButtonToUncolor.style.background = "rgb(180, 180, 180)";
@@ -223,7 +225,7 @@ function HotelRoomDetails(props) {
               className={enlargingImageWordsHovering}
               onMouseOver={() => { setEnlargingImageWordsHovering("HotelPicsEnlargingWordsHover") }}
               onMouseLeave={() => { setEnlargingImageWordsHovering("HotelPicsEnlargingWordsNoHover") }}
-              onClick={() => { console.log(enlargingImageWordsHovering); setEnlargedImagesMode("flex"); setHideFilters("hidden") ;  }}>Click here to enlarge image</span>
+              onClick={() => { console.log(enlargingImageWordsHovering); setEnlargedImagesMode("flex"); setHideFilters("hidden"); }}>Click here to enlarge image</span>
 
 
 
@@ -257,7 +259,7 @@ function HotelRoomDetails(props) {
                 {gotHandMeDowns.hotel.address}
               </p>
               <StarRating
-                hotelName = {gotHandMeDowns.hotel.term}
+                hotelName={gotHandMeDowns.hotel.term}
                 totalPossibleStars={5}
                 rating={gotHandMeDowns.hotel.rating}
               />
@@ -282,7 +284,7 @@ function HotelRoomDetails(props) {
       <div className="AllBoxes">
         <div style={{ position: "relative", top: 20, left: 20, paddingBottom: 20, fontSize: 25, fontWeight: "bold" }}>Hotel overview</div>
 
-        <div style={{ flexWrap: 'wrap', flex: 1, marginLeft: 20, marginRight:20, marginTop: 10, flexDirection: "column" }}>
+        <div style={{ flexWrap: 'wrap', flex: 1, marginLeft: 20, marginRight: 20, marginTop: 10, flexDirection: "column" }}>
           <div dangerouslySetInnerHTML={{ __html: gotHandMeDowns.hotel.description }} style={{ whiteSpace: "pre-line", flexShrink: 1, position: "relative" }} />
         </div>
       </div>
@@ -290,21 +292,33 @@ function HotelRoomDetails(props) {
 
       {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
 
+      {/* =================== MAP OUTPUT DISPLAY ======================map */}
+      {/* <div className="AllBoxes">
+        <div style={{ fontSize: "25px", left: "20pt", top: "20pt", paddingBottom: 20, position: "relative", fontWeight: 900 }}>Hotel Location</div>
+        <div className="MapGeneratorDiv"> <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
+      </div> */}
+      <div className="AllBoxes">
+        <div style={{ fontSize: "25px", position: "relative", fontWeight: 900 }}>Hotel Location</div>
+        <div > <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
+      </div>
+      {/* =================== MAP OUTPUT DISPLAY ====================== */}
+
 
 
       {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
-      <div className="AllBoxes">
-        { (gotHandMeDowns.hotel.amenities_ratings !== null) ?
-          gotHandMeDowns.hotel.amenities_ratings.map( (amenitiesWithRatings) => {
-          <div>
-            <span>{amenitiesWithRatings.name}</span> 
-            <input type="range" min={0} max={100} value={amenitiesWithRatings.score}></input>
-            <br></br>
-          </div>})
+      {/* <div className="AllBoxes">
+        {(gotHandMeDowns.hotel.amenities_ratings !== null) ?
+          gotHandMeDowns.hotel.amenities_ratings.map((amenitiesWithRatings) => {
+            <div>
+              <span>{amenitiesWithRatings.name}</span>
+              <input type="range" min={0} max={100} value={amenitiesWithRatings.score}></input>
+              <br></br>
+            </div>
+          })
           :
           null
         }
-      </div>
+      </div> */}
 
 
       {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
@@ -336,21 +350,6 @@ function HotelRoomDetails(props) {
 
 
       {/* =================== ROOMS OUTPUT DISPLAY ====================== */}
-
-
-
-
-      {/* =================== MAP OUTPUT DISPLAY ======================map */}
-      <div className="AllBoxes">
-        <div style={{ fontSize: "25px", left: "20pt", top: "20pt", paddingBottom: 20, position: "relative", fontWeight: 900 }}>Hotel Location</div>
-        <div className="MapGeneratorDiv"> <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
-      </div>
-
-      {/* =================== MAP OUTPUT DISPLAY ====================== */}
-
-
-
-
 
       {/* ====================== Hotel Room Pic ENLARGE ========================= */}
 
@@ -412,27 +411,30 @@ function HotelRoomDetails(props) {
         </div>
         <div
           style={{ background: "black", opacity: "90%", width: window.innerWidth, height: window.innerHeight, position: "absolute", zIndex: 19 }}
-          onClick={() => { console.log(enlargedImagesMode); setEnlargedImagesMode("none"); setHideFilters("visible") ; console.log(enlargedImagesMode) }}
+          onClick={() => { console.log(enlargedImagesMode); setEnlargedImagesMode("none"); setHideFilters("visible"); console.log(enlargedImagesMode) }}
         ></div>
       </div>
 
       {/* ====================== NEXT button========================= */}
-      <button style={{
-        background: "rgb(255, 140, 0)",
-        fontSize: 30,
-        color: "white",
-        borderRadius: 30,
-        fontWeight: 900,
-        width: 100,
-        height: 70,
-        textAlign: "center",
-        position: "relative",
-        bottom: 1300,
-        left: 1200, // way out of view on narrow screens lol original 1750
-        
-        border: "transparent"
-      }}
-        onClick={finishStage}> ▶▶</button>
+      <button
+        id="nextButton"
+        // style={{
+        //   background: "rgb(255, 140, 0)",
+        //   fontSize: 30,
+        //   color: "white",
+        //   borderRadius: 30,
+        //   fontWeight: 900,
+        //   width: 100,
+        //   height: 70,
+        //   textAlign: "center",
+        //   //position: "fixed",
+        //   //top: 700,
+        //   //left: 750, // way out of view on narrow screens lol original 1750
+        //   //zIndex: 20,
+        //   border: "transparent"
+        // }}
+        onClick={finishStage}>NEXT STAGE</button>
+      {/* // ▶▶ */}
       {/* ====================== NEXT button========================= */}
 
     </div>
