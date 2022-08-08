@@ -177,39 +177,25 @@ export const attemptLogin = async (username, passwordHash) => {
 };
 
 export const sendSuccessfulPayment = async (
-    username,
-    firstName,
-    lastName,
-    destination_id,
-    hotel_id,
-    supplier_id,
-    special_requests,
-    salutation,
-    email,
-    phone,
-    guests,
-    checkin,
-    checkout,
-    price,
-    nav
+    checkOutData, nav
 ) => {
     return handleRefreshTokenExpire(() => {
         const formData = new FormData();
         const formKeyVals = {
-            "username": username,
-            "firstName": firstName,
-            "lastName": lastName,
-            "destination_id": destination_id,
-            "hotel_id": hotel_id,
-            "supplier_id": supplier_id,
-            "special_requests": special_requests,
-            "salutation": salutation,
-            "email": email,
-            "phone": phone,
-            "guests": guests,
-            "checkin": checkin,
-            "checkout": checkout,
-            "price": price,
+            "username": checkOutData.username,
+            "firstName": checkOutData.firstName,
+            "lastName": checkOutData.lastName,
+            "destination_id": checkOutData.destinationId,
+            "hotel_id": checkOutData.hotelId,
+            "supplier_id": checkOutData.supplierId,
+            "special_requests": checkOutData.specialRequests,
+            "salutation": checkOutData.salutation,
+            "email": checkOutData.userEmail,
+            "phone": checkOutData.phoneNumber,
+            "guests": checkOutData.numberOfRooms,
+            "checkin": checkOutData.checkInDate,
+            "checkout": checkOutData.checkOutDate,
+            "price": checkOutData.price,
         };
 
         Object.entries(formKeyVals).forEach(([key, val]) => {

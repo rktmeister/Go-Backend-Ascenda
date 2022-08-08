@@ -233,6 +233,17 @@ function HotelRoomDetails(props) {
 
       {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
 
+      {/* =================== MAP OUTPUT DISPLAY ======================map */}
+      {/* <div className="AllBoxes">
+        <div style={{ fontSize: "25px", left: "20pt", top: "20pt", paddingBottom: 20, position: "relative", fontWeight: 900 }}>Hotel Location</div>
+        <div className="MapGeneratorDiv"> <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
+      </div> */}
+      <div className="AllBoxes">
+        <div style={{ fontSize: "25px", position: "relative", fontWeight: 900 }}>Hotel Location</div>
+        <div > <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
+      </div>
+      {/* =================== MAP OUTPUT DISPLAY ====================== */}
+
 
       {/* =================== ROOMS OUTPUT DISPLAY ======================roomtypelist */}
       <div style={{ marginTop: 100 }}>
@@ -258,21 +269,6 @@ function HotelRoomDetails(props) {
 
 
       {/* =================== ROOMS OUTPUT DISPLAY ====================== */}
-
-
-
-
-      {/* =================== MAP OUTPUT DISPLAY ======================map */}
-      <div className="AllBoxes">
-        <div style={{ fontSize: "25px", left: "20pt", top: "20pt", paddingBottom: 20, position: "relative", fontWeight: 900 }}>Hotel Location</div>
-        <div className="MapGeneratorDiv"> <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
-      </div>
-
-      {/* =================== MAP OUTPUT DISPLAY ====================== */}
-
-
-
-
 
       {/* ====================== Hotel Room Pic ENLARGE ========================= */}
 
@@ -339,22 +335,25 @@ function HotelRoomDetails(props) {
       </div>
 
       {/* ====================== NEXT button========================= */}
-      <button style={{
-        background: "rgb(255, 140, 0)",
-        fontSize: 30,
-        color: "white",
-        borderRadius: 30,
-        fontWeight: 900,
-        width: 100,
-        height: 70,
-        textAlign: "center",
-        position: "fixed",
-        top: 700,
-        left: 750, // way out of view on narrow screens lol original 1750
-        zIndex: 20,
-        border: "transparent"
-      }}
-        onClick={finishStage}> ▶▶</button>
+      <button
+        id="nextButton"
+        // style={{
+        //   background: "rgb(255, 140, 0)",
+        //   fontSize: 30,
+        //   color: "white",
+        //   borderRadius: 30,
+        //   fontWeight: 900,
+        //   width: 100,
+        //   height: 70,
+        //   textAlign: "center",
+        //   //position: "fixed",
+        //   //top: 700,
+        //   //left: 750, // way out of view on narrow screens lol original 1750
+        //   //zIndex: 20,
+        //   border: "transparent"
+        // }}
+        onClick={finishStage}>NEXT STAGE</button>
+      {/* // ▶▶ */}
       {/* ====================== NEXT button========================= */}
 
     </div>

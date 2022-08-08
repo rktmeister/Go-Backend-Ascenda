@@ -12,36 +12,15 @@ const BookingData = (props) => {
     const loc = useLocation();
     const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
 
-    // username,
-    //     firstName,
-    //     lastName,
-    //     destination_id,
-    //     hotel_id,
-    //     supplier_id,
-    //     special_requests,
-    //     salutation,
-    //     email,
-    //     phone,
-    //     guests,
-    //     checkin,
-    //     checkout,
-    //     price,
-    //     nav
-
     const [userName, setUserName] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [destinationId, setDestinationId] = useState("");
-    const [hotelId, setHotelId] = useState("");
-    const [supplierId, setSupplierId] = useState("vagohoteltri");
     const [specialRequests, setSpecialRequests] = useState("");
     const [salutation, setSalutation] = useState("");
     const [userEmail, setUserEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [numberOfRooms, setNumberOfRooms] = useState(0);
-    const [checkInDate, setCheckInDate] = useState("");
-    const [checkOutDate, setCheckOutDate] = useState("");
-    const [price, setPrice] = useState(0);
+
+    const [alertMessage, setAlertMessage] = useState("");
 
     useEffect(() => {
         (async () => {
@@ -55,6 +34,72 @@ const BookingData = (props) => {
         })();
     }, [loc]);
 
+    const makeGuardFunction = (guardArray) => (newValue) => {
+        for (let [func, msg] of guardArray) {
+            if (!func(newValue)) {
+                setAlertMessage(msg);
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const verifyNamePortion = makeGuardFunction([
+        [({ firstName }) => typeof firstName === "string", "Name must be text!"],
+        [({ firstName }) => 0 < firstName.length && firstName.length < 50, "Name must be between 0 and 50 characters."],
+        [({ lastName }) => typeof lastName === "string", "Name must be text!"],
+        [({ lastName }) => 0 < lastName.length && lastName.length < 50, "Name must be between 0 and 50 characters."],
+    ]);
+
+    const verifySpecialRequests = makeGuardFunction([
+        [({ specialRequests }) => typeof specialRequests === "string", "Request must be text!"],
+        [({ specialRequests }) => 0 < specialRequests.length && specialRequests.length < 500, "Requests portion must be between 0 and 500 characters."],
+    ]);
+
+    const verifyUserEmail = makeGuardFunction([
+        [({ userEmail }) => typeof userEmail === "string", "Email must be text!"],
+        [({ userEmail }) => 0 < userEmail.length && userEmail.length < 50, "Email must be between 0 and 50 characters."],
+        // [({ userEmail }) => {
+        //     return [
+        //         userEmail.contains("@"),
+        //         // others
+        //     ].reduce((a, b) => a && b, true);
+        // }, "Invalid email!"],
+    ]);
+
+    const verifyPhoneNumber = makeGuardFunction([
+        [({ phoneNumber }) => typeof phoneNumber === "string", "Phone number should be text"],
+        [({ phoneNumber }) => phoneNumber.length === 8, "Phone number should be 8 digits"],
+        [({ phoneNumber }) => {
+            for (let i = 0; i < phoneNumber.length; i++) {
+                let c = phoneNumber[i];
+                console.log(i, ":", c);
+                if (!(!isNaN(c) && !isNaN(parseFloat(c)))) {
+                    return false;
+                }
+            }
+            return true;
+        }, "Phone number can only contain digits!"],
+    ]);
+
+    const validateCheckout = (checkOutData) => {
+        const checks = [
+            verifyNamePortion,
+            verifySpecialRequests,
+            verifyUserEmail,
+            verifyPhoneNumber,
+        ];
+
+        for (let check of checks) {
+            if (!check(checkOutData)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+
+
     const handleCheckout = async (event) => {
         event.preventDefault();
         /**
@@ -67,49 +112,35 @@ const BookingData = (props) => {
          * the payment details / billing address are entered, and redirect to the relevant
          * pages after a transaction.
          */
-        const fullName = firstName + " " + lastName;
-        const res = await props.backendPackage.sendSuccessfulPayment(
+        setAlertMessage("");
+
+        const checkOutData = {
             userName,
             firstName,
             lastName,
-            gotHandMeDowns.destination.uid,
-            gotHandMeDowns.hotel.uid,
-            supplierId,
+            destinationId: gotHandMeDowns.destination.uid,
+            hotelId: gotHandMeDowns.hotel.uid,
+            supplierId: "hotel trivago", // mock supplier id
             specialRequests,
             salutation,
             userEmail,
             phoneNumber,
-            gotHandMeDowns.filterData.numberOfRooms,
-            gotHandMeDowns.filterData.checkInDate,
-            gotHandMeDowns.filterData.checkOutDate,
-            gotHandMeDowns.room.price,
-            nav
-        );
+            numberOfRooms: gotHandMeDowns.filterData.numberOfRooms,
+            checkInDate: gotHandMeDowns.filterData.checkInDate,
+            checkOutDate: gotHandMeDowns.filterData.checkOutDate,
+            price: gotHandMeDowns.room.price,
+        };
 
-        console.log(res);
-
-        console.log(
-            userName,
-            firstName,
-            lastName,
-            gotHandMeDowns.destination.uid,
-            gotHandMeDowns.hotel.uid,
-            supplierId,
-            specialRequests,
-            salutation,
-            userEmail,
-            phoneNumber,
-            gotHandMeDowns.filterData.numberOfRooms,
-            gotHandMeDowns.filterData.checkInDate,
-            gotHandMeDowns.filterData.checkOutDate,
-            gotHandMeDowns.room.price
-        );
-
-        await mockStripeCheckout();
+        if (validateCheckout(checkOutData)) {
+            const res = await props.backendPackage.sendSuccessfulPayment(checkOutData, nav);
+            console.log(res);
+            console.log(checkOutData);
+            await mockStripeCheckout();
+        }
     };
 
     // this redirect to stripe checkout is purely cosmetic and is NOT MEANT
-    // to have any backend integration NOR secure payment confirmation capability.
+    // to have any backend integration NOR payment confirmation capability.
     //
     // it is only meant to show where payment details / billing address are entered.
     const mockStripeCheckout = async () => {
@@ -131,20 +162,28 @@ const BookingData = (props) => {
         console.log(res);
     };
 
+    const salutations = [
+        "Mr",
+        "Ms",
+        "Mrs",
+    ];
+
+    const salutationDropdownDefaultString = "Choose a salutation...";
+
 
     return (
         <div>
             <form onSubmit={handleCheckout}>
                 <div className="form-group">
                     <label htmlFor="salutation">Salutation</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="salutation"
-                        placeholder="Mr"
-                        onChange={(event) => setSalutation(event.target.value)}
-                        value={salutation}
-                    />
+                    <select id="salutation" value={salutation} onChange={(e) => { setSalutation(e.target.value); }}>
+                        <option value={salutationDropdownDefaultString}>{salutationDropdownDefaultString}</option>
+                        {
+                            salutations.map((sal) => {
+                                return <option id={sal} key={sal} value={sal}> {sal} </option>;
+                            })
+                        }
+                    </select>
                 </div>
                 <div className="form-group">
                     <label htmlFor="firstName">First Name</label>
@@ -203,8 +242,11 @@ const BookingData = (props) => {
                         value={specialRequests}
                     />
                 </div>
-                <button type="submit" className="btn btn-primary" >Submit</button>
+                <button id="submit" type="submit" className="btn btn-primary" >Submit</button>
             </form>
+            <div className="alert alert-primary" role="alert">
+                {alertMessage}
+            </div>
             <button onClick={() => console.log(phoneNumber)}>test</button>
         </div>
     );
