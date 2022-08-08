@@ -32,7 +32,7 @@ type HotelsPrice struct {
 	Prices    []ListOfHotelPrice `json:"hotels"`
 }
 type Hotel_Price struct {
-	Id                    string		
+	Id                    string
 	HotelBriefDescription HotelBriefDescription
 	Price                 float32
 }
@@ -72,12 +72,6 @@ type HotelBriefDescription struct {
 	Default_Image_Index int           `json:"default_image_index"`
 	Address             string        `json:"address"`
 	Rating              float64       `json:"rating"`
-	Amenities_Ratings	Amenities_Ratings	`json:"amenities_ratings"`
-}
-
-type Amenities_Ratings struct{
-	Name	string		`json:"name"`
-	Score	float64 	`json:"score"`
 }
 
 type Image_Details struct {

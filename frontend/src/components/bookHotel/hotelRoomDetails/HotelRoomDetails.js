@@ -74,11 +74,13 @@ function HotelRoomDetails(props) {
   // if chosen hotel changes, load rooms from it
   useEffect(() => {
 
-    if (props.test !== null) {
+    if (props.test !== undefined) {
       setRooms(props.backendPackage)
+      console.log("tested");
     }
     else {
       (async () => {
+        console.log("backend called");
         const res = await props.backendPackage.getHotelRoomBatch(
           gotHandMeDowns.hotel.uid,
           gotHandMeDowns.destination.uid,
@@ -88,6 +90,7 @@ function HotelRoomDetails(props) {
           nav
         );
         if (!res.error) {
+          console.log("no errors here");
           setRooms(res);
         }
       })();
@@ -96,8 +99,9 @@ function HotelRoomDetails(props) {
   }, [gotHandMeDowns.hotel]);
 
   const handleChooseRoom = (room) => {
-    let buttonToColor = document.getElementById(room.key + "_CHOOSE");
-    console.log(buttonToColor.style.backgroundColor)
+    let buttonToColor = document.getElementById(room.key + "_SELECT");
+    console.log(buttonToColor);
+    // console.log(buttonToColor.style.backgroundColor)
     buttonToColor.style.background = "rgb(255, 140, 0)";
     buttonToColor.selected = true;
 
@@ -112,7 +116,7 @@ function HotelRoomDetails(props) {
 
     else if (prevChosenRoom !== room) {
       console.log("prevChosenRoom : ", prevChosenRoom)
-      let prevButtonToUncolor = document.getElementById(prevChosenRoom.key + "_CHOOSE");
+      let prevButtonToUncolor = document.getElementById(prevChosenRoom.key + "_SELECT");
       prevButtonToUncolor.selected = false;
       prevButtonToUncolor.style.background = "rgb(180, 180, 180)";
 
@@ -132,7 +136,7 @@ function HotelRoomDetails(props) {
       setIsLoaded(false);
     }
 
-    if (props.test !== null) {
+    if (props.test !== undefined) {
       setIsLoaded(true);
     }
   }, [rooms]);
@@ -302,7 +306,7 @@ function HotelRoomDetails(props) {
 
 
       {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
-      <div className="AllBoxes">
+      {/* <div className="AllBoxes">
         {(gotHandMeDowns.hotel.amenities_ratings !== null) ?
           gotHandMeDowns.hotel.amenities_ratings.map((amenitiesWithRatings) => {
             <div>
@@ -314,7 +318,7 @@ function HotelRoomDetails(props) {
           :
           null
         }
-      </div>
+      </div> */}
 
 
       {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
