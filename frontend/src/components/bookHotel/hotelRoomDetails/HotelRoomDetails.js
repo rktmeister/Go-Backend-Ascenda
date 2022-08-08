@@ -2,15 +2,11 @@ import './HotelRoomDetails.css';
 import React, { useState, useEffect } from "react";
 
 import LowerCaseChange from "./_parts/LowerCaseChange.js";
-import RemoveDescriptionDuplicate from "./_parts/RemoveDescriptionDuplicate.js";
+
 
 import MapGenerator from './parts/MapGenerator';
 
-import ShowRoomsOutput from './_parts/ShowRoomsOutput';
 
-import { FaStar } from 'react-icons/fa';
-
-import { getHotelRoomBatch } from './../../../utils/backendAPI.js';
 import { useNavigate } from 'react-router-dom';
 import DoubleSlider from './parts/DoubleSlider';
 import StarRating from '../common/StarRating';
@@ -20,6 +16,8 @@ function HotelRoomDetails(props) {
   const nav = useNavigate();
   const gotHandMeDowns = props.handMeDowns[props.handMeDownsIndex];
 
+  console.log("gotHandMeDowns: ", gotHandMeDowns)
+
   const maxPriceLimit = 10000; // gotHandMeDowns.filterData.maxPrice * 1000);
   const minPriceLimit = 0;
 
@@ -28,7 +26,10 @@ function HotelRoomDetails(props) {
   const [maxPrice, setMaxPrice] = useState(gotHandMeDowns.filterData.maxPrice); // gotHandMeDowns.filterData.maxPrice * 10);
 
   const [error, setError] = useState(null);
+
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const [prevChosenRoom, setPrevChosenRoom] = useState(null);
   const [chosenRoom, setChosenRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [description, setDescription] = useState("Choose Room Type");
@@ -43,42 +44,81 @@ function HotelRoomDetails(props) {
   const [hotelPicRightHandle, setHotelPicRightHandle] = useState("HotelPicsRightHandleNoHover");
 
   const [filters, setFilters] = useState([]);
+  const [hideFilters, setHideFilters] = useState("none");
 
+  const [amenitiesRatings, setAmenitiesRatings] = useState({});
 
-  const [currentIndex, setCurrentIndex] = useState(0); // This is for overall hotel imagaes
+  const [currentIndex, setCurrentIndex] = useState(1); // This is for overall hotel imagaes
+
 
   const decreaseCurrentIndex = () => {
     console.log("Decrease " + currentIndex);
-    setCurrentIndex(Math.max(0, currentIndex - 1));
+    if (currentIndex - 1 < 1) {
+      setCurrentIndex(gotHandMeDowns.hotel.numberOfImages);
+    }
+    else {
+      setCurrentIndex(currentIndex - 1);
+    }
   }
 
   const increaseCurrentIndex = () => {
     console.log("Increase " + currentIndex);
-    setCurrentIndex(Math.min(gotHandMeDowns.hotel.numberOfImages - 1, currentIndex + 1));
+    if (currentIndex + 1 > gotHandMeDowns.hotel.numberOfImages) {
+      setCurrentIndex(1);
+    }
+    else {
+      setCurrentIndex(currentIndex + 1);
+    }
   }
 
   // if chosen hotel changes, load rooms from it
   useEffect(() => {
-    (async () => {
-      const res = await props.backendPackage.getHotelRoomBatch(
-        gotHandMeDowns.hotel.uid,
-        gotHandMeDowns.destination.uid,
-        gotHandMeDowns.filterData.checkInDate,
-        gotHandMeDowns.filterData.checkOutDate,
-        gotHandMeDowns.filterData.numberOfRooms,
-        nav
-      );
-      if (!res.error) {
-        setRooms(res);
-      }
-    })();
+
+    if (props.test !== null) {
+      setRooms(props.backendPackage)
+    }
+    else {
+      (async () => {
+        const res = await props.backendPackage.getHotelRoomBatch(
+          gotHandMeDowns.hotel.uid,
+          gotHandMeDowns.destination.uid,
+          gotHandMeDowns.filterData.checkInDate,
+          gotHandMeDowns.filterData.checkOutDate,
+          gotHandMeDowns.filterData.numberOfRooms,
+          nav
+        );
+        if (!res.error) {
+          setRooms(res);
+        }
+      })();
+    }
+
   }, [gotHandMeDowns.hotel]);
 
   const handleChooseRoom = (room) => {
-    const buttonToColor = document.getElementById(room.key + "_CHOOSE");
-    buttonToColor.style.color = "rgb(255, 140, 0)";
+    let buttonToColor = document.getElementById(room.key + "_CHOOSE");
+    console.log(buttonToColor.style.backgroundColor)
+    buttonToColor.style.background = "rgb(255, 140, 0)";
+    buttonToColor.selected = true;
+
     console.log("ROOM CHOSEN:", room);
     setChosenRoom(room);
+
+
+    console.log("prevChosenRoom : ", prevChosenRoom)
+    if (prevChosenRoom === null) {
+      setPrevChosenRoom(room)
+    }
+
+    else if (prevChosenRoom !== room) {
+      console.log("prevChosenRoom : ", prevChosenRoom)
+      let prevButtonToUncolor = document.getElementById(prevChosenRoom.key + "_CHOOSE");
+      prevButtonToUncolor.selected = false;
+      prevButtonToUncolor.style.background = "rgb(180, 180, 180)";
+
+      setPrevChosenRoom(room);
+
+    }
   };
 
   const getCurrentImageURL = () => {
@@ -90,6 +130,10 @@ function HotelRoomDetails(props) {
       setIsLoaded(true);
     } else {
       setIsLoaded(false);
+    }
+
+    if (props.test !== null) {
+      setIsLoaded(true);
     }
   }, [rooms]);
 
@@ -104,6 +148,13 @@ function HotelRoomDetails(props) {
         }
       },
     ];
+    if (prevChosenRoom !== null) {
+      let prevButtonToUncolor = document.getElementById(prevChosenRoom.key + "_CHOOSE");
+      prevButtonToUncolor.selected = false;
+      prevButtonToUncolor.style.background = "rgb(180, 180, 180)";
+      setPrevChosenRoom(null);
+    }
+
     setFilters(newFilters);
   };
 
@@ -121,6 +172,8 @@ function HotelRoomDetails(props) {
     console.log("Error: ", error.message);
   }
 
+  console.log("gotHandMeDowns:  ", gotHandMeDowns)
+
   return (
     <div className="HotelRoomDetails">
       <br></br>
@@ -134,6 +187,7 @@ function HotelRoomDetails(props) {
         }}
         onSubmit={handleFilterChange}
         rooms={rooms}
+        hidden={hideFilters}
       />
 
       <br></br>
@@ -167,7 +221,7 @@ function HotelRoomDetails(props) {
               className={enlargingImageWordsHovering}
               onMouseOver={() => { setEnlargingImageWordsHovering("HotelPicsEnlargingWordsHover") }}
               onMouseLeave={() => { setEnlargingImageWordsHovering("HotelPicsEnlargingWordsNoHover") }}
-              onClick={() => { console.log(enlargingImageWordsHovering); setEnlargedImagesMode("flex") }}>Click here to enlarge image</span>
+              onClick={() => { console.log(enlargingImageWordsHovering); setEnlargedImagesMode("flex"); setHideFilters("hidden"); }}>Click here to enlarge image</span>
 
 
 
@@ -201,6 +255,7 @@ function HotelRoomDetails(props) {
                 {gotHandMeDowns.hotel.address}
               </p>
               <StarRating
+                hotelName={gotHandMeDowns.hotel.term}
                 totalPossibleStars={5}
                 rating={gotHandMeDowns.hotel.rating}
               />
@@ -225,8 +280,8 @@ function HotelRoomDetails(props) {
       <div className="AllBoxes">
         <div style={{ position: "relative", top: 20, left: 20, paddingBottom: 20, fontSize: 25, fontWeight: "bold" }}>Hotel overview</div>
 
-        <div style={{ flexWrap: 'wrap', flex: 1, marginLeft: 20, marginTop: 10, flexDirection: "column" }}>
-          <div dangerouslySetInnerHTML={{ __html: gotHandMeDowns.hotel.description }} style={{ whiteSpace: "pre-line", flexShrink: 1, position: "static" }} />
+        <div style={{ flexWrap: 'wrap', flex: 1, marginLeft: 20, marginRight: 20, marginTop: 10, flexDirection: "column" }}>
+          <div dangerouslySetInnerHTML={{ __html: gotHandMeDowns.hotel.description }} style={{ whiteSpace: "pre-line", flexShrink: 1, position: "relative" }} />
         </div>
       </div>
 
@@ -243,6 +298,28 @@ function HotelRoomDetails(props) {
         <div > <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
       </div>
       {/* =================== MAP OUTPUT DISPLAY ====================== */}
+
+
+
+      {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
+      <div className="AllBoxes">
+        {(gotHandMeDowns.hotel.amenities_ratings !== null) ?
+          gotHandMeDowns.hotel.amenities_ratings.map((amenitiesWithRatings) => {
+            <div>
+              <span>{amenitiesWithRatings.name}</span>
+              <input type="range" min={0} max={100} value={amenitiesWithRatings.score}></input>
+              <br></br>
+            </div>
+          })
+          :
+          null
+        }
+      </div>
+
+
+      {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
+
+
 
 
       {/* =================== ROOMS OUTPUT DISPLAY ======================roomtypelist */}
@@ -279,7 +356,7 @@ function HotelRoomDetails(props) {
           height: "700px",
           border: "1px solid black",
           position: "relative",
-          zIndex: 10
+          zIndex: 20
         }}>
 
           <div style={{ width: "1000px", height: "700px", overflow: "hidden", alignSelf: "center", position: "relative", display: "flex", justifyContent: "space-evenly" }}>
@@ -297,7 +374,7 @@ function HotelRoomDetails(props) {
             className={enlargedCloseHovering}
             onMouseOver={() => { setEnlargingCloseHovering("HotelPicsEnlargedCloseHover") }}
             onMouseLeave={() => { setEnlargingCloseHovering("HotelPicsEnlargedCloseNoHover") }}
-            onClick={() => { setEnlargedImagesMode("none") }}
+            onClick={() => { setEnlargedImagesMode("none"); setHideFilters("visible") }}
           >
             X Close
           </div>
@@ -329,8 +406,8 @@ function HotelRoomDetails(props) {
 
         </div>
         <div
-          style={{ background: "black", opacity: "90%", width: window.innerWidth, height: window.innerHeight, position: "absolute", zIndex: 1 }}
-          onClick={() => { console.log(enlargedImagesMode); setEnlargedImagesMode("none"); console.log(enlargedImagesMode) }}
+          style={{ background: "black", opacity: "90%", width: window.innerWidth, height: window.innerHeight, position: "absolute", zIndex: 19 }}
+          onClick={() => { console.log(enlargedImagesMode); setEnlargedImagesMode("none"); setHideFilters("visible"); console.log(enlargedImagesMode) }}
         ></div>
       </div>
 

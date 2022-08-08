@@ -21,6 +21,7 @@ const ListOfRoomTypes = (props) => {
                     console.log(roomList)
                     return (
                         <HotelRoomBox
+                            description = {description}
                             roomsSet={roomList}
                             key={description}
                             handleChooseRoom={handleChooseRoom}

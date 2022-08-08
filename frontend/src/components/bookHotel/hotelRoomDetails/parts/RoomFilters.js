@@ -39,7 +39,7 @@ const RoomFilters = (props) => {
             <span>
                 <select id="roomTypeDropdown" value={chosenRoomType} className="DescriptionDropdown" onChange={(e) => { setChosenRoomType(e.target.value); }}>
                     <option value={defaultString}>Choose Room Type</option>
-                    {props.rooms ? [...new Map(props.rooms.map(room =>[room.roomNormalizedDescription, room])).values()]
+                    {props.rooms ? [...new Map(props.rooms.map(room => [room.roomNormalizedDescription, room])).values()]
                         .map((room) => {
                             return <option id={room.roomNormalizedDescription} key={room.key} value={room.roomNormalizedDescription}> {room.roomNormalizedDescription} </option>;
                         }) : <option id={defaultString} value={defaultString}>Loading...</option>}
@@ -50,4 +50,4 @@ const RoomFilters = (props) => {
     )
 };
 
-export default RoomFilters;
+export default RoomFilters; 

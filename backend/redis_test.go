@@ -24,6 +24,16 @@ func TestCheckNoLogin(t *testing.T) {
 	}
 }
 
+func TestCheckBooking(t *testing.T) {
+	bookingClient := redisdb.InitBookingDataRedis()
+	redisdb.CreateBooking(bookingClient, "rktmeister1", "dylan", "raharja", "WD0M", "diH7", "kaligo", "NO_REQ", "Mr.", "dylan.raharja@gmail.com", "65656565", "1", "2022-08-29", "2022-08-31", "300.59")
+	searchResult := redisdb.SearchBooking(bookingClient, "diH7")
+	fmt.Println(searchResult)
+	if !(searchResult == "booking:rktmeister1-diH7-2022-08-29") {
+		t.Fail()
+	}
+}
+
 func TestAutoComplete(t *testing.T) {
 	destClient, autoClient := redisdb.InitDestAndAutoCompleterRedis()
 	var want redisdb.Destination
