@@ -112,7 +112,7 @@ const FilterBar = (props) => {
                 <div className="form-group">
                     <label htmlFor="numberOfRooms">Number of Rooms</label>
                     <input
-                        data-testid="numberOfRoomsInput"
+                        data-testid="numberOfRoomsTest"
                         type="number"
                         className="form-control"
                         id="numberOfRooms"
@@ -120,6 +120,10 @@ const FilterBar = (props) => {
                         onChange={(event) => {
                             if (!isNaN(event.target.value))
                                 setNumberOfRooms(parseInt(event.target.value));
+
+                            if(props.test){
+                                props.testBoolForBackend(true);  // For Unit Test => Change of number of rooms lead to call of backend.
+                            }
                         }}
                         value={numberOfRooms}
                     />
@@ -127,25 +131,40 @@ const FilterBar = (props) => {
                 <div className="form-group">
                     <label htmlFor="checkInDate">Check In Date</label>
                     <input
+                        data-testid="checkInDateTest"
                         type="date"
                         className="form-control"
                         id="checkInDate"
                         placeholder=""
-                        onChange={(event) => setCheckInDate(event.target.value)}
+                        onChange={(event) => {
+                            setCheckInDate(event.target.value)
+
+                            if(props.test){
+                                props.testBoolForBackend(true);  // For Unit Test => Change of number of rooms lead to call of backend.
+                            }
+                        }}
                         value={checkInDate}
                     />
                 </div>
                 <div className="form-group">
                     <label htmlFor="checkOutDate">Check Out Date</label>
                     <input
+                        data-testid="checkOutDateTest"
                         type="date"
                         className="form-control"
                         id="checkOutDate"
                         placeholder=""
-                        onChange={(event) => setCheckOutDate(event.target.value)}
+                        onChange={(event) => {
+                            setCheckOutDate(event.target.value)
+
+                            if(props.test){
+                                props.testBoolForBackend(true);  // For Unit Test => Change of number of rooms lead to call of backend.
+                            }
+                        }}
                         value={checkOutDate}
                     />
                 </div>
+
                 <div id="priceSlider">
                     <MultiRangeSlider
                         data-testid="priceSlider"
@@ -179,7 +198,8 @@ const FilterBar = (props) => {
                         }}
                     />
                 </div>
-                <button id="submitFilter" className="btn btn-primary" data-testid="filterSubmit" >Submit</button>
+                <button id="submitFilter" className="btn btn-primary" data-testid="filterBarSubmitButton" >Submit</button>
+
             </form>
             <div className="alert alert-primary" role="alert">
                 {alertMessage}

@@ -326,6 +326,32 @@ function HotelRoomDetails(props) {
 
 
 
+
+      {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
+      {/* <div className="AllBoxes">
+        {gotHandMeDowns.hotel.amenities_ratings.map( (amenitiesWithRatings) => {
+          <div>
+            <span>{amenitiesWithRatings.name}</span> 
+            <input type="range" value={amenitiesWithRatings.score}></input>
+            <br></br>
+          </div>
+        })}
+      </div>
+
+      Amenities_Ratings	Amenities_Ratings	`json:"amenities_ratings"`
+      }
+
+      type Amenities_Ratings struct{
+        Name	string		`json:"name"`
+        Score	float64 	`json:"score"`
+      } */}
+
+
+      {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
+
+
+
+
       {/* =================== ROOMS OUTPUT DISPLAY ======================roomtypelist */}
       <div style={{ marginTop: 100 }}>
         <div style={{ border: "0.5px solid rgb(240,240,240)" }}>

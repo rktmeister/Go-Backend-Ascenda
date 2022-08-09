@@ -32,16 +32,32 @@ function DestinationSearch(props) {
     if (searchWord === "") {
       setFilteredData([]);
     } else {
+
       const got = await props.backendPackage.getDestinationsByFuzzyString(
-        searchWord,
-        nav
-      );
+          searchWord,
+          nav
+        );
+      
+
+      
+
+      
       const newFilter = got.filter((value) => {
         //console.log(value.term, searchWord);
         return value.term.toLowerCase().includes(searchWord.toLowerCase());
       });
       console.log("NF", newFilter);
       setFilteredData(newFilter);
+
+
+      if(props.test){
+       
+        const testNewFilter = props.testData.filter((value) => {
+          return value.term.toLowerCase().includes(searchWord.toLowerCase());
+        });
+
+        setFilteredData(testNewFilter);
+      }
     }
   };
 
@@ -71,6 +87,11 @@ function DestinationSearch(props) {
     setReadyToProceed(true);
     console.log("DDD", d);
     setChosenDestination(d);
+
+
+    if(props.test){
+      props.testGetSelected(d);
+    }
   };
 
   return (
@@ -78,6 +99,8 @@ function DestinationSearch(props) {
       <FilterBar
         onSubmit={handleFilterBarSubmit}
         prior={defaultStartingFilterValues}
+        test = {props.test}
+        testBoolForBackend = {props.testBoolForBackend}
       />
       <div className="search">
         <div className="searchInputs">
@@ -100,7 +123,7 @@ function DestinationSearch(props) {
         <div id="destinationMenu" style={{ display: "grid" }}>
           {
             filteredData.length !== 0 && (
-              filteredData.slice(0, 15).map(
+              filteredData.map( //slice(0, 15).map(
                 (value, key) => {
                   console.log("K", key);
                   return (
