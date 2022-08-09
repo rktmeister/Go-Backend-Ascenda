@@ -106,12 +106,12 @@ const ScrollMenu = (props) => {
 
     if (currentItems) {
         return (
-            <div data-testid="hi" style={{ overflow: "scroll", height: props.height }} onScroll={handleScroll} ref={scrollRef}>
-                <button onClick={() => console.log(refs, refs["1"])}>test</button>
+            <div id="hotelMenu" data-testid="hi" style={{ overflow: "scroll", height: props.height }} onScroll={handleScroll} ref={scrollRef}>
+                {/* <button onClick={() => console.log(refs, refs["1"])}>test</button>
                 <button onClick={handleScroll}>test2</button>
                 <button onClick={() => console.log(currentItems, props.items)}>examine</button>
                 <button data-testid="loadButton" onClick={loadRoutine}>load</button>
-                <button onClick={() => console.log(props.items, currentItems)}>stop</button>
+                <button onClick={() => console.log(props.items, currentItems)}>stop</button> */}
                 Total count: {currentItems.length}
                 {
                     currentItems.map(props.itemMapping).map((mappedItem) => {

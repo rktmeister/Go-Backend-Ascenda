@@ -16,7 +16,7 @@ const DoubleSlider = (props) => {
                 max={props.upperLimit}
                 value={props.upperSliderValue}
                 onChange={manipulateMinMaxValues}
-                id="myRange"
+                id="SliderMax"
             />
             <span style={{ position: "relative", left: 140, bottom: -3 }}> ${props.upperSliderValue} </span>
             <input
@@ -26,7 +26,7 @@ const DoubleSlider = (props) => {
                 max={props.upperLimit}
                 value={props.lowerSliderValue}
                 onChange={manipulateMinMaxValues}
-                id="myRange"
+                id="SliderMin"
             />
             <span style={{ position: "relative", right: 570, bottom: -4 }}> ${props.lowerSliderValue} </span>
         </div>

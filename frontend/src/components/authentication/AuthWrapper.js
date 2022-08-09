@@ -21,7 +21,7 @@ const AuthWrapper = (props) => {
     useEffect(() => {
         (async () => {
             const res = await testAccessToken(nav);
-            if (res !== null && res.success) {
+            if (res && res.success) {
                 setIsAuthorized(true);
             } else {
                 setIsAuthorized(false);

@@ -78,7 +78,11 @@ function App() {
               attemptCreateAccount: backend.attemptCreateAccount,
             }}
           />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login
+            backendPackage={{
+              attemptLogin: backend.attemptLogin,
+            }}
+          />} />
           <Route path="/" element={<GeneralWrapper
             backendPackage={{
               testIsLoggedIn: backend.testIsLoggedIn,

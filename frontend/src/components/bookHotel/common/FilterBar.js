@@ -146,35 +146,39 @@ const FilterBar = (props) => {
                         value={checkOutDate}
                     />
                 </div>
-                <MultiRangeSlider
-                    data-testid="priceSlider"
-                    min={0}
-                    max={10000}
-                    step={1}
-                    ruler={false}
-                    label={true}
-                    preventWheel={false}
-                    minValue={minPrice}
-                    maxValue={maxPrice}
-                    onInput={(e) => {
-                        handlePriceInput(e);
-                        console.log(e);
-                    }}
-                />
-                <MultiRangeSlider
-                    min={0}
-                    max={10}
-                    step={1}
-                    ruler={false}
-                    label={true}
-                    preventWheel={false}
-                    minValue={minRating}
-                    maxValue={maxRating}
-                    onInput={(e) => {
-                        handleRatingInput(e);
-                        console.log(e);
-                    }}
-                />
+                <div id="priceSlider">
+                    <MultiRangeSlider
+                        data-testid="priceSlider"
+                        min={0}
+                        max={10000}
+                        step={100}
+                        ruler={false}
+                        label={true}
+                        preventWheel={false}
+                        minValue={minPrice}
+                        maxValue={maxPrice}
+                        onInput={(e) => {
+                            handlePriceInput(e);
+                            console.log(e);
+                        }}
+                    />
+                </div>
+                <div id="ratingSlider">
+                    <MultiRangeSlider
+                        min={0}
+                        max={5}
+                        step={1}
+                        ruler={false}
+                        label={true}
+                        preventWheel={false}
+                        minValue={minRating}
+                        maxValue={maxRating}
+                        onInput={(e) => {
+                            handleRatingInput(e);
+                            console.log(e);
+                        }}
+                    />
+                </div>
                 <button id="submitFilter" className="btn btn-primary" data-testid="filterSubmit" >Submit</button>
             </form>
             <div className="alert alert-primary" role="alert">
