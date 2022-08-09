@@ -25,12 +25,8 @@ function HotelRoomDetails(props) {
 
   const [error, setError] = useState(null);
 
-
   const [isLoaded, setIsLoaded] = useState(false);
-
   
-  
-
   const [prevChosenRoom, setPrevChosenRoom] = useState(null);
   const [chosenRoom, setChosenRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
@@ -46,8 +42,9 @@ function HotelRoomDetails(props) {
   const [hotelPicRightHandle, setHotelPicRightHandle] = useState("HotelPicsRightHandleNoHover");
 
   const [filters, setFilters] = useState([]);
-  const [hideFilters, setHideFilters] = useState("none")
+  const [hideFilters, setHideFilters] = useState("none");
 
+  const [amenitiesRatings, setAmenitiesRatings] = useState({});
 
   const [currentIndex, setCurrentIndex] = useState(1); // This is for overall hotel imagaes
 
@@ -288,6 +285,32 @@ function HotelRoomDetails(props) {
 
 
       {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
+
+
+
+      {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
+      {/* <div className="AllBoxes">
+        {gotHandMeDowns.hotel.amenities_ratings.map( (amenitiesWithRatings) => {
+          <div>
+            <span>{amenitiesWithRatings.name}</span> 
+            <input type="range" value={amenitiesWithRatings.score}></input>
+            <br></br>
+          </div>
+        })}
+      </div>
+
+      Amenities_Ratings	Amenities_Ratings	`json:"amenities_ratings"`
+      }
+
+      type Amenities_Ratings struct{
+        Name	string		`json:"name"`
+        Score	float64 	`json:"score"`
+      } */}
+
+
+      {/* =================== AMENITIES RATINGS OUTPUT DISPLAY ====================== */}
+
+
 
 
       {/* =================== ROOMS OUTPUT DISPLAY ======================roomtypelist */}

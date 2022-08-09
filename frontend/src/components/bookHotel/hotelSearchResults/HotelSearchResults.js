@@ -48,6 +48,10 @@ const HotelSearchResults = (props) => {
             nav
         );
         console.log("GR", getResults);
+
+        if(props.test){
+            return props.testData;
+        }
         return getResults.error ? [] : getResults;
     };
 
@@ -157,6 +161,10 @@ const HotelSearchResults = (props) => {
     const handleChooseHotel = (item) => {
         console.log(item);
         setChosenHotel(item);
+
+        if(props.test){
+            props.testGetSelected(item);
+        }
     };
 
     return (
@@ -164,6 +172,8 @@ const HotelSearchResults = (props) => {
             <FilterBar
                 onSubmit={handleFilterChange}
                 prior={gotHandMeDowns.filterData}
+                test = {props.test}
+                testBoolForBackend = {props.testBoolForBackend}
             />
             <ScrollMenu
                 items={displayHotels}
