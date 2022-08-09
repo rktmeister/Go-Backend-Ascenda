@@ -20,7 +20,7 @@ function DestinationSearch(props) {
     minPrice: 0,
     maxPrice: 10000,
     minRating: 0,
-    maxRating: 10,
+    maxRating: 5,
   };
 
   const [filterBarValues, setFilterBarValues] = useState(defaultStartingFilterValues);
@@ -97,7 +97,7 @@ function DestinationSearch(props) {
             )}
           </div>
         </div>
-        <div style={{ display: "grid" }}>
+        <div id="destinationMenu" style={{ display: "grid" }}>
           {
             filteredData.length !== 0 && (
               filteredData.slice(0, 15).map(
