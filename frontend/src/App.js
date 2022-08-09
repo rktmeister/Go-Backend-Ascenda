@@ -73,12 +73,19 @@ function App() {
               })}
             />
           } />
-          <Route path="/signUp" element={<CreateAccountPage />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/signUp" element={<CreateAccountPage
+            backendPackage={{
+              attemptCreateAccount: backend.attemptCreateAccount,
+            }}
+          />} />
+          <Route path="/login" element={<Login
+            backendPackage={{
+              attemptLogin: backend.attemptLogin,
+            }}
+          />} />
           <Route path="/" element={<GeneralWrapper
             backendPackage={{
               testIsLoggedIn: backend.testIsLoggedIn,
-              attemptCreateAccount: backend.attemptCreateAccount,
               logOut: backend.logOut,
             }}
           />}>

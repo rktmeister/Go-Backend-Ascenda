@@ -33,7 +33,6 @@ function HotelRoomInnerBox(props) {
             <button data-testid = {props.description + "_SELECT"} id = {props.room.key + "_SELECT"} 
             
             style={{
-                
                 float:"right", 
                 left: 95, 
                 bottom: 50, 

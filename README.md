@@ -69,5 +69,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
-# Go-Backend-Ascenda
-Ascenda Website backend API using Go
+# Golang Backend
+This project's backend is mainly used for API calling and also managing the database (Redis). Redis can be hosted locally using docker

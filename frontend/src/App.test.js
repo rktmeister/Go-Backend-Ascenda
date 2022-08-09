@@ -7,9 +7,8 @@ import App from './App';
 //   expect(linkElement).toBeInTheDocument();
 // });
 
-test("app automatically denies entry", () => {
+test("app is logged out by default", () => {
     expect.assertions(1);
     render(<App />);
-    const accessWasDenied = screen.getByTestId("accessDenied");
-    expect(accessWasDenied).toBeInTheDocument();
+    expect(screen.getByText("Login")).toBeInTheDocument();
 });

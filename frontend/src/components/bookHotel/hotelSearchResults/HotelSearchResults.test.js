@@ -1300,8 +1300,10 @@ test("HotelSearchResults: Checkout Date Submission Calls Backend for New Data", 
 //         /></BrowserRouter>);
 //     };
 
+
 //     await act(belayedRender);
 //     await console.log(screen.debug())
 //     console.log("obj", obj);
 //     expect(obj).toBe(19);
 // });
+

@@ -20,7 +20,7 @@ function DestinationSearch(props) {
     minPrice: 0,
     maxPrice: 10000,
     minRating: 0,
-    maxRating: 10,
+    maxRating: 5,
   };
 
   const [filterBarValues, setFilterBarValues] = useState(defaultStartingFilterValues);
@@ -105,6 +105,7 @@ function DestinationSearch(props) {
       <div className="search">
         <div className="searchInputs">
           <input
+            id="destinationInput"
             data-testid="fuzzyInput"
             type="text"
             placeholder="Search!"
@@ -119,12 +120,12 @@ function DestinationSearch(props) {
             )}
           </div>
         </div>
-        <div style={{ display: "grid" }}>
+        <div id="destinationMenu" style={{ display: "grid" }}>
           {
             filteredData.length !== 0 && (
               filteredData.map( //slice(0, 15).map(
                 (value, key) => {
-                  //console.log("V", value);
+                  console.log("K", key);
                   return (
                     <DestinationCard key={key} value={value} onClick={handleChoice} />
                   );
@@ -137,7 +138,7 @@ function DestinationSearch(props) {
           currentFilterData={filterBarValues}
           choice={chosenDestination.term}
         />
-        <button onClick={finishStage}>Next Stage</button>
+        <button id="submitButton" onClick={finishStage}>Next Stage</button>
       </div>
     </div>
   );

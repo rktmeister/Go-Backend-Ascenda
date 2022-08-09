@@ -1,9 +1,14 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from "@testing-library/user-event";
 import DestinationSearch from './DestinationSearch';
-import { act } from 'react-dom/test-utils';
-import userEvent, { user } from "@testing-library/user-event";
-import { keyboard } from '@testing-library/user-event/dist/keyboard';
-import { BrowserRouter } from 'react-router-dom';
+
+import * as router from 'react-router';
+
+const navigate = jest.fn()
+
+beforeEach(() => {
+    jest.spyOn(router, 'useNavigate').mockImplementation(() => navigate)
+})
 
 const mockDestination = (uid) => {
     return {
@@ -11,6 +16,7 @@ const mockDestination = (uid) => {
         term: uid.toString(),
     };
 }
+
 
 const destinationsList = [{"term":"Abc", "uid":"A1BC"}, 
                             {"term":"Def", "uid":"D2EF"},
@@ -565,6 +571,7 @@ test("DestinationSearch: Checkin Date Submission Calls Backend for New Data", as
         calledBackend = backendBool;
     }
 
+
     let rendered = render(<BrowserRouter><DestinationSearch
         backendPackage={{
             // getDestinationsByFuzzyString: async (searchWord) => {
@@ -606,7 +613,6 @@ test("DestinationSearch: Checkin Date Submission Calls Backend for New Data", as
 
     expect(calledBackend).toBe(true);
 
-});
 
 
 

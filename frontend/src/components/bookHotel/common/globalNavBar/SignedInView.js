@@ -3,8 +3,8 @@ import { hashPassword } from "../../../../utils/backendAPI";
 
 const SignedInView = (props) => {
     const nav = useNavigate();
-    const logOut = () => {
-        const res = props.backendPackage.logOut(
+    const logOut = async () => {
+        const res = await props.backendPackage.logOut(
             nav
         );
         if (res.success) {
@@ -13,14 +13,14 @@ const SignedInView = (props) => {
             alert(res.message);
         }
     };
-    const deleteAccount = () => {
+    const deleteAccount = async () => {
         const password = prompt("Enter password:");
         if (password === null || password === "") {
             return; // user cancelled prompt
         }
 
         const passwordHash = hashPassword(password);
-        const res = props.backendPackage.deleteAccount(
+        const res = await props.backendPackage.deleteAccount(
             props.userName,
             passwordHash,
             nav

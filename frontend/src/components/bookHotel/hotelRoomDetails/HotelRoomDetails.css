@@ -9,9 +9,9 @@
 
 
 .HotelRoomDetails {
-  text-align: left;
-  width:100vw;
-  height:100vh;
+  /* text-align: left; */
+  width:50vw;
+  height:50vh;
   white-space: nowrap;
   
 }

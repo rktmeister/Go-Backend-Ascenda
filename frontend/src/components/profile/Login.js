@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { attemptLogin, hashPassword } from "../../utils/backendAPI";
+import fuzzer from "../../fuzzing/fuzzer";
+import { hashPassword } from "../../utils/backendAPI";
 
 const Login = (props) => {
     const nav = useNavigate();
@@ -10,7 +11,15 @@ const Login = (props) => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        const res = await attemptLogin(userName, hashPassword(passwordHash));
+        const res = fuzzer.ifActive.boundarify(
+            await props.backendPackage.attemptLogin(userName, hashPassword(passwordHash))
+        );
+
+        if (!res) {
+            alert("Login failed!");
+            return;
+        }
+
         if (res.error) {
             alert(res.error);
         } else {
@@ -27,6 +36,7 @@ const Login = (props) => {
                         type="text"
                         className="form-control"
                         id="userName"
+                        data-testid="userName"
                         placeholder="Enter username"
                         onChange={(event) => setUserName(event.target.value)}
                     />
@@ -37,11 +47,12 @@ const Login = (props) => {
                         type="password"
                         className="form-control"
                         id="password"
+                        data-testid="password"
                         placeholder="Password"
                         onChange={(event) => setPasswordHash(event.target.value)}
                     />
                 </div>
-                <button type="submit" id="submitButton" className="btn btn-primary" >Submit</button>
+                <button type="submit" data-testid="submitButton" id="submitButton" className="btn btn-primary" >Submit</button>
             </form>
         </div>
     );

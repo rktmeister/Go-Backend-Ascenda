@@ -14,6 +14,12 @@ const CreateAccountPage = (props) => {
             passwordHash,
             nav
         );
+
+        if (!res) {
+            alert("Create Account failed!");
+            return;
+        }
+
         if (res.success) {
             nav("/", { replace: true });
         } else {
@@ -30,6 +36,7 @@ const CreateAccountPage = (props) => {
                         type="text"
                         className="form-control"
                         id="userName"
+                        data-testid="userName"
                         placeholder="Enter username"
                         onChange={(event) => setUserName(event.target.value)}
                     />
@@ -40,11 +47,12 @@ const CreateAccountPage = (props) => {
                         type="password"
                         className="form-control"
                         id="password"
+                        data-testid="password"
                         placeholder="Password"
                         onChange={(event) => setPasswordHash(hashPassword(event.target.value))}
                     />
                 </div>
-                <button type="submit" id="submitButton" className="btn btn-primary" >Submit</button>
+                <button type="submit" id="submitButton" data-testid="submitButton" className="btn btn-primary" >Submit</button>
             </form>
         </div>
     );

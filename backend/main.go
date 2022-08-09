@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httptrace"
 	"time"
 
 	"Go-Backend-Ascenda/Backend-API/redisdb"
@@ -158,6 +161,12 @@ func main() {
 		Timeout:   20 * time.Second,
 		Transport: t,
 	}
+	clientTrace := &httptrace.ClientTrace{
+		GotConn: func(info httptrace.GotConnInfo) {
+			log.Printf("Connection reused: %t", info.Reused)
+		},
+	}
+	traceCtx := httptrace.WithClientTrace(context.Background(), clientTrace)
 
 	userClient := redisdb.InitUserRedis()
 	loggedOutTokensClient := redisdb.InitLoggedOutTokensRedis()
@@ -189,6 +198,176 @@ func main() {
 
 	api := router.Group("/api")
 	{
+		//// FOR DEBUGGING PURPOSES (WITHOUT HAVING TO LOG IN)
+		// api.GET("/hotels/destination", func(c *gin.Context) {
+		// 	var hotels []HotelBriefDescription
+		// 	var prices HotelsPrice
+		// 	destination := c.Query("destination")
+		// 	checkin := c.Query("checkin")
+		// 	checkout := c.Query("checkout")
+		// 	guests := c.Query("guests")
+
+		// 	api_url_price := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels/prices?destination_id=%s&checkin=%s&checkout=%s&lang=en_US&currency=SGD&partner_id=1&guests=%s", redisdb.GetDestinationUid(destClient, destination), checkin, checkout, guests)
+		// 	api_url_hotel := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels?destination_id=%s&checkin=%s&checkout=%s&lang=en_US&currency=SGD&partner_id=1&guests=%s", redisdb.GetDestinationUid(destClient, destination), checkin, checkout, guests)
+		// 	fmt.Println(api_url_hotel)
+		// 	// HOTEL FIRST
+		// 	req, err := http.NewRequest(http.MethodGet, api_url_hotel, nil)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	res, getErr := hClient.Do(req)
+		// 	if getErr != nil {
+		// 		log.Fatal(getErr)
+		// 	}
+		// 	if res.Body != nil {
+		// 		defer res.Body.Close()
+		// 	}
+
+		// 	body, readErr := ioutil.ReadAll(res.Body)
+		// 	if readErr != nil {
+		// 		log.Fatal(readErr)
+		// 	}
+		// 	err = json.Unmarshal(body, &hotels)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	// NOW PRICE
+		// 	req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	res, getErr = hClient.Do(req)
+		// 	if getErr != nil {
+		// 		log.Fatal(getErr)
+		// 	}
+		// 	if _, err := io.Copy(ioutil.Discard, res.Body); err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	res.Body.Close()
+
+		// 	time.Sleep(1000 * time.Millisecond)
+
+		// 	req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	res, getErr = hClient.Do(req)
+		// 	if getErr != nil {
+		// 		log.Fatal(getErr)
+		// 	}
+
+		// 	defer res.Body.Close()
+
+		// 	body, readErr = ioutil.ReadAll(res.Body)
+		// 	if readErr != nil {
+		// 		log.Fatal(readErr)
+		// 	}
+		// 	err = json.Unmarshal(body, &prices)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	// NOW MERGE
+		// 	var hotel_price []Hotel_Price
+		// 	for i := 0; i < len(hotels); i++ {
+		// 		for j := 0; j < len(prices.Prices); j++ {
+		// 			if hotels[i].Id == prices.Prices[j].Id {
+		// 				hotel_price = append(hotel_price, Hotel_Price{Id: hotels[i].Id, HotelBriefDescription: hotels[i], Price: prices.Prices[j].Price})
+		// 			}
+		// 		}
+
+		// 	}
+		// 	c.JSON(http.StatusOK, gin.H{
+		// 		"hotel_price": hotel_price,
+		// 	})
+		// })
+
+		// api.GET("/room/hotel", func(c *gin.Context) {
+		// 	hotelId := c.Query("hotelId")
+
+		// 	destination_id := c.Query("destination_id")
+
+		// 	checkin := c.Query("checkin")
+		// 	checkout := c.Query("checkout")
+		// 	guests := c.Query("guests")
+		// 	api_url_room := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels/%s", hotelId)
+
+		// 	api_url_price := fmt.Sprintf("https://hotelapi.loyalty.dev/api/hotels/%s/price?destination_id=%s&checkin=%s&checkout=%s&lang=en_US&currency=SGD&guests=%s&partner_id=1", hotelId, destination_id, checkin, checkout, guests)
+
+		// 	var hotelBriefDescription HotelBriefDescription
+		// 	req, err := http.NewRequest(http.MethodGet, api_url_room, nil)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	res, getErr := hClient.Do(req)
+		// 	if getErr != nil {
+		// 		log.Fatal(getErr)
+		// 	}
+		// 	if res.Body != nil {
+		// 		defer res.Body.Close()
+		// 	}
+		// 	body, readErr := ioutil.ReadAll(res.Body)
+		// 	if readErr != nil {
+		// 		log.Fatal(readErr)
+		// 	}
+		// 	err = json.Unmarshal(body, &hotelBriefDescription)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	// localhost:3000/api/room/hotel?hotelId=diH7&destination_id=WD0M&checkin=2022-08-26&checkout=2022-08-29&lang=en_US&currency=SGD&partner_id=1&guests=2
+		// 	var roomPrices SpecificHotelRoomPrice
+		// 	// fmt.Println(api_url_price)
+
+		// 	req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	// fmt.Println(req)
+		// 	res, getErr = hClient.Do(req)
+		// 	if getErr != nil {
+		// 		log.Fatal(getErr)
+		// 	}
+		// 	if _, err := io.Copy(ioutil.Discard, res.Body); err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	res.Body.Close()
+
+		// 	time.Sleep(1000 * time.Millisecond)
+
+		// 	req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	res, getErr = hClient.Do(req)
+		// 	if getErr != nil {
+		// 		log.Fatal(getErr)
+		// 	}
+		// 	if res.Body != nil {
+		// 		defer res.Body.Close()
+		// 	}
+		// 	body, readErr = ioutil.ReadAll(res.Body)
+		// 	if readErr != nil {
+		// 		log.Fatal(readErr)
+		// 	}
+		// 	err = json.Unmarshal(body, &roomPrices)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+
+		// 	c.JSON(http.StatusOK, gin.H{
+		// 		"roomPrice": roomPrices,
+		// 		"hotelDesc": hotelBriefDescription,
+		// 	})
+		// })
+		//////////////////////////////////////////////////////////////////////////////////////////////
+
 		api.POST("/login", func(c *gin.Context) {
 			var user User
 			c.BindJSON(&user)
@@ -213,6 +392,8 @@ func main() {
 			var user User
 			c.BindJSON(&user)
 			if !redisdb.CheckExistingUser(userClient, user.Username) {
+				c.SetCookie("refresh_jwt", auth.GenerateJWT(user.Username, true), 60*60*24*7, "/", "", false, true) // 60*60*24*7 for 7 days
+				c.SetCookie("access_jwt", auth.GenerateJWT(user.Username, false), 60*15, "/", "", false, true)      // 60*15 for 15 min
 				redisdb.AddNewUser(userClient, user.Username, user.Password)
 				c.JSON(200, gin.H{
 					"message": "register success",
@@ -235,7 +416,7 @@ func main() {
 					"success": false,
 				})
 			}
-			username, err := auth.VerifyJWT(userClient, cookie)
+			username, err := auth.VerifyJWT(loggedOutTokensClient, cookie)
 			if err != nil {
 				fmt.Println(err)
 				c.JSON(401, gin.H{
@@ -326,6 +507,7 @@ func main() {
 		})
 
 		// "localhost:3000/api/hotels/destination?destination=Singapore, Singapore&checkin=2022-08-29&checkout=2022-08-31&guests=2"
+
 		authorized.GET("/hotels/destination", func(c *gin.Context) {
 			var hotels []HotelBriefDescription
 			var prices HotelsPrice
@@ -361,7 +543,7 @@ func main() {
 			}
 
 			// NOW PRICE
-			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+			req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -370,21 +552,15 @@ func main() {
 			if getErr != nil {
 				log.Fatal(getErr)
 			}
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
-
-			body, readErr = ioutil.ReadAll(res.Body)
-			if readErr != nil {
-				log.Fatal(readErr)
-			}
-			err = json.Unmarshal(body, &prices)
-			if err != nil {
+			if _, err := io.Copy(ioutil.Discard, res.Body); err != nil {
 				log.Fatal(err)
 			}
+
+			res.Body.Close()
 
 			time.Sleep(1000 * time.Millisecond)
-			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+
+			req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -393,9 +569,8 @@ func main() {
 			if getErr != nil {
 				log.Fatal(getErr)
 			}
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
+
+			defer res.Body.Close()
 
 			body, readErr = ioutil.ReadAll(res.Body)
 			if readErr != nil {
@@ -405,31 +580,6 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-
-			// for !prices.Completed {
-			// 	time.Sleep(700 * time.Millisecond)
-			// 	req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
-			// 	if err != nil {
-			// 		log.Fatal(err)
-			// 	}
-
-			// 	res, getErr = hClient.Do(req)
-			// 	if getErr != nil {
-			// 		log.Fatal(getErr)
-			// 	}
-			// 	if res.Body != nil {
-			// 		defer res.Body.Close()
-			// 	}
-
-			// 	body, readErr = ioutil.ReadAll(res.Body)
-			// 	if readErr != nil {
-			// 		log.Fatal(readErr)
-			// 	}
-			// 	err = json.Unmarshal(body, &prices)
-			// 	if err != nil {
-			// 		log.Fatal(err)
-			// 	}
-			// }
 
 			// NOW MERGE
 			var hotel_price []Hotel_Price
@@ -482,30 +632,18 @@ func main() {
 			// localhost:3000/api/room/hotel?hotelId=diH7&destination_id=WD0M&checkin=2022-08-26&checkout=2022-08-29&lang=en_US&currency=SGD&partner_id=1&guests=2
 			var roomPrices SpecificHotelRoomPrice
 			// fmt.Println(api_url_price)
-
-			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
+			req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
 			if err != nil {
 				log.Fatal(err)
 			}
-			// fmt.Println(req)
 			res, getErr = hClient.Do(req)
 			if getErr != nil {
 				log.Fatal(getErr)
 			}
-			// fmt.Println(res.Body)
-			if res.Body != nil {
-				defer res.Body.Close()
-			}
-			body, readErr = ioutil.ReadAll(res.Body)
-			if readErr != nil {
-				log.Fatal(readErr)
-			}
-			// fmt.Println(body)
-			err = json.Unmarshal(body, &roomPrices)
-			if err != nil {
+			if _, err := io.Copy(ioutil.Discard, res.Body); err != nil {
 				log.Fatal(err)
 			}
-
+			res.Body.Close()
 			time.Sleep(1000 * time.Millisecond)
 			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
 			if err != nil {
@@ -527,29 +665,6 @@ func main() {
 				log.Fatal(err)
 			}
 
-			// for !roomPrices.Completed {
-			// 	req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
-			// 	if err != nil {
-			// 		log.Fatal(err)
-			// 	}
-			// 	res, getErr = hClient.Do(req)
-			// 	if getErr != nil {
-			// 		log.Fatal(getErr)
-			// 	}
-			// 	if res.Body != nil {
-			// 		defer res.Body.Close()
-			// 	}
-			// 	body, readErr = ioutil.ReadAll(res.Body)
-			// 	if readErr != nil {
-			// 		log.Fatal(readErr)
-			// 	}
-			// 	err = json.Unmarshal(body, &roomPrices)
-			// 	if err != nil {
-			// 		log.Fatal(err)
-			// 	}
-			// 	time.Sleep(500 * time.Millisecond)
-			// }
-
 			c.JSON(http.StatusOK, gin.H{
 				"roomPrice": roomPrices,
 				"hotelDesc": hotelBriefDescription,
@@ -559,6 +674,11 @@ func main() {
 		authorized.POST("/room/hotel/book", func(c *gin.Context) {
 			redisdb.CreateBooking(bookingClient, c.PostForm("username"), c.PostForm("firstName"), c.PostForm("lastName"), c.PostForm("destination_id"), c.PostForm("hotel_id"), c.PostForm("supplier_id"), c.PostForm("special_requests"), c.PostForm("salutation"),
 				c.PostForm("email"), c.PostForm("phone"), c.PostForm("guests"), c.PostForm("checkin"), c.PostForm("checkout"), c.PostForm("price"))
+
+			c.JSON(http.StatusOK, gin.H{
+				"message": "ok",
+				"success": true,
+			})
 		})
 	}
 
@@ -571,5 +691,4 @@ func main() {
 
 	// RUN SERVER
 	router.Run(":3000")
-
 }
