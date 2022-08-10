@@ -249,7 +249,7 @@ func main() {
 
 		// 	res.Body.Close()
 
-		// 	time.Sleep(1000 * time.Millisecond)
+		// 	time.Sleep(1500 * time.Millisecond)
 
 		// 	req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
 		// 	if err != nil {
@@ -558,7 +558,7 @@ func main() {
 
 			res.Body.Close()
 
-			time.Sleep(1000 * time.Millisecond)
+			time.Sleep(1500 * time.Millisecond)
 
 			req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
 			if err != nil {
