@@ -14,12 +14,13 @@ const SignedInView = (props) => {
         }
     };
     const deleteAccount = async () => {
-        const password = prompt("Enter password:");
+        const password = await prompt("Enter password:");
+        // console.log("PA", password);
         if (password === null || password === "") {
             return; // user cancelled prompt
         }
 
-        const passwordHash = hashPassword(password);
+        const passwordHash = await hashPassword(password);
         const res = await props.backendPackage.deleteAccount(
             props.userName,
             passwordHash,
@@ -32,12 +33,20 @@ const SignedInView = (props) => {
         }
     };
     return (
-        <div>
-            <div>
-                Welcome, {props.userName}.
+        <div className="navbar navbar-expand-lg bg-light">
+            <div className="container-fluid">
+                <div className="navbar-brand">
+                    Welcome, {props.userName}.
+                </div>
+                <ul className="navbar-nav">
+                    <li className="nav-item">
+                        <button id="logoutButton" className="nav-item" onClick={logOut}>Log Out</button>
+                    </li>
+                    <li className="nav-item">
+                        <button id="deleteAccountButton" className="nav-item" onClick={deleteAccount}>Delete Account</button>
+                    </li>
+                </ul>
             </div>
-            <button onClick={logOut}>Log Out</button>
-            <button onClick={deleteAccount}>Delete Account</button>
         </div>
     )
 };

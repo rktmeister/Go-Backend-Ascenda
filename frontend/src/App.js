@@ -7,6 +7,7 @@ import HotelRoomDetails from './components/bookHotel/hotelRoomDetails/HotelRoomD
 import HotelSearchResults from './components/bookHotel/hotelSearchResults/HotelSearchResults';
 import HotelCard from "./components/bookHotel/hotelSearchResults/parts/HotelCard";
 import ScrollMenu from './components/bookHotel/hotelSearchResults/parts/ScrollMenu';
+import PaymentSuccess from "./components/bookHotel/paymentOutcomes/PaymentSuccess";
 import StageHandler from './components/bookHotel/stageHandler/StageHandler';
 import GeneralWrapper from "./components/mainDisplay/GeneralWrapper";
 import CreateAccountPage from "./components/profile/CreateAccountPage";
@@ -87,6 +88,7 @@ function App() {
             backendPackage={{
               testIsLoggedIn: backend.testIsLoggedIn,
               logOut: backend.logOut,
+              deleteAccount: backend.deleteAccount,
             }}
           />}>
             <Route path="authed" element={<AuthWrapper />}>
@@ -110,7 +112,7 @@ function App() {
                     }} />,
                   ]} />
               } />
-              <Route path="paymentSuccess" element={<div>yay</div>} />
+              <Route path="paymentSuccess" element={<PaymentSuccess />} />
               <Route path="paymentFailure" element={<div>nuu</div>} />
               <Route path="hello" element={<div>hello there lol</div>} />
             </Route>

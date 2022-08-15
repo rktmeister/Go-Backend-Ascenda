@@ -5,13 +5,20 @@ import { hashPassword } from "../../utils/backendAPI";
 const CreateAccountPage = (props) => {
     const nav = useNavigate();
     const [userName, setUserName] = useState("");
-    const [passwordHash, setPasswordHash] = useState("");
+    const [password, setPassword] = useState("");
+
+    const USER_NAME_MAX_LENGTH = 20;
+    const PASSWORD_MAX_LENGTH = 20;
+
+    const goToHome = () => {
+        nav("/", { replace: true });
+    };
 
     const handleCreateAccount = async (event) => {
         event.preventDefault();
         const res = await props.backendPackage.attemptCreateAccount(
             userName,
-            passwordHash,
+            await hashPassword(password),
             nav
         );
 
@@ -38,7 +45,12 @@ const CreateAccountPage = (props) => {
                         id="userName"
                         data-testid="userName"
                         placeholder="Enter username"
-                        onChange={(event) => setUserName(event.target.value)}
+                        onChange={(event) => {
+                            if (event.target.value.length <= USER_NAME_MAX_LENGTH) {
+                                setUserName(event.target.value);
+                            }
+                        }}
+                        value={userName}
                     />
                 </div>
                 <div className="form-group">
@@ -49,11 +61,17 @@ const CreateAccountPage = (props) => {
                         id="password"
                         data-testid="password"
                         placeholder="Password"
-                        onChange={(event) => setPasswordHash(hashPassword(event.target.value))}
+                        onChange={(event) => {
+                            if (event.target.value.length <= PASSWORD_MAX_LENGTH) {
+                                setPassword(event.target.value);
+                            }
+                        }}
+                        value={password}
                     />
                 </div>
                 <button type="submit" id="submitButton" data-testid="submitButton" className="btn btn-primary" >Submit</button>
             </form>
+            <button onClick={goToHome}>Back</button>
         </div>
     );
 };

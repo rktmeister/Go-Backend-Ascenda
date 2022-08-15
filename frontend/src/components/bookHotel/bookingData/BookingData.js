@@ -101,9 +101,9 @@ const BookingData = (props) => {
 
 
     const handleCheckout = async (event) => {
-        
+
         // This is for unit test
-        if(props.test){
+        if (props.test) {
             props.inputs({
                 "userName": userName,
                 "firstName": firstName,
@@ -156,6 +156,7 @@ const BookingData = (props) => {
             const res = await props.backendPackage.sendSuccessfulPayment(checkOutData, nav);
             console.log(res);
             console.log(checkOutData);
+            setAlertMessage("Redirecting to checkout...");
             await mockStripeCheckout();
         }
     };
@@ -173,7 +174,7 @@ const BookingData = (props) => {
         const checkoutOptions = {
             lineItems: [item],
             mode: "payment",
-            successUrl: `${window.location.origin}/paymentSuccess`,
+            successUrl: `${window.location.origin}/authed/paymentSuccess`,
             cancelUrl: `${window.location.origin}/`,
             customerEmail: userEmail,
             billingAddressCollection: "required",
@@ -195,7 +196,7 @@ const BookingData = (props) => {
     return (
         <div>
             <form onSubmit={handleCheckout}>
-                <div className="form-group">
+                <div className="form-group" >
                     <label htmlFor="salutation">Salutation</label>
                     <select id="salutation" value={salutation} onChange={(e) => { setSalutation(e.target.value); }}>
                         <option value={salutationDropdownDefaultString}>{salutationDropdownDefaultString}</option>
@@ -209,7 +210,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="firstName">First Name</label>
                     <input
-                        data-testid = "First Name"
+                        data-testid="First Name"
                         type="text"
                         className="form-control"
                         id="firstName"
@@ -222,7 +223,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="lastName">Last Name</label>
                     <input
-                        data-testid = "Last Name"
+                        data-testid="Last Name"
                         type="text"
                         className="form-control"
                         id="lastName"
@@ -235,7 +236,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="phoneNumber">Phone Number</label>
                     <input
-                        data-testid = "Phone Number"
+                        data-testid="Phone Number"
                         type="tel"
                         className="form-control"
                         id="phoneNumber"
@@ -247,7 +248,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="userEmail">Email</label>
                     <input
-                        data-testid = "Email"
+                        data-testid="Email"
                         type="email"
                         className="form-control"
                         id="userEmail"
@@ -259,7 +260,7 @@ const BookingData = (props) => {
                 <div className="form-group">
                     <label htmlFor="specialRequests">Special Requests</label>
                     <input
-                        data-testid = "Special Requests"
+                        data-testid="Special Requests"
                         type="text"
                         className="form-control"
                         id="specialRequests"
@@ -269,12 +270,12 @@ const BookingData = (props) => {
                     />
                 </div>
 
-                <button id="submit" data-testid = "BookingData_Submit" type="submit" className="btn btn-primary" >Submit</button>
+                <button id="submit" data-testid="BookingData_Submit" type="submit" className="btn btn-primary" >Submit</button>
             </form>
-            <div className="alert alert-primary" role="alert">
+            <div id="alert" className="alert alert-primary" role="alert">
                 {alertMessage}
             </div>
-            <button onClick={() => console.log(phoneNumber)}>test</button>
+            {/* <button onClick={() => console.log(phoneNumber)}>test</button> */}
         </div>
     );
 };

@@ -73,10 +73,6 @@ const randomNumber = (orig, lower, upper) => {
     }
 };
 
-const randomString = (orig, lower, upper) => {
-    return mutateLetters("a".repeat(upper - lower), upper - lower);
-};
-
 const boundarifyObject = (orig) => {
     const res = {};
     for (const property in orig) {
@@ -92,7 +88,7 @@ const boundarify = (orig) => {
             res = randomNumber(orig, 0, 10000);
             break;
         case "string":
-            res = randomString(orig, 0, orig.length);
+            res = randomString(orig, 0, orig.length());
             break;
         case "object":
             res = {
@@ -122,9 +118,10 @@ const tryChangeIntegerConditionResult = (orig, lower, upper, condition, limit) =
     return res;
 };
 
-const mutateLetters = (orig, numberToMutate) => {
+
+
+const mutateString = (orig, numberToMutate, allowedRandomChars) => {
     const indicesToMutate = pickUniqueIndicesAtRandom(orig.length, numberToMutate);
-    const allowedRandomChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+`{}|:\" <>? []\; ',./";
 
     let res = orig;
     for (let index of indicesToMutate) {
@@ -133,6 +130,70 @@ const mutateLetters = (orig, numberToMutate) => {
     }
     return res;
 };
+
+
+
+const mutateKeyboardLetters = (orig, numberToMutate) => {
+    const allowedRandomChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+`{}|:\" <>? []\; ',./";
+    return mutateString(orig, numberToMutate, allowedRandomChars);
+};
+
+const mutateLetters = (orig, numberToMutate) => {
+    const allowedRandomChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return mutateString(orig, numberToMutate, allowedRandomChars);
+};
+
+const mutateLettersLowercase = (orig, numberToMutate) => {
+    const allowedRandomChars = "abcdefghijklmnopqrstuvwxyz";
+    return mutateString(orig, numberToMutate, allowedRandomChars);
+};
+
+const mutateLettersUppercase = (orig, numberToMutate) => {
+    const allowedRandomChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return mutateString(orig, numberToMutate, allowedRandomChars);
+};
+
+const mutateDigitsAsString = (orig, numberToMutate) => {
+    const allowedRandomChars = "0123456789";
+    return mutateString(orig, numberToMutate, allowedRandomChars);
+};
+
+
+
+
+const randomString = (orig, lower, upper) => {
+    const randomLength = randomInteger(null, lower, upper);
+    return mutateKeyboardLetters("a".repeat(randomLength), randomLength);
+};
+
+const randomLetters = (orig, lower, upper) => {
+    const randomLength = randomInteger(null, lower, upper);
+    return mutateLetters("a".repeat(randomLength), randomLength);
+};
+
+const randomLettersLowercase = (orig, lower, upper) => {
+    const randomLength = randomInteger(null, lower, upper);
+    return mutateLettersLowercase("a".repeat(randomLength), randomLength);
+};
+
+const randomLettersUppercase = (orig, lower, upper) => {
+    const randomLength = randomInteger(null, lower, upper);
+    return mutateLettersUppercase("a".repeat(randomLength), randomLength);
+};
+
+const randomDigitsAsString = (orig, lower, upper) => {
+    const randomLength = randomInteger(null, lower, upper);
+    return mutateDigitsAsString("a".repeat(randomLength), randomLength);
+};
+
+
+const randomDate = (orig) => {
+    const res = randomDigitsAsString(null, 2, 2) + "-" + randomDigitsAsString(null, 2, 2) + "-" + randomDigitsAsString(null, 4, 4);
+    console.log(res);
+    return res;
+}
+
+
 
 const tagify = (orig) => {
 
@@ -178,8 +239,6 @@ const forceChangeTypeToRandomExemplar = (orig) => {
     return exemplars[randomInteger(null, 0, exemplars.length)];
 };
 
-const replaceWithValue = (orig, newValue) => newValue;
-
 const ifActiveFuncs = [
     pickUniqueIndicesAtRandom,
     setCharAt,
@@ -201,6 +260,19 @@ const ifActiveFuncs = [
     randomFloat,
     randomInteger,
     randomString,
+
+    randomLetters,
+    randomLettersLowercase,
+    randomLettersUppercase,
+    randomDigitsAsString,
+    mutateKeyboardLetters,
+    mutateLetters,
+    mutateLettersLowercase,
+    mutateLettersUppercase,
+    mutateDigitsAsString,
+    mutateString,
+    randomDate,
+
     randomNumber,
     boundarify,
     tryChangeIntegerConditionResult,
@@ -212,7 +284,6 @@ const ifActiveFuncs = [
     changeTypeRandomly,
     forceChangeTypeToExemplar,
     forceChangeTypeToRandomExemplar,
-    replaceWithValue,
 ];
 
 
@@ -248,21 +319,15 @@ const fuzzer = {
             numberOfTimes,
             attempts: [],
             check: (checks) => {
-                try {
-                    for (const attempt of res.attempts) {
-                        for (const [checkName, func] of checks) {
-                            if (!func(attempt.inputs, attempt.output)) {
-                                throw new Error(
-                                    "ERROR IN " + checkName + ": " + attempt.inputs + " OUTPUTS " + attempt.output
-                                );
-                            }
+                for (const attempt of res.attempts) {
+                    for (const [checkName, func] of checks) {
+                        if (!func(attempt.inputs, attempt.output)) {
+                            throw new Error(
+                                "ERROR IN " + checkName + ": " + attempt.inputs + " OUTPUTS " + attempt.output
+                            );
                         }
                     }
-                } catch (e) {
-                    return false;
                 }
-
-                return true;
             }
         };
         for (let i = 0; i < numberOfTimes; i++) {

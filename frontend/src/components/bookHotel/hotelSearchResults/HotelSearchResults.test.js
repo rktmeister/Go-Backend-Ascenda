@@ -29,7 +29,7 @@ const hotelList = [
         "latitude": 1,
         "longitude": 1,
         "description": "Hotel1",
-        "rating":1
+        "rating": 1
     },
     {
         "uid": "2",
@@ -39,7 +39,7 @@ const hotelList = [
         "latitude": 2,
         "longitude": 2,
         "description": "Hotel2",
-        "rating":2
+        "rating": 2
     },
     {
         "uid": "3",
@@ -49,7 +49,7 @@ const hotelList = [
         "latitude": 3,
         "longitude": 3,
         "description": "Hotel3",
-        "rating":3
+        "rating": 3
     },
     {
         "uid": "3_1",
@@ -59,7 +59,7 @@ const hotelList = [
         "latitude": 31,
         "longitude": 31,
         "description": "Hotel3_1",
-        "rating":3
+        "rating": 3
     }
 ]
 
@@ -69,7 +69,7 @@ const hotelList = [
 test("HotelSearchResults: Show All Test", async () => {
 
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -77,28 +77,28 @@ test("HotelSearchResults: Show All Test", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 10000,
-                minRating:0,
-                maxRating:10
+                minRating: 0,
+                maxRating: 10
             },
             destination: { uid: 1 },
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
 
     /></BrowserRouter>);
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
 
     ////console.log(screen.debug());
@@ -139,7 +139,7 @@ test("HotelSearchResults: Show All Test", async () => {
 test("HotelSearchResults: Price Filter Min Boundary Test", async () => {
 
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -147,11 +147,11 @@ test("HotelSearchResults: Price Filter Min Boundary Test", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
-                minPrice: 0,         
+                minPrice: 0,
                 maxPrice: 100,
                 minRating: 0,
                 maxRating: 10
@@ -160,38 +160,38 @@ test("HotelSearchResults: Price Filter Min Boundary Test", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     });
 
 
     //console.log(screen.debug());
 
-    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");         
-    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");  
+    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");
+    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");
     expect(Hotel_1.length).toBe(0);
     expect(Hotel_1_price_rating.length).toBe(0);
 
 
-    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");          
-    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");  
+    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");
+    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");
     expect(Hotel_2.length).toBe(0);
     expect(Hotel_2_price_rating.length).toBe(0);
 
-    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");        
-    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3"); 
+    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");
+    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");
     expect(Hotel_3.length).toBe(0);
     expect(Hotel_3_price_rating.length).toBe(0);
 
-    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");        
-    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3"); 
+    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");
+    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");
     expect(Hotel_3_1.length).toBe(0);
     expect(Hotel_3_1_price_rating.length).toBe(0);
 
@@ -202,7 +202,7 @@ test("HotelSearchResults: Price Filter Min Boundary Test", async () => {
 
 test("HotelSearchResults: Price Filter Max Boundary Test", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -210,11 +210,11 @@ test("HotelSearchResults: Price Filter Max Boundary Test", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
-                minPrice: 4000,         
+                minPrice: 4000,
                 maxPrice: 10000,
                 minRating: 0,
                 maxRating: 10
@@ -223,38 +223,38 @@ test("HotelSearchResults: Price Filter Max Boundary Test", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     });
 
 
     //console.log(screen.debug());
 
-    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");         
-    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");  
+    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");
+    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");
     expect(Hotel_1.length).toBe(0);
     expect(Hotel_1_price_rating.length).toBe(0);
 
 
-    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");          
-    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");  
+    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");
+    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");
     expect(Hotel_2.length).toBe(0);
     expect(Hotel_2_price_rating.length).toBe(0);
 
-    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");        
-    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3"); 
+    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");
+    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");
     expect(Hotel_3.length).toBe(0);
     expect(Hotel_3_price_rating.length).toBe(0);
 
-    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");        
-    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3"); 
+    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");
+    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");
     expect(Hotel_3_1.length).toBe(0);
     expect(Hotel_3_1_price_rating.length).toBe(0);
 
@@ -265,7 +265,7 @@ test("HotelSearchResults: Price Filter Max Boundary Test", async () => {
 
 test("HotelSearchResults: Price Filter Test 1", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -273,9 +273,9 @@ test("HotelSearchResults: Price Filter Test 1", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 1000,
@@ -286,15 +286,15 @@ test("HotelSearchResults: Price Filter Test 1", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     });
 
 
@@ -306,18 +306,18 @@ test("HotelSearchResults: Price Filter Test 1", async () => {
     expect(Hotel_1_price_rating.length).toBe(1);
 
 
-    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");         
-    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");  
+    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");
+    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");
     expect(Hotel_2.length).toBe(0);
     expect(Hotel_2_price_rating.length).toBe(0);
 
-    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");        
-    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");  
+    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");
+    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");
     expect(Hotel_3.length).toBe(0);
     expect(Hotel_3_price_rating.length).toBe(0);
 
-    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");          
-    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");  
+    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");
+    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");
     expect(Hotel_3_1.length).toBe(0);
     expect(Hotel_3_1_price_rating.length).toBe(0);
 
@@ -328,7 +328,7 @@ test("HotelSearchResults: Price Filter Test 1", async () => {
 
 test("HotelSearchResults: Price Filter Test 2", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -336,9 +336,9 @@ test("HotelSearchResults: Price Filter Test 2", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 2000,
@@ -349,15 +349,15 @@ test("HotelSearchResults: Price Filter Test 2", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     });
 
 
@@ -374,13 +374,13 @@ test("HotelSearchResults: Price Filter Test 2", async () => {
     expect(Hotel_2.length).toBe(1);
     expect(Hotel_2_price_rating.length).toBe(1);
 
-    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");        
-    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");  
+    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");
+    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");
     expect(Hotel_3.length).toBe(0);
     expect(Hotel_3_price_rating.length).toBe(0);
 
-    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");          
-    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");  
+    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");
+    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");
     expect(Hotel_3_1.length).toBe(0);
     expect(Hotel_3_1_price_rating.length).toBe(0);
 
@@ -391,7 +391,7 @@ test("HotelSearchResults: Price Filter Test 2", async () => {
 
 test("HotelSearchResults: Price Filter Test 3", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -399,9 +399,9 @@ test("HotelSearchResults: Price Filter Test 3", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 1001,         // Set to be 1001 intentionally
                 maxPrice: 3000,
@@ -412,22 +412,22 @@ test("HotelSearchResults: Price Filter Test 3", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     });
 
 
     //console.log(screen.debug());
 
-    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");       
-    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");  
+    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");
+    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");
     expect(Hotel_1.length).toBe(0);
     expect(Hotel_1_price_rating.length).toBe(0);
 
@@ -454,7 +454,7 @@ test("HotelSearchResults: Price Filter Test 3", async () => {
 
 test("HotelSearchResults: Price Filter Test 4", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -462,9 +462,9 @@ test("HotelSearchResults: Price Filter Test 4", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 2001,         // Set to be 2001 intentionally
                 maxPrice: 4000,
@@ -475,28 +475,28 @@ test("HotelSearchResults: Price Filter Test 4", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     });
 
 
     //console.log(screen.debug());
 
-    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");         
-    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");  
+    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");
+    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");
     expect(Hotel_1.length).toBe(0);
     expect(Hotel_1_price_rating.length).toBe(0);
 
 
-    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");          
-    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");  
+    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");
+    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");
     expect(Hotel_2.length).toBe(0);
     expect(Hotel_2_price_rating.length).toBe(0);
 
@@ -526,7 +526,7 @@ test("HotelSearchResults: Price Filter Test 4", async () => {
 
 test("HotelSearchResults: Rating Filter Min Boundary Test", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -534,11 +534,11 @@ test("HotelSearchResults: Rating Filter Min Boundary Test", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
-                minPrice: 0,         
+                minPrice: 0,
                 maxPrice: 10000,
                 minRating: 0,
                 maxRating: 0
@@ -547,38 +547,38 @@ test("HotelSearchResults: Rating Filter Min Boundary Test", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     });
 
 
     //console.log(screen.debug());
 
-    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");         
-    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");  
+    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");
+    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");
     expect(Hotel_1.length).toBe(0);
     expect(Hotel_1_price_rating.length).toBe(0);
 
 
-    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");          
-    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");  
+    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");
+    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");
     expect(Hotel_2.length).toBe(0);
     expect(Hotel_2_price_rating.length).toBe(0);
 
-    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");        
-    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3"); 
+    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");
+    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");
     expect(Hotel_3.length).toBe(0);
     expect(Hotel_3_price_rating.length).toBe(0);
 
-    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");        
-    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3"); 
+    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");
+    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");
     expect(Hotel_3_1.length).toBe(0);
     expect(Hotel_3_1_price_rating.length).toBe(0);
 
@@ -589,7 +589,7 @@ test("HotelSearchResults: Rating Filter Min Boundary Test", async () => {
 
 test("HotelSearchResults: Rating Filter Max Boundary Test", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -597,11 +597,11 @@ test("HotelSearchResults: Rating Filter Max Boundary Test", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
-                minPrice: 0,         
+                minPrice: 0,
                 maxPrice: 10000,
                 minRating: 10,
                 maxRating: 10
@@ -610,38 +610,38 @@ test("HotelSearchResults: Rating Filter Max Boundary Test", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     });
 
 
     //console.log(screen.debug());
 
-    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");         
-    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");  
+    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");
+    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");
     expect(Hotel_1.length).toBe(0);
     expect(Hotel_1_price_rating.length).toBe(0);
 
 
-    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");          
-    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");  
+    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");
+    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");
     expect(Hotel_2.length).toBe(0);
     expect(Hotel_2_price_rating.length).toBe(0);
 
-    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");        
-    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3"); 
+    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");
+    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");
     expect(Hotel_3.length).toBe(0);
     expect(Hotel_3_price_rating.length).toBe(0);
 
-    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");        
-    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3"); 
+    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");
+    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");
     expect(Hotel_3_1.length).toBe(0);
     expect(Hotel_3_1_price_rating.length).toBe(0);
 
@@ -651,7 +651,7 @@ test("HotelSearchResults: Rating Filter Max Boundary Test", async () => {
 
 test("HotelSearchResults: Rating Filter Test 1", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -659,9 +659,9 @@ test("HotelSearchResults: Rating Filter Test 1", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 10000,
@@ -672,15 +672,15 @@ test("HotelSearchResults: Rating Filter Test 1", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
 
 
@@ -692,18 +692,18 @@ test("HotelSearchResults: Rating Filter Test 1", async () => {
     expect(Hotel_1_price_rating.length).toBe(1);
 
 
-    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");          
-    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");  
+    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");
+    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");
     expect(Hotel_2.length).toBe(0);
     expect(Hotel_2_price_rating.length).toBe(0);
 
-    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");        
-    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3"); 
+    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");
+    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");
     expect(Hotel_3.length).toBe(0);
     expect(Hotel_3_price_rating.length).toBe(0);
 
-    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");        
-    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3"); 
+    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");
+    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");
     expect(Hotel_3_1.length).toBe(0);
     expect(Hotel_3_1_price_rating.length).toBe(0);
 
@@ -714,7 +714,7 @@ test("HotelSearchResults: Rating Filter Test 1", async () => {
 
 test("HotelSearchResults: Rating Filter Test 2", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -722,9 +722,9 @@ test("HotelSearchResults: Rating Filter Test 2", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 10000,
@@ -735,15 +735,15 @@ test("HotelSearchResults: Rating Filter Test 2", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
 
 
@@ -760,13 +760,13 @@ test("HotelSearchResults: Rating Filter Test 2", async () => {
     expect(Hotel_2.length).toBe(1);
     expect(Hotel_2_price_rating.length).toBe(1);
 
-    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");        
-    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3"); 
+    const Hotel_3 = screen.queryAllByTestId("HotelSearchResults_Hotel3");
+    const Hotel_3_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_3000_3");
     expect(Hotel_3.length).toBe(0);
     expect(Hotel_3_price_rating.length).toBe(0);
 
-    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");        
-    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3"); 
+    const Hotel_3_1 = screen.queryAllByTestId("HotelSearchResults_Hotel3_1");
+    const Hotel_3_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel3_1_3000_3");
     expect(Hotel_3_1.length).toBe(0);
     expect(Hotel_3_1_price_rating.length).toBe(0);
 
@@ -777,7 +777,7 @@ test("HotelSearchResults: Rating Filter Test 2", async () => {
 
 test("HotelSearchResults: Rating Filter Test 3", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -785,9 +785,9 @@ test("HotelSearchResults: Rating Filter Test 3", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 10000,
@@ -798,22 +798,22 @@ test("HotelSearchResults: Rating Filter Test 3", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
 
 
     //console.log(screen.debug());
 
-    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");     
-    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");  
+    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");
+    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");
     expect(Hotel_1.length).toBe(0);
     expect(Hotel_1_price_rating.length).toBe(0);
 
@@ -840,7 +840,7 @@ test("HotelSearchResults: Rating Filter Test 3", async () => {
 
 test("HotelSearchResults: Rating Filter Test 4", async () => {
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -848,9 +848,9 @@ test("HotelSearchResults: Rating Filter Test 4", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 10000,
@@ -861,28 +861,28 @@ test("HotelSearchResults: Rating Filter Test 4", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
+        test={1}
+        testData={hotelList}
 
     /></BrowserRouter>);
-    
+
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
 
 
     //console.log(screen.debug());
 
-    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");     
-    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");  
+    const Hotel_1 = screen.queryAllByTestId("HotelSearchResults_Hotel1");
+    const Hotel_1_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel1_1000_1");
     expect(Hotel_1.length).toBe(0);
     expect(Hotel_1_price_rating.length).toBe(0);
 
 
-    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");          
-    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");  
+    const Hotel_2 = screen.queryAllByTestId("HotelSearchResults_Hotel2");
+    const Hotel_2_price_rating = screen.queryAllByTestId("HotelSearchResults_Hotel2_2000_2");
     expect(Hotel_2.length).toBe(0);
     expect(Hotel_2_price_rating.length).toBe(0);
 
@@ -911,11 +911,11 @@ test("HotelSearchResults: Rating Filter Test 4", async () => {
 test("HotelSearchResults: Selection Test 1 (Single Selection)", async () => {
 
     let selectedInfo = {};
-    const getSelected = (selected) =>{
+    const getSelected = (selected) => {
         selectedInfo = selected;
     }
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -923,9 +923,9 @@ test("HotelSearchResults: Selection Test 1 (Single Selection)", async () => {
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 10000,
@@ -936,34 +936,34 @@ test("HotelSearchResults: Selection Test 1 (Single Selection)", async () => {
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
-        testGetSelected = {getSelected}             // Under handleChoice()
+        test={1}
+        testData={hotelList}
+        testGetSelected={getSelected}             // Under handleChoice()
 
     /></BrowserRouter>);
-    
+
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
-    
-    await act(async ()=>{
+
+    await act(async () => {
 
         const Hotel1_button = screen.getByTestId("HotelSearchResults_Hotel1_Button");    // In FilterBar.js
         userEvent.click(Hotel1_button);
-        
+
     })
 
     expect(selectedInfo).toStrictEqual({
-                                        "uid": "1",
-                                        "term": "Hotel1",
-                                        "number_of_rooms": 1,
-                                        "price": 1000,
-                                        "latitude": 1,
-                                        "longitude": 1,
-                                        "description": "Hotel1",
-                                        "rating":1
-                                    })
+        "uid": "1",
+        "term": "Hotel1",
+        "number_of_rooms": 1,
+        "price": 1000,
+        "latitude": 1,
+        "longitude": 1,
+        "description": "Hotel1",
+        "rating": 1
+    })
 
 });
 
@@ -972,11 +972,11 @@ test("HotelSearchResults: Selection Test 1 (Single Selection)", async () => {
 test("HotelSearchResults: Selection Test 2 (Changing of Selection)", async () => {
 
     let selectedInfo = {};
-    const getSelected = (selected) =>{
+    const getSelected = (selected) => {
         selectedInfo = selected;
     }
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -984,9 +984,9 @@ test("HotelSearchResults: Selection Test 2 (Changing of Selection)", async () =>
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 10000,
@@ -997,18 +997,18 @@ test("HotelSearchResults: Selection Test 2 (Changing of Selection)", async () =>
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
-        testGetSelected = {getSelected}             // Under handleChoice()
+        test={1}
+        testData={hotelList}
+        testGetSelected={getSelected}             // Under handleChoice()
 
     /></BrowserRouter>);
-    
+
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
-    
-    await act(async ()=>{
+
+    await act(async () => {
 
         const Hotel1_button = screen.getByTestId("HotelSearchResults_Hotel1_Button");    // In FilterBar.js
         userEvent.click(Hotel1_button);
@@ -1021,12 +1021,12 @@ test("HotelSearchResults: Selection Test 2 (Changing of Selection)", async () =>
             "latitude": 1,
             "longitude": 1,
             "description": "Hotel1",
-            "rating":1
+            "rating": 1
         })
 
         const Hotel2_button = screen.getByTestId("HotelSearchResults_Hotel2_Button");    // In FilterBar.js
         userEvent.click(Hotel2_button);
-        
+
         expect(selectedInfo).toStrictEqual({
             "uid": "2",
             "term": "Hotel2",
@@ -1035,13 +1035,13 @@ test("HotelSearchResults: Selection Test 2 (Changing of Selection)", async () =>
             "latitude": 2,
             "longitude": 2,
             "description": "Hotel2",
-            "rating":2
+            "rating": 2
         });
 
 
         const Hotel3_button = screen.getByTestId("HotelSearchResults_Hotel3_Button");    // In FilterBar.js
         userEvent.click(Hotel3_button);
-        
+
         expect(selectedInfo).toStrictEqual({
             "uid": "3",
             "term": "Hotel3",
@@ -1050,14 +1050,14 @@ test("HotelSearchResults: Selection Test 2 (Changing of Selection)", async () =>
             "latitude": 3,
             "longitude": 3,
             "description": "Hotel3",
-            "rating":3
+            "rating": 3
         });
 
 
 
         const Hotel3_1_button = screen.getByTestId("HotelSearchResults_Hotel3_1_Button");    // In FilterBar.js
         userEvent.click(Hotel3_1_button);
-        
+
         expect(selectedInfo).toStrictEqual({
             "uid": "3_1",
             "term": "Hotel3_1",
@@ -1066,14 +1066,14 @@ test("HotelSearchResults: Selection Test 2 (Changing of Selection)", async () =>
             "latitude": 31,
             "longitude": 31,
             "description": "Hotel3_1",
-            "rating":3
+            "rating": 3
         });
 
 
 
     })
 
-    
+
 
 });
 
@@ -1093,7 +1093,7 @@ test("HotelSearchResults: Number of Rooms Submission Calls Backend for New Data"
     }
 
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -1101,9 +1101,9 @@ test("HotelSearchResults: Number of Rooms Submission Calls Backend for New Data"
         }}
 
         handMeDowns={[{
-            filterData:{
-                checkInDate:"",
-                checkOutDate:"",
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
                 numberOfRooms: 10,
                 minPrice: 0,
                 maxPrice: 100,
@@ -1114,17 +1114,17 @@ test("HotelSearchResults: Number of Rooms Submission Calls Backend for New Data"
         }]}
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
-        testBoolForBackend = {getTestBoolForBackend}   // Inserted into <FilterBar ... > tag
+        test={1}
+        testData={hotelList}
+        testBoolForBackend={getTestBoolForBackend}   // Inserted into <FilterBar ... > tag
 
     /></BrowserRouter>);
-    
-    
 
-    await act(async ()=>{
 
-        const input = screen.getByTestId("numberOfRoomsTest");    // In FilterBar.js
+
+    await act(async () => {
+
+        const input = screen.getByTestId("numberOfRoomsInput");    // In FilterBar.js
 
         input.focus();
 
@@ -1132,12 +1132,12 @@ test("HotelSearchResults: Number of Rooms Submission Calls Backend for New Data"
 
         const filterBarSubmitButton = screen.getByTestId("filterBarSubmitButton");
         userEvent.click(filterBarSubmitButton);
-        
+
     })
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
 
 
@@ -1156,7 +1156,7 @@ test("HotelSearchResults: Checkin Date Submission Calls Backend for New Data", a
         calledBackend = backendBool;
     }
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -1164,42 +1164,43 @@ test("HotelSearchResults: Checkin Date Submission Calls Backend for New Data", a
         }}
 
         handMeDowns={[{
-                filterData:{
-                    checkInDate:"",
-                    checkOutDate:"",
-                    numberOfRooms: 10,
-                    minPrice: 0,
-                    maxPrice: 100},
-                destination: { uid: 1 },
-            }]}
-        
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
+                numberOfRooms: 10,
+                minPrice: 0,
+                maxPrice: 100
+            },
+            destination: { uid: 1 },
+        }]}
+
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
-        testBoolForBackend = {getTestBoolForBackend}   // Inserted into <FilterBar ... > tag
+        test={1}
+        testData={hotelList}
+        testBoolForBackend={getTestBoolForBackend}   // Inserted into <FilterBar ... > tag
 
     /></BrowserRouter>);
-    
-    
 
-    await act(async ()=>{
 
-        const input = screen.getByTestId("checkInDateTest");        // In FilterBar.js
+
+    await act(async () => {
+
+        const input = screen.getByTestId("checkInDateInput");        // In FilterBar.js
 
         input.focus();
         //userEvent.keyboard("03102022");
         fireEvent.mouseDown(input);
-        fireEvent.change(input, {target: {value:"2022-10-03"}})
+        fireEvent.change(input, { target: { value: "2022-10-03" } })
 
         const filterBarSubmitButton = screen.getByTestId("filterBarSubmitButton");
         userEvent.click(filterBarSubmitButton);
-        
+
     })
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
 
     expect(calledBackend).toBe(true);
@@ -1217,7 +1218,7 @@ test("HotelSearchResults: Checkout Date Submission Calls Backend for New Data", 
         calledBackend = backendBool;
     }
 
-    let rendered = render(<BrowserRouter><HotelSearchResults
+    let view = render(<BrowserRouter><HotelSearchResults
         backendPackage={{
             getHotelBatch: () => {
                 return hotelList
@@ -1225,45 +1226,46 @@ test("HotelSearchResults: Checkout Date Submission Calls Backend for New Data", 
         }}
 
         handMeDowns={[{
-                filterData:{
-                    checkInDate:"",
-                    checkOutDate:"",
-                    numberOfRooms: 10,
-                    minPrice: 0,
-                    maxPrice: 100},
-                destination: { uid: 1 },
-            }]}
-        
+            filterData: {
+                checkInDate: "",
+                checkOutDate: "",
+                numberOfRooms: 10,
+                minPrice: 0,
+                maxPrice: 100
+            },
+            destination: { uid: 1 },
+        }]}
+
         handMeDownsIndex={0}
 
-        test = {1}
-        testData = {hotelList}
-        testBoolForBackend = {getTestBoolForBackend}   // Inserted into <FilterBar ... > tag
+        test={1}
+        testData={hotelList}
+        testBoolForBackend={getTestBoolForBackend}   // Inserted into <FilterBar ... > tag
 
     /></BrowserRouter>);
 
-    await act(async ()=>{
+    await act(async () => {
 
-        const input = screen.getByTestId("checkOutDateTest");        // In FilterBar.js
+        const input = screen.getByTestId("checkOutDateInput");        // In FilterBar.js
 
         input.focus();
         fireEvent.mouseDown(input);
-        fireEvent.change(input, {target: {value:"2022-10-03"}})
+        fireEvent.change(input, { target: { value: "2022-10-03" } })
 
         const filterBarSubmitButton = screen.getByTestId("filterBarSubmitButton");
         userEvent.click(filterBarSubmitButton);
-        
+
     })
 
     await act(async () => {
-        rendered.unmount; // Must have somehow to actually rerender properly.
-        rendered.rerender;
+        view.unmount; // Must have somehow to actually rerender properly.
+        view.rerender;
     })
 
 
     expect(calledBackend).toBe(true);
 
-}); 
+});
 
 // ========================= HotelSearchResults: test calls of backend for new data ============================= //
 

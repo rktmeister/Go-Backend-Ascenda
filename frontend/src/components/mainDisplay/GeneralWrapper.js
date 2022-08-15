@@ -12,7 +12,7 @@ const GeneralWrapper = (props) => {
         (async () => {
             const res = await props.backendPackage.testIsLoggedIn();
             console.log(res);
-            if (res.error) {
+            if (res && res.error) {
                 setIsAuthorized(false);
             } else {
                 setUserName(res.username);
@@ -36,7 +36,7 @@ const GeneralWrapper = (props) => {
     }, [loc]);
 
     return (
-        <div>
+        <div style={{ backgroundImage: "url('https://media.istockphoto.com/photos/breakfast-served-on-a-hotel-bed-picture-id936331412?k=20&m=936331412&s=612x612&w=0&h=WeIEVoB9DarqRpcOg4UQ0pKCAQAGQIxsitd7cnIWXc8=')", height: "100vh", backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
             <GlobalNavBar isAuthorized={isAuthorized} userName={userName} backendPackage={props.backendPackage} />
             {
                 isVisible ?
@@ -44,7 +44,8 @@ const GeneralWrapper = (props) => {
                         <div>
                             <button id="bookButton" onClick={goToBook}>Book!</button>
                         </div>
-                        : <div>Log in to book!</div>
+                        : <div>
+                            <p className="h1" style={{ color: "#FFFFFF" }} >Log in to book!</p></div>
                     : <div></div>
             }
             <Outlet />

@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import sha256 from "crypto-js/sha256";
 
 // const getDestinationsByFuzzyString = (fuzzyDestinationName)
 let exhaust = 20;
@@ -229,13 +230,14 @@ export const deleteAccount = async (userName, passwordHash, nav) => {
         const res = fetch(formatQueryParameters(
             DB_ADDRESS,
             "/deleteAccount",
-            {
-                "username": userName,
-                "password": passwordHash,
-            }
+            {}
         ), {
             method: "DELETE",
-            credentials: "include"
+            credentials: "include",
+            body: JSON.stringify({
+                username: userName,
+                password: passwordHash,
+            }),
         });
         return res;
     }, nav);
@@ -304,8 +306,11 @@ export const handleRefreshTokenExpire = async (func, nav) => {
     }
 };
 
-export const hashPassword = (password) => {
-    return password; // TODO: implement hash function
+export const hashPassword = async (password) => {
+    console.log(sha256(password).toString());
+    console.log(sha256(password).toString());
+    console.log(sha256(password).toString());
+    return sha256(password).toString(); // TODO: implement hash function
 };
 
 export const testAccessToken = (nav) => {

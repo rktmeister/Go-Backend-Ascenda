@@ -36,7 +36,7 @@ function HotelRoomBox(props) {
 
     return (
         <div className="AllBoxes">
-            <div data-testid = {props.description + "_HotelRoomBox"} className="HotelRoomBox">
+            <div data-testid={props.description + "_HotelRoomBox"} className="HotelRoomBox">
                 <div className="HotelRoomBoxTitle">
                     <span style={{ left: 30, position: "relative", top: 8, fontSize: 25 }}>
                         {props.roomsSet[0].roomNormalizedDescription /*props.roomsSet.roomNormalizedDescription*/}
@@ -48,7 +48,7 @@ function HotelRoomBox(props) {
                     {console.log(eachRoomImagesSet)}
 
                     {(eachRoomImagesSet !== null && eachRoomImagesSet[0] !== undefined) ?
-                        (<div style={{marginLeft: "-5px", width: "450px", height:"350px", overflow:"hidden"}}>
+                        (<div style={{ marginLeft: "-5px", width: "450px", height: "350px", overflow: "hidden" }}>
                             <img key={eachRoomImagesSet[imageIndex].url}
                                 src={eachRoomImagesSet[imageIndex].url}
                                 alt=""
@@ -61,7 +61,6 @@ function HotelRoomBox(props) {
                         </div>)
                         :
                         <img src={roomImageURL} alt="some room" style={{ marginLeft: "20px", width: "250px", height: "200px" }} />
-
                     }
 
                 </div>
@@ -69,12 +68,11 @@ function HotelRoomBox(props) {
                 <br></br>
 
                 {props.roomsSet.map((room) => {
-                    return (<HotelRoomInnerBox description = {props.description} key={room.key} room={room} handleChooseRoom={handleChooseRoom} />)
+                    return (<HotelRoomInnerBox description={props.description} key={room.key} room={room} handleChooseRoom={handleChooseRoom} />)
                 })}
             </div>
         </div>
     )
-
 }
 
 export default HotelRoomBox

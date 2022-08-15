@@ -10,6 +10,8 @@ import (
 	"strconv"
 
 	"github.com/RediSearch/redisearch-go/redisearch"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var destinations []Destination
@@ -121,8 +123,9 @@ func AddNewUser(u *redisearch.Client, username string, password string) {
 		fmt.Println("User already exists")
 	} else {
 		doc := redisearch.NewDocument("user:"+username, 1.0)
+		hash, _ := HashPassword(redisearch.EscapeTextFileString(password))
 		doc.Set("username", username)
-		doc.Set("password", password)
+		doc.Set("password", hash)
 		if err := u.Index([]redisearch.Document{doc}...); err != nil {
 			log.Fatal(err)
 		}
@@ -160,12 +163,32 @@ func GetUser(u *redisearch.Client, username string) (*User, error) {
 	}
 }
 
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	return string(bytes), err
+}
+
+func ValidatePassword(password string, hash string) bool {
+	fmt.Println(password)
+	fmt.Println(hash)
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	fmt.Println(err)
+	return err == nil
+}
+
 func CheckLogin(u *redisearch.Client, username string, password string) bool {
 	existingUser := CheckExistingUser(u, username)
 	if existingUser {
 		doc, _, _ := u.Search(redisearch.NewQuery(username).SetReturnFields("password").Limit(0, 1))
 		fmt.Println("User exists! Now checking password")
-		if fmt.Sprintf("%v", doc[0].Properties["password"]) == password {
+
+		fmt.Println(fmt.Sprintf("%v", doc[0].Properties["password"])) //
+		fmt.Println(redisearch.EscapeTextFileString(fmt.Sprintf("%v", doc[0].Properties["password"])))
+
+		fmt.Println(password)
+		fmt.Println(redisearch.EscapeTextFileString(password)) //
+
+		if ValidatePassword(redisearch.EscapeTextFileString(password), fmt.Sprintf("%v", doc[0].Properties["password"])) {
 			fmt.Println("Password is correct")
 			return true
 		}
@@ -205,8 +228,11 @@ func DeleteUserDocument(u *redisearch.Client, username string) bool {
 	doc, total, _ := u.Search(redisearch.NewQuery(fmt.Sprintf("%s%s%s", `"`, username, `"`)).SetReturnFields("username").Limit(0, 1))
 	fmt.Println("Total Users with username:", username, "is", total)
 	if len(doc) == 0 {
+		fmt.Println("C")
 		return false
 	} else {
+		fmt.Println("D")
+		fmt.Println(len(doc))
 		documentId := doc[0].Id
 		if err := u.DeleteDocument(documentId); err != nil {
 			fmt.Println(err)
@@ -254,7 +280,7 @@ func CheckLoggedOutToken(t *redisearch.Client, tokenString string) bool {
 	}
 }
 
-func CreateBooking(b *redisearch.Client, username string, firstName string, lastName string, destination_id string, hotel_id string, supplier_id string, special_requests string, salutation string, email string, phone string, guests string, checkin string, checkout string, price string) {
+func CreateBooking(b *redisearch.Client, username string, firstName string, lastName string, destination_id string, hotel_id string, supplier_id string, special_requests string, salutation string, email string, phone string, guests string, checkin string, checkout string, price string) error {
 	doc := redisearch.NewDocument("booking:"+username+"-"+hotel_id+"-"+checkin, 1.0)
 	doc.Set("destination_id", destination_id)
 	doc.Set("username", username)
@@ -270,6 +296,9 @@ func CreateBooking(b *redisearch.Client, username string, firstName string, last
 	doc.Set("numberOfGuests", guests)
 	doc.Set("price", price)
 	if err := b.Index([]redisearch.Document{doc}...); err != nil {
-		log.Fatal(err)
+		// log.Fatal(err)
+		return err
+	} else {
+		return nil
 	}
 }

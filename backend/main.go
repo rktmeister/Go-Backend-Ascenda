@@ -115,10 +115,11 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3001")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE, OPTIONS")
 
 		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
+			// c.AbortWithStatus(204)
+			c.Writer.WriteHeader(http.StatusOK)
 			return
 		}
 		c.Next()
@@ -440,6 +441,13 @@ func main() {
 				})
 			}
 		})
+
+		api.OPTIONS("/deleteAccount", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"message": "delete success",
+				"success": true,
+			})
+		})
 	}
 
 	authorized := api.Group("/")
@@ -480,19 +488,25 @@ func main() {
 		authorized.DELETE("/deleteAccount", func(c *gin.Context) {
 			var user User
 			c.BindJSON(&user)
+			fmt.Println(user)
+			fmt.Println(user.Username)
+			fmt.Println(user.Password)
 			if redisdb.CheckLogin(userClient, user.Username, user.Password) {
+				fmt.Println("YAY")
 				if redisdb.DeleteUserDocument(userClient, user.Username) {
 					c.JSON(200, gin.H{
 						"message": "delete success",
 						"success": true,
 					})
 				} else {
+					fmt.Println("A")
 					c.JSON(401, gin.H{
 						"message": "delete failed for unknown reasons",
 						"success": false,
 					})
 				}
 			} else {
+				fmt.Println("B")
 				c.JSON(401, gin.H{
 					"message": "delete failed because user not found",
 					"success": false,
@@ -522,12 +536,22 @@ func main() {
 			// HOTEL FIRST
 			req, err := http.NewRequest(http.MethodGet, api_url_hotel, nil)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 
 			res, getErr := hClient.Do(req)
 			if getErr != nil {
-				log.Fatal(getErr)
+				// log.Fatal(getErr)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 			if res.Body != nil {
 				defer res.Body.Close()
@@ -535,25 +559,50 @@ func main() {
 
 			body, readErr := ioutil.ReadAll(res.Body)
 			if readErr != nil {
-				log.Fatal(readErr)
+				// log.Fatal(readErr)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 			err = json.Unmarshal(body, &hotels)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 
 			// NOW PRICE
 			req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 
 			res, getErr = hClient.Do(req)
 			if getErr != nil {
-				log.Fatal(getErr)
+				// log.Fatal(getErr)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 			if _, err := io.Copy(ioutil.Discard, res.Body); err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 
 			res.Body.Close()
@@ -562,23 +611,43 @@ func main() {
 
 			req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 
 			res, getErr = hClient.Do(req)
 			if getErr != nil {
-				log.Fatal(getErr)
+				// log.Fatal(getErr)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 
 			defer res.Body.Close()
 
 			body, readErr = ioutil.ReadAll(res.Body)
 			if readErr != nil {
-				log.Fatal(readErr)
+				// log.Fatal(readErr)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 			err = json.Unmarshal(body, &prices)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel failed",
+					"success": false,
+				})
+				return
 			}
 
 			// NOW MERGE
@@ -611,22 +680,42 @@ func main() {
 			var hotelBriefDescription HotelBriefDescription
 			req, err := http.NewRequest(http.MethodGet, api_url_room, nil)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 			res, getErr := hClient.Do(req)
 			if getErr != nil {
-				log.Fatal(getErr)
+				// log.Fatal(getErr)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 			if res.Body != nil {
 				defer res.Body.Close()
 			}
 			body, readErr := ioutil.ReadAll(res.Body)
 			if readErr != nil {
-				log.Fatal(readErr)
+				// log.Fatal(readErr)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 			err = json.Unmarshal(body, &hotelBriefDescription)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 
 			// localhost:3000/api/room/hotel?hotelId=diH7&destination_id=WD0M&checkin=2022-08-26&checkout=2022-08-29&lang=en_US&currency=SGD&partner_id=1&guests=2
@@ -634,35 +723,65 @@ func main() {
 			// fmt.Println(api_url_price)
 			req, err = http.NewRequestWithContext(traceCtx, http.MethodGet, api_url_price, nil)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 			res, getErr = hClient.Do(req)
 			if getErr != nil {
-				log.Fatal(getErr)
+				// log.Fatal(getErr)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 			if _, err := io.Copy(ioutil.Discard, res.Body); err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 			res.Body.Close()
 			time.Sleep(1000 * time.Millisecond)
 			req, err = http.NewRequest(http.MethodGet, api_url_price, nil)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 			res, getErr = hClient.Do(req)
 			if getErr != nil {
-				log.Fatal(getErr)
+				// log.Fatal(getErr)
 			}
 			if res.Body != nil {
 				defer res.Body.Close()
 			}
 			body, readErr = ioutil.ReadAll(res.Body)
 			if readErr != nil {
-				log.Fatal(readErr)
+				// log.Fatal(readErr)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 			err = json.Unmarshal(body, &roomPrices)
 			if err != nil {
-				log.Fatal(err)
+				// log.Fatal(err)
+				c.JSON(401, gin.H{
+					"message": "get hotel rooms failed",
+					"success": false,
+				})
+				return
 			}
 
 			c.JSON(http.StatusOK, gin.H{
@@ -672,13 +791,19 @@ func main() {
 		})
 
 		authorized.POST("/room/hotel/book", func(c *gin.Context) {
-			redisdb.CreateBooking(bookingClient, c.PostForm("username"), c.PostForm("firstName"), c.PostForm("lastName"), c.PostForm("destination_id"), c.PostForm("hotel_id"), c.PostForm("supplier_id"), c.PostForm("special_requests"), c.PostForm("salutation"),
-				c.PostForm("email"), c.PostForm("phone"), c.PostForm("guests"), c.PostForm("checkin"), c.PostForm("checkout"), c.PostForm("price"))
+			if err := redisdb.CreateBooking(bookingClient, c.PostForm("username"), c.PostForm("firstName"), c.PostForm("lastName"), c.PostForm("destination_id"), c.PostForm("hotel_id"), c.PostForm("supplier_id"), c.PostForm("special_requests"), c.PostForm("salutation"),
+				c.PostForm("email"), c.PostForm("phone"), c.PostForm("guests"), c.PostForm("checkin"), c.PostForm("checkout"), c.PostForm("price")); err != nil {
+				c.JSON(http.StatusOK, gin.H{
+					"message": "ok",
+					"success": true,
+				})
+			} else {
+				c.JSON(401, gin.H{
+					"message": "booking failed",
+					"success": false,
+				})
+			}
 
-			c.JSON(http.StatusOK, gin.H{
-				"message": "ok",
-				"success": true,
-			})
 		})
 	}
 

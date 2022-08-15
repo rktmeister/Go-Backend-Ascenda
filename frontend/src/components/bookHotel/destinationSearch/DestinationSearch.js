@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../../App.css";
 import "../../../utils/backendAPI";
@@ -26,39 +26,46 @@ function DestinationSearch(props) {
   const [filterBarValues, setFilterBarValues] = useState(defaultStartingFilterValues);
   const [chosenDestination, setChosenDestination] = useState("");
 
+  let searchBuffer;
+  const bufferedSearch = () => {
+    clearTimeout(searchBuffer);
+
+    searchBuffer = setTimeout(async () => {
+      if (wordEntered === "") {
+        setFilteredData([]);
+      } else {
+        const got = await props.backendPackage.getDestinationsByFuzzyString(
+          wordEntered,
+          nav
+        );
+        const newFilter = got.filter((value) => {
+          //console.log(value.term, searchWord);
+          return value.term.toLowerCase().includes(wordEntered.toLowerCase());
+        });
+        console.log("NF", newFilter);
+        setFilteredData(newFilter);
+
+        if (props.test) {
+          console.log("AAAAAAAAAAAAAAAAAAAA");
+          const testNewFilter = props.testData.filter((value) => {
+            return value.term.toLowerCase().includes(wordEntered.toLowerCase());
+          });
+
+          setFilteredData(testNewFilter);
+        }
+      }
+    }, 100);
+  };
+
+  useEffect(() => {
+    bufferedSearch();
+    return (() => clearTimeout(searchBuffer));
+  }, [wordEntered]);
+
   const handleFilter = async (event) => {
     const searchWord = event.target.value;
     setWordEntered(searchWord);
-    if (searchWord === "") {
-      setFilteredData([]);
-    } else {
 
-      const got = await props.backendPackage.getDestinationsByFuzzyString(
-          searchWord,
-          nav
-        );
-      
-
-      
-
-      
-      const newFilter = got.filter((value) => {
-        //console.log(value.term, searchWord);
-        return value.term.toLowerCase().includes(searchWord.toLowerCase());
-      });
-      console.log("NF", newFilter);
-      setFilteredData(newFilter);
-
-
-      if(props.test){
-       
-        const testNewFilter = props.testData.filter((value) => {
-          return value.term.toLowerCase().includes(searchWord.toLowerCase());
-        });
-
-        setFilteredData(testNewFilter);
-      }
-    }
   };
 
   const clearInput = () => {
@@ -88,58 +95,63 @@ function DestinationSearch(props) {
     console.log("DDD", d);
     setChosenDestination(d);
 
-
-    if(props.test){
+    if (props.test) {
       props.testGetSelected(d);
     }
   };
 
   return (
-    <div>
-      <FilterBar
-        onSubmit={handleFilterBarSubmit}
-        prior={defaultStartingFilterValues}
-        test = {props.test}
-        testBoolForBackend = {props.testBoolForBackend}
-      />
-      <div className="search">
-        <div className="searchInputs">
-          <input
-            id="destinationInput"
-            data-testid="fuzzyInput"
-            type="text"
-            placeholder="Search!"
-            value={wordEntered}
-            onChange={handleFilter}
+    <div className="container">
+      <div className="row d-flex justify-content-between">
+        <div className="column col-lg-6">
+          <FilterShow
+            currentFilterData={filterBarValues}
+            choice={chosenDestination.term}
           />
-          <div className="searchIcon">
-            {filteredData.length === 0 ? (
-              <div>Search</div>
-            ) : (
-              <button id="clearBtn" onClick={clearInput}>Clear</button>
-            )}
+          <FilterBar
+            onSubmit={handleFilterBarSubmit}
+            prior={defaultStartingFilterValues}
+            test={props.test}
+            testBoolForBackend={props.testBoolForBackend}
+          />
+        </div>
+        <div className="search col-lg-6 d-flex">
+          <div className="column col-12">
+            <div className="searchInputs col-12">
+              <input
+                id="destinationInput"
+                data-testid="fuzzyInput"
+                type="text"
+                placeholder="Search!"
+                value={wordEntered}
+                onChange={handleFilter}
+              />
+              <div className="searchIcon">
+                {filteredData.length === 0 ? (
+                  <div>Search</div>
+                ) : (
+                  <button id="clearBtn" onClick={clearInput}>Clear</button>
+                )}
+              </div>
+            </div>
+            <div id="destinationMenu" style={{ display: "grid" }}>
+              {
+                filteredData.length !== 0 && (
+                  filteredData.map(
+                    (value, key) => {
+                      console.log("K", key);
+                      return (
+                        <DestinationCard key={key} value={value} onClick={handleChoice} />
+                      );
+                    }
+                  )
+                )
+              }
+            </div>
           </div>
         </div>
-        <div id="destinationMenu" style={{ display: "grid" }}>
-          {
-            filteredData.length !== 0 && (
-              filteredData.map( //slice(0, 15).map(
-                (value, key) => {
-                  console.log("K", key);
-                  return (
-                    <DestinationCard key={key} value={value} onClick={handleChoice} />
-                  );
-                }
-              )
-            )
-          }
-        </div>
-        <FilterShow
-          currentFilterData={filterBarValues}
-          choice={chosenDestination.term}
-        />
-        <button id="submitButton" onClick={finishStage}>Next Stage</button>
       </div>
+      <button id="submitButton" className="btn btn-primary btn-lg col-12 align-items-end" onClick={finishStage}>Next Stage</button>
     </div>
   );
 }

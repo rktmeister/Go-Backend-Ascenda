@@ -22,7 +22,7 @@ const RoomFilters = (props) => {
 
     return (
         <div className="FilterBox">
-            <button onClick={() => console.log(props.rooms)}>rooms</button>
+            {/* <button onClick={() => console.log(props.rooms)}>rooms</button> */}
             <br></br>
             <DoubleSlider
                 lowerLimit={0}

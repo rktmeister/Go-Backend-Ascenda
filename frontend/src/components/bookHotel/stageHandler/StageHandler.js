@@ -28,7 +28,7 @@ const StageHandler = (props) => {
                     }
                 )
             }
-            <button onClick={() => console.log(sharedData)}>testfromshared</button>
+            {/* <button onClick={() => console.log(sharedData)}>testfromshared</button> */}
         </div>
     );
 }
