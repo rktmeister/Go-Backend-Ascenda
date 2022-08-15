@@ -48,8 +48,7 @@ const HotelSearchResults = (props) => {
             nav
         );
         console.log("GR", getResults);
-
-        if(props.test){
+        if (props.test) {
             return props.testData;
         }
         return getResults.error ? [] : getResults;
@@ -161,37 +160,43 @@ const HotelSearchResults = (props) => {
     const handleChooseHotel = (item) => {
         console.log(item);
         setChosenHotel(item);
-
-        if(props.test){
+        if (props.test) {
             props.testGetSelected(item);
         }
     };
 
     return (
-        <div>
-            <FilterBar
-                onSubmit={handleFilterChange}
-                prior={gotHandMeDowns.filterData}
-                test = {props.test}
-                testBoolForBackend = {props.testBoolForBackend}
-            />
-            <ScrollMenu
-                items={displayHotels}
-                itemMapping={(item) => {
-                    return (
-                        <HotelCard key={item.uid} item={item} height={200} onClick={handleChooseHotel} />
-                    );
-                }}
-                haveMore={haveReserves}
-                getMore={displayMore}
-                height={500}
-            />
-            {/* <button onClick={initialLoadRoutine} /> */}
-            <button onClick={() => console.log(hotels, displayHotels, reserveHotels, gotHandMeDowns, chosenHotel)} />
-            <FilterShow
-                currentFilterData={filter.values}
-            />
-            <button id="submitButton" onClick={finishStage}>Next Stage</button>
+        <div className="container">
+            <div className="row d-flex justify-content-between">
+                <div className="column col-lg-6">
+                    <FilterShow
+                        currentFilterData={filter.values}
+                    />
+                    <FilterBar
+                        onSubmit={handleFilterChange}
+                        prior={gotHandMeDowns.filterData}
+                        test={props.test}
+                        testBoolForBackend={props.testBoolForBackend}
+                    />
+                </div>
+                <div className="search col-lg-6 d-flex">
+                    {/* <button onClick={initialLoadRoutine} /> */}
+                    {/* <button onClick={() => console.log(hotels, displayHotels, reserveHotels, gotHandMeDowns, chosenHotel)} /> */}
+                    <ScrollMenu
+                        items={displayHotels}
+                        itemMapping={(item) => {
+                            return (
+                                <HotelCard key={item.uid} item={item} height={200} onClick={handleChooseHotel} />
+                            );
+                        }}
+                        haveMore={haveReserves}
+                        getMore={displayMore}
+                        height={500}
+                    />
+                    
+                </div>
+            </div>
+            <button id="submitButton" className="btn btn-primary btn-block col-12" onClick={finishStage}>Next Stage</button>
         </div>
     );
 };

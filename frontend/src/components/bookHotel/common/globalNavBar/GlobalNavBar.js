@@ -3,7 +3,7 @@ import SignedOutView from "./SignedOutView";
 
 const GlobalNavBar = (props) => {
     return (
-        <div>
+        <div className="mb-3">
             {
                 props.isAuthorized ?
                     <SignedInView

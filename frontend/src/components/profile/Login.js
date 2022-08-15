@@ -7,12 +7,19 @@ const Login = (props) => {
     const nav = useNavigate();
 
     const [userName, setUserName] = useState("");
-    const [passwordHash, setPasswordHash] = useState("");
+    const [password, setPassword] = useState("");
+
+    const USER_NAME_MAX_LENGTH = 20;
+    const PASSWORD_MAX_LENGTH = 20;
+
+    const goToHome = () => {
+        nav("/", { replace: true });
+    };
 
     const handleLogin = async (event) => {
         event.preventDefault();
         const res = fuzzer.ifActive.boundarify(
-            await props.backendPackage.attemptLogin(userName, hashPassword(passwordHash))
+            await props.backendPackage.attemptLogin(userName, await hashPassword(password))
         );
 
         if (!res) {
@@ -38,7 +45,12 @@ const Login = (props) => {
                         id="userName"
                         data-testid="userName"
                         placeholder="Enter username"
-                        onChange={(event) => setUserName(event.target.value)}
+                        onChange={(event) => {
+                            if (event.target.value.length <= USER_NAME_MAX_LENGTH) {
+                                setUserName(event.target.value);
+                            }
+                        }}
+                        value={userName}
                     />
                 </div>
                 <div className="form-group">
@@ -49,11 +61,17 @@ const Login = (props) => {
                         id="password"
                         data-testid="password"
                         placeholder="Password"
-                        onChange={(event) => setPasswordHash(event.target.value)}
+                        onChange={(event) => {
+                            if (event.target.value.length <= PASSWORD_MAX_LENGTH) {
+                                setPassword(event.target.value);
+                            }
+                        }}
+                        value={password}
                     />
                 </div>
                 <button type="submit" data-testid="submitButton" id="submitButton" className="btn btn-primary" >Submit</button>
             </form>
+            <button onClick={goToHome}>Back</button>
         </div>
     );
 };

@@ -102,17 +102,13 @@ const FilterBar = (props) => {
         setMaxPrice(props.prior.maxPrice);
     }, []);
 
-    const testButton = () => {
-        console.log(numberOfRooms, minPrice, maxPrice);
-    };
-
     return (
-        <div>
-            <form onSubmit={guardSubmit}>
-                <div className="form-group">
-                    <label htmlFor="numberOfRooms">Number of Rooms</label>
+        <div className="card mb-3">
+            <form onSubmit={guardSubmit} className="card-body">
+                <div className="input-group mb-3">
+                    <label htmlFor="numberOfRooms" className="input-group-text">Number of Rooms</label>
                     <input
-                        data-testid="numberOfRoomsTest"
+                        data-testid="numberOfRoomsInput"
                         type="number"
                         className="form-control"
                         id="numberOfRooms"
@@ -121,51 +117,47 @@ const FilterBar = (props) => {
                             if (!isNaN(event.target.value))
                                 setNumberOfRooms(parseInt(event.target.value));
 
-                            if(props.test){
+                            if (props.test) {
                                 props.testBoolForBackend(true);  // For Unit Test => Change of number of rooms lead to call of backend.
                             }
                         }}
                         value={numberOfRooms}
                     />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="checkInDate">Check In Date</label>
+                <div className="input-group mb-3">
+                    <label htmlFor="checkInDate" className="input-group-text">Check In Date</label>
                     <input
-                        data-testid="checkInDateTest"
+                        data-testid="checkInDateInput"
                         type="date"
                         className="form-control"
                         id="checkInDate"
                         placeholder=""
                         onChange={(event) => {
-                            setCheckInDate(event.target.value)
-
-                            if(props.test){
+                            setCheckInDate(event.target.value);
+                            if (props.test) {
                                 props.testBoolForBackend(true);  // For Unit Test => Change of number of rooms lead to call of backend.
                             }
                         }}
                         value={checkInDate}
                     />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="checkOutDate">Check Out Date</label>
+                    <label htmlFor="checkOutDate" className="input-group-text">Check Out Date</label>
                     <input
-                        data-testid="checkOutDateTest"
+                        data-testid="checkOutDateInput"
                         type="date"
                         className="form-control"
                         id="checkOutDate"
                         placeholder=""
                         onChange={(event) => {
-                            setCheckOutDate(event.target.value)
-
-                            if(props.test){
+                            setCheckOutDate(event.target.value);
+                            if (props.test) {
                                 props.testBoolForBackend(true);  // For Unit Test => Change of number of rooms lead to call of backend.
                             }
                         }}
                         value={checkOutDate}
                     />
                 </div>
-
-                <div id="priceSlider">
+                <div id="priceSlider" className="mb-3">
+                    Price
                     <MultiRangeSlider
                         data-testid="priceSlider"
                         min={0}
@@ -182,7 +174,8 @@ const FilterBar = (props) => {
                         }}
                     />
                 </div>
-                <div id="ratingSlider">
+                <div id="ratingSlider" className="mb-3">
+                    Rating
                     <MultiRangeSlider
                         min={0}
                         max={5}
@@ -198,13 +191,13 @@ const FilterBar = (props) => {
                         }}
                     />
                 </div>
-                <button id="submitFilter" className="btn btn-primary" data-testid="filterBarSubmitButton" >Submit</button>
-
+                <button id="submitFilter" type="submit" className="btn btn-secondary btn-lg col-12 mb-3" data-testid="filterBarSubmitButton" >Submit</button>
+                <div className="alert mb-3" role="alert">
+                    {alertMessage}
+                </div>
             </form>
-            <div className="alert alert-primary" role="alert">
-                {alertMessage}
-            </div>
-            <button onClick={testButton}>Test FilterBar</button>
+
+            {/* <button onClick={testButton}>Test FilterBar</button> */}
         </div>
     );
 };

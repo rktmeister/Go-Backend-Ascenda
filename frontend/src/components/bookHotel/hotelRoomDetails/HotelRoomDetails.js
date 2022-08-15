@@ -164,6 +164,10 @@ function HotelRoomDetails(props) {
 
 
   const finishStage = () => {
+    if (!chosenRoom) {
+      alert("You must first choose a room!");
+      return;
+    } 
     const dataToBePassedOn = {
       ...gotHandMeDowns,
       room: chosenRoom,
@@ -199,14 +203,14 @@ function HotelRoomDetails(props) {
 
       {/* ======================== Top Part (images and Title) ================== */}
       <div className="AllBoxes">
-        <div className="HotelPicTitlePartDiv">
+        <div className="HotelPicTitlePartDiv" style={{ backgroundColor: "white", }}>
           <div style={{
             width: "450px",
             height: "350px",
             left: 110,
             border: "1px solid rgb(180,180,180)",
             zIndex: 0,
-
+            backgroundColor: "dodgerblue", 
             position: "relative"
           }}>
 
@@ -281,7 +285,7 @@ function HotelRoomDetails(props) {
 
       {/* =================== HOTEL DESCRIPTION OUTPUT DISPLAY ====================== */}
 
-      <div className="AllBoxes">
+      <div className="AllBoxes" style={{ backgroundColor: "white", }}>
         <div style={{ position: "relative", top: 20, left: 20, paddingBottom: 20, fontSize: 25, fontWeight: "bold" }}>Hotel overview</div>
 
         <div style={{ flexWrap: 'wrap', flex: 1, marginLeft: 20, marginRight: 20, marginTop: 10, flexDirection: "column" }}>
@@ -298,8 +302,8 @@ function HotelRoomDetails(props) {
         <div className="MapGeneratorDiv"> <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
       </div> */}
       <div className="AllBoxes">
-        <div style={{ fontSize: "25px", position: "relative", fontWeight: 900 }}>Hotel Location</div>
-        <div > <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
+        <div style={{ fontSize: "25px", position: "relative", fontWeight: 900  }}>Hotel Location</div>
+        <div className='MapGeneratorDiv'> <MapGenerator latitude={gotHandMeDowns.hotel.latitude} longitude={gotHandMeDowns.hotel.longitude} /></div>
       </div>
       {/* =================== MAP OUTPUT DISPLAY ====================== */}
 

@@ -1,4 +1,4 @@
-import { fireEvent, getAllByRole, getAllByText, render, screen } from "@testing-library/react";
+import { fireEvent, getAllByRole, getAllByText, render, screen, waitFor } from "@testing-library/react";
 import ScrollMenu from "./ScrollMenu";
 import HotelCard from "./HotelCard";
 
@@ -32,6 +32,9 @@ test("scroll menu loads items initially", async () => {
             return mockHotel(idx);
         }}
     />);
+    // await waitFor(() => {
+    //     expect(screen.getByTestId("hotelCard")).toBeInTheDocument();
+    // });
     expect(screen.getAllByTestId("hotelCard").length).toBe(5);
 
 });

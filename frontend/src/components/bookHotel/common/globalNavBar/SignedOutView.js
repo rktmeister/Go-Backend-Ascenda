@@ -9,12 +9,22 @@ const SignedOutView = (props) => {
         nav("/login", { replace: true });
     };
     return (
-        <div>
-            <div>
-                Hey there!
+        <div className="navbar navbar-expand-lg bg-light">
+            <div className="container-fluid">
+                <div className="navbar-brand">
+                    Hey there!
+                </div>
+                <ul className="navbar-nav">
+                    <li className="nav-item">
+                        <button id="createAccountButton" onClick={goToCreateAccount}>Create Account</button>
+                    </li>
+                    <li className="nav-item">
+                        <button id="loginButton" onClick={goToLogin}>Login</button>
+                    </li>
+                </ul>
+
+
             </div>
-            <button id="createAccountButton" onClick={goToCreateAccount}>Create Account</button>
-            <button id="loginButton" onClick={goToLogin}>Login</button>
         </div>
     )
 };
