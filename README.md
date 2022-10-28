@@ -10,9 +10,9 @@ First, in the backend directory run:
 
 Then in the frontend directory, run:
 
-### 'npm start'
+### `npm start`
 
-which runs the app in the development mode.\
+runs the app in the development mode.\
 Open [http://localhost:3001](http://localhost:3001) to view it in your browser.
 
 The page will reload when you make changes.\
@@ -32,6 +32,9 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+
+# Additional Info
 
 ### `npm run eject`
 
